@@ -38,7 +38,7 @@ stages:
   - build
   - deploy
 
-.build-backend:
+build-backend:
   stage: build
   variables:
     CONTAINER_NAME: 'backend'
@@ -49,7 +49,7 @@ stages:
   rules: *rules_backend
 
 
-.build-frontend:
+build-frontend:
   stage: build
   variables:
     CONTAINER_NAME: 'frontend'
@@ -59,7 +59,7 @@ stages:
     - docker push "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CONTAINER_NAME:$CI_COMMIT_REF_SLUG-latest"
   rules: *rules_frontend
 
-.deploy-develop:
+deploy-develop:
   stage: deploy
   environment:
     name: develop

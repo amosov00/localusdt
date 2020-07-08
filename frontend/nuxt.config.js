@@ -1,10 +1,8 @@
-console.log(process.env)
-
 export default {
   mode: 'spa',
 
   head: {
-    title: 'Elastoo',
+    title: 'LocalUSDT',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},

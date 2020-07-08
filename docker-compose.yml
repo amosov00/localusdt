@@ -2,7 +2,7 @@
 version: '3'
 services:
   frontend:
-    container_name: elastoo-frontend-local
+    container_name: localusdt-frontend-local
     command: yarn dev
     build:
       context: ./
@@ -20,7 +20,7 @@ services:
       - .env.frontend
 
   backend:
-    container_name: elastoo-backend-local
+    container_name: localusdt-backend-local
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --loop 'uvloop' --lifespan on --reload --proxy-headers
     build:
       context: ./
@@ -37,50 +37,11 @@ services:
       - .env
       - .env.backend
 
-  celeryworker:
-    container_name: elastoo-celeryworker-local
-    command: sh -c "sleep 30 && celery worker -A celery_app -P celery_pool_asyncio:TaskPool --loglevel=INFO"
-    build:
-      context: ./
-      dockerfile: deployment/dockerfiles/Dockerfile.backend.local
-    volumes:
-      - ./backend:/backend
-    depends_on:
-      - db
-      - rabbitmq
-    env_file:
-      - .env
-      - .env.backend
-
-  celerybeat:
-    container_name: elastoo-celerybeat-local
-    command: sh -c "sleep 40 && celery beat -A celery_app --scheduler celery_pool_asyncio:PersistentScheduler --loglevel=INFO"
-    build:
-      context: ./
-      dockerfile: deployment/dockerfiles/Dockerfile.backend.local
-    volumes:
-      - ./backend:/backend
-    depends_on:
-      - db
-      - rabbitmq
-      - celeryworker
-    env_file:
-      - .env
-      - .env.backend
-
   db:
-    container_name: elastoo-mongodb-local
+    container_name: localusdt-mongodb-local
     image: mongo:4.2-bionic
     command: mongod --port 27017
     ports:
       - 27017:27017
     env_file:
       - .env.db
-
-  rabbitmq:
-    container_name: elastoo-rabbitmq-local
-    image: rabbitmq:3.8.4-alpine
-    ports:
-      - 5672:5672
-    env_file:
-      - .env.rabbitmq

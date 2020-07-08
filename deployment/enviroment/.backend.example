@@ -1,0 +1,8 @@
+## Save as ".env.backend"
+
+DEBUG=
+ENV=
+HOST=
+PORT=
+HOST_URL=
+DATABASE_URL=

@@ -1,0 +1,19 @@
+FROM node:13.8-buster
+
+ENV DEBUG=false
+ENV ENV=production
+ENV NODE_ENV=production
+ENV NUXT_HOST=0.0.0.0
+ENV NUXT_PORT=3000
+ENV API_URL=null
+ENV API_URL_BROWSER=null
+ENV SENTRY_DNS=null
+
+COPY ./frontend/ /app/
+WORKDIR /app/
+
+# Install Yarn if it is not installed
+RUN yarn -v || npm install -g yarn
+
+# Install requirements
+RUN yarn install && yarn build

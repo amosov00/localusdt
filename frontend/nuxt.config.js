@@ -1,43 +1,49 @@
 export default {
-  mode: 'spa',
+  mode: "spa",
 
   head: {
-    title: 'LocalUSDT',
+    title: "LocalUSDT",
     meta: [
-      {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-      {hid: 'description', name: 'description', content: ''}
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { hid: "description", name: "description", content: "" },
     ],
     link: [
-      {rel: "icon", type: "image/x-icon", href: "/favicon.ico"},
-    ]
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;600;700&display=swap",
+      },
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700&display=swap",
+      },
+    ],
   },
 
-  loading: {color: '#0495FB'},
+  loading: { color: "#48B190" },
 
-  css: [
-    {src: '~/assets/scss/main.scss', lang: 'scss'},
-    {src: '~/assets/scss/transition.scss', lang: 'scss'},
-    {src: '@fortawesome/fontawesome-free/css/all.css', lang: 'css'},
-  ],
+  css: ["~/assets/scss/global.scss"],
 
-  plugins: [
-    '~/plugins/auth.js',
-    '~/plugins/axios.js',
-  ],
+  plugins: ["~/plugins/auth.js", "~/plugins/axios.js"],
   modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/dotenv',
-    '@nuxtjs/sentry',
-    ['nuxt-buefy', {css: false}],
-    'cookie-universal-nuxt',
+    "@nuxtjs/axios",
+    "@nuxtjs/dotenv",
+    "@nuxtjs/sentry",
+    "cookie-universal-nuxt",
+    '@nuxtjs/style-resources'
   ],
-  buildModules: [
-    '@nuxtjs/dotenv'
-  ],
-  dotenv: !process.env.ENV ? {
-    filename: '.env.local',
-  } : {},
+  styleResources: {
+    scss: ["~/assets/scss/variables.scss", "~/assets/scss/mixins.scss"],
+  },
+  buildModules: ["@nuxtjs/dotenv"],
+  dotenv: !process.env.ENV
+    ? {
+        filename: ".env.local",
+      }
+    : {},
   sentry: {
     initialize: true,
     config: {
@@ -45,7 +51,6 @@ export default {
     },
   },
   build: {
-    extend(config, ctx) {
-    }
-  }
-}
+    extend(config, ctx) {},
+  },
+};

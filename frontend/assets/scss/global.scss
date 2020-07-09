@@ -1,0 +1,73 @@
+@import 'components.scss';
+@import 'utils.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  background-color: $white;
+  color: $black;
+}
+
+.container {
+  max-width: 1170px;
+  width: 100%;
+  min-height: calc(100vh - 75px - 71px);
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1 {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 40px;
+}
+
+h2 {
+  font-weight: 500;
+  font-size: 20px;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.paragraph-1 {
+  font-size: 16px;
+}
+
+.paragraph-2 {
+  font-size: 14px;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.status {
+  position: absolute;
+  top: 43%;
+  left: 73%;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: 100ms opacity ease-in-out;
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+}

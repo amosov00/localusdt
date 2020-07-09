@@ -9,9 +9,9 @@ services:
     depends_on:
       - backend
     expose:
-      - "3000"
+      - "3014"
     ports:
-      - "3000:3000"
+      - "3014:3014"
     env_file:
       - .env
       - .env.frontend
@@ -24,9 +24,9 @@ services:
     depends_on:
       - db
     expose:
-      - 8000
+      - 8014
     ports:
-      - 8000:8000
+      - 8014:8014
     env_file:
       - .env
       - .env.backend

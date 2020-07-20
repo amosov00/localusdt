@@ -35,8 +35,7 @@ class JWTAuthBackend(AuthenticationBackend):
             user = User(**user)
             scopes = {
                 "authenticated": True,
-                "is_staff": user.is_staff,
-                "is_superuser": user.is_superuser,
+                "is_active": True
             }
             return AuthCredentials([key for key, val in scopes.items() if val]), user
 

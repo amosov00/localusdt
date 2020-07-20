@@ -14,7 +14,7 @@ __all__ = [
     "UserCreationNotSafe",
     "UserLoginResponse",
     "UserChangePassword",
-    "UserVerify"
+    "UserVerify",
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -40,6 +40,11 @@ class User(BaseModel):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
     email: str = Field(...)
     username: str = Field(...)
+    balance: float = Field(default=0)
+    eth_address: Optional[str] = Field(default=None)
+    current_state: Optional[int] = Field(
+        default=None, description="1 - green, 2 - orange, 3 - red"
+    )
     is_active: Optional[bool] = Field(default=True, description="User is active")
     verification_code: Optional[str] = Field(default=None)
     created_at: Optional[datetime] = Field(default=None)

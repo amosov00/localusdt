@@ -15,12 +15,12 @@ from schemas.user import (
     UserCreationSafe,
     pwd_context,
     UserChangePassword,
-    UserVerify
+    UserVerify,
 )
 
 __all__ = ["UserCRUD"]
 
-FIELDS_TO_EXCLUDE = ("repeat_password", )
+FIELDS_TO_EXCLUDE = ("repeat_password",)
 
 
 class UserCRUD(BaseMongoCRUD):
@@ -36,7 +36,9 @@ class UserCRUD(BaseMongoCRUD):
 
     @classmethod
     async def find_by_username(cls, username: str) -> Optional[dict]:
-        return await super().find_one(query={"username": username}) if username else None
+        return (
+            await super().find_one(query={"username": username}) if username else None
+        )
 
     @classmethod
     async def authenticate(cls, email: str, password: str) -> dict:
@@ -112,7 +114,9 @@ class UserCRUD(BaseMongoCRUD):
             )
         ).inserted_id
 
-        asyncio.create_task(Email().send_verification_code(user.email, verification_code))
+        asyncio.create_task(
+            Email().send_verification_code(user.email, verification_code)
+        )
 
         return True
 
@@ -123,6 +127,8 @@ class UserCRUD(BaseMongoCRUD):
         if not pwd_context.verify(payload.old_password, old_password_obj["password"]):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Old password doesn't match")
 
-        await cls.update_one(query={"_id": user.id}, payload={"password": payload.password})
+        await cls.update_one(
+            query={"_id": user.id}, payload={"password": payload.password}
+        )
 
         return True

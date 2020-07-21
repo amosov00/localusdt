@@ -15,7 +15,6 @@ class BinanceRate:
                     await client.get(self.api_link + self.rate_method)
                 ).json()
             except Exception:
-                binance_req = None
                 return None
         return (
             float(binance_req.get("weightedAvgPrice"))

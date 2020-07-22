@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import Button from '~/components/UI/Button'
+import Button from '~/components/app/Button'
 export default {
   components: {
     Button

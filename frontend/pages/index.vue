@@ -14,8 +14,8 @@
 <script>
 import NonAuthorizedHero from "~/components/NonAuthorizedHero";
 import SellBuyTab from "~/components/SellBuyTab";
-import Table from "~/components/UI/Table";
-import Select from "~/components/UI/Select";
+import Table from "~/components/app/Table";
+import Select from "~/components/app/Select";
 export default {
   components: { NonAuthorizedHero, SellBuyTab, Table, Select },
   data() {

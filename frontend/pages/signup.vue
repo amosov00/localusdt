@@ -4,7 +4,7 @@
       h1.signup__title Регистрация
       nuxt-link.signup__subtitle(to="/login") Вход
     main.signup__inputs
-      Input(placeholder="Имя пользователя" icon="user" type="text")
+      Input(v-model="email" placeholder="Имя пользователя" icon="user" type="text")
       Input(placeholder="Эл. почта" icon="email" type="email")
       Input(placeholder="Пароль" icon="password" type="password")
     div.signup__action
@@ -16,10 +16,15 @@
 </template>
 
 <script>
-import Input from "~/components/UI/Input";
-import Button from "~/components/UI/Button";
+import Input from "~/components/app/Input";
+import Button from "~/components/app/Button";
 export default {
-  components: { Input, Button }
+  components: { Input, Button },
+  data() {
+    return {
+      email: ''
+    }
+  },
 };
 </script>
 

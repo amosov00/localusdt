@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import Input from '~/components/UI/Input'
-import Button from '~/components/UI/Button'
+import Input from '~/components/app/Input'
+import Button from '~/components/app/Button'
 export default {
   components: { Input, Button }
 }

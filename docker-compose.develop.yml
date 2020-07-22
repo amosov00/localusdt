@@ -31,7 +31,7 @@ services:
       - .env
       - .env.backend
   celeryworker:
-    container_name: localusdt-celeryworker-local
+    container_name: localusdt-celeryworker-develop
     command: sh -c "sleep 30 && celery worker -A celery_app -P celery_pool_asyncio:TaskPool --loglevel=INFO"
     build:
       context: ./
@@ -46,7 +46,7 @@ services:
       - .env.backend
 
   celerybeat:
-    container_name: localusdtt-celerybeat-local
+    container_name: localusdtt-celerybeat-develop
     command: sh -c "sleep 40 && celery beat -A celery_app --scheduler celery_pool_asyncio:PersistentScheduler --loglevel=INFO"
     build:
       context: ./
@@ -61,21 +61,28 @@ services:
       - .env
       - .env.backend
 
+  rabbitmq:
+    container_name: localusdt-rabbitmq-develop
+    image: rabbitmq:3.8.4-alpine
+    ports:
+      - 5672:5672
+    env_file:
+      - .env.rabbitmq
+
   db:
-    container_name: localusdt-mongodb
-    restart: always
+    container_name: localusdt-mongodb-local
     image: mongo:4.2-bionic
     command: mongod --port 27022 --auth
+    restart: always
+    volumes:
+      - localusdt-mongodb-develop:/data/db
     ports:
       - 27022:27022
     env_file:
       - .env
       - .env.db
 
-  rabbitmq:
-    container_name: localusdt-rabbitmq-local
-    image: rabbitmq:3.8.4-alpine
-    ports:
-      - 5672:5672
-    env_file:
-      - .env.rabbitmq
+volumes:
+  localusdt-mongodb-local:
+
+

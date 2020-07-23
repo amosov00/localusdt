@@ -3,9 +3,11 @@ from datetime import datetime
 from http import HTTPStatus
 from passlib import pwd
 from typing import Optional, Union
+from datetime import timedelta
 
 from fastapi.exceptions import HTTPException
 
+from .base import ObjectId
 from database.crud.base import BaseMongoCRUD
 from core.utils.jwt import decode_jwt_token, encode_jwt_token
 from core.utils.email import Email
@@ -16,6 +18,8 @@ from schemas.user import (
     pwd_context,
     UserChangePassword,
     UserVerify,
+    UserRecover,
+    UserRecoverLink,
 )
 
 __all__ = ["UserCRUD"]
@@ -129,6 +133,39 @@ class UserCRUD(BaseMongoCRUD):
 
         await cls.update_one(
             query={"_id": user.id}, payload={"password": payload.password}
+        )
+
+        return True
+
+    @classmethod
+    async def recover_send(cls, payload: UserRecover):
+        user = await cls.find_by_email(payload.email)
+
+        if not user:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "No such user")
+
+        recover_code = encode_jwt_token({"_id": user["_id"]}, timedelta(hours=3))
+
+        await cls.update_one({"_id": user["_id"]}, {"recover_code": recover_code})
+        asyncio.create_task(Email().send_recover_code(user["email"], recover_code))
+        return True
+
+    @classmethod
+    async def recover(cls, payload: UserRecoverLink):
+        data = decode_jwt_token(payload.recover_code)
+
+        if data is None:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Incorrect code")
+
+        user_id = data["_id"]
+
+        user = await cls.find_one({"_id": ObjectId(user_id)})
+
+        if "recover_code" not in user or user["recover_code"] != payload.recover_code:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Incorrect code")
+
+        await cls.update_one(
+            query={"_id": user["_id"]}, payload={"password": payload.password, "recover_code": None}
         )
 
         return True

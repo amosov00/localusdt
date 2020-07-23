@@ -12,7 +12,9 @@ from schemas.user import (
     UserLoginResponse,
     UserCreationSafe,
     UserChangePassword,
-    UserVerify
+    UserVerify,
+    UserRecover,
+    UserRecoverLink
 )
 
 __all__ = ["router"]
@@ -45,4 +47,13 @@ async def account_change_password(user: User = Depends(get_user), payload: UserC
     resp = await UserCRUD.change_password(user, payload)
     return resp
 
+
+@router.post("/recover/")
+async def account_recover_send(data: UserRecover = Body(...)):
+    return await UserCRUD.recover_send(data)
+
+
+@router.put("/recover/")
+async def account_recover(data: UserRecoverLink = Body(...)):
+    return await UserCRUD.recover(data)
 

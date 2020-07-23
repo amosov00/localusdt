@@ -74,7 +74,7 @@ services:
     command: mongod --port 27017 --auth
     restart: always
     volumes:
-      - localusdt-mongodb-develop:/data/db
+      - localusdt-mongodb:/data/db
     ports:
       - 27017:27017
     env_file:

@@ -54,7 +54,6 @@ class Email:
     async def send_verification_code(self, to: str, code: str) -> None:
         self.login()
         link = Email._get_link(code, to, method="verification")
-        print(link)
 
         msg = self.create_message(
             to,

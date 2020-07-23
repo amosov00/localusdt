@@ -15,6 +15,8 @@ __all__ = [
     "UserLoginResponse",
     "UserChangePassword",
     "UserVerify",
+    "UserRecover",
+    "UserRecoverLink"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -47,6 +49,7 @@ class User(BaseModel):
     )
     is_active: Optional[bool] = Field(default=True, description="User is active")
     verification_code: Optional[str] = Field(default=None)
+    recover_code: Optional[str] = Field(default=None, description="JWT token for password recover")
     created_at: Optional[datetime] = Field(default=None)
 
     @property
@@ -99,4 +102,16 @@ class UserCreationNotSafe(BaseModel):
     password: Optional[str] = Field(default=None)
 
     _validate_email = validator("email", pre=True, allow_reuse=True)(validate_email)
+    _validate_passwords = validator("password", allow_reuse=True)(validate_password)
+
+
+class UserRecover(BaseModel):
+    email: str = Field(...)
+
+
+class UserRecoverLink(BaseModel):
+    recover_code: str = Field(...)
+    password: str = Field(...)
+    repeat_password: str = Field(...)
+
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)

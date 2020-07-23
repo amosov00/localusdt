@@ -1,7 +1,9 @@
 from database import mongo_db
+from bson import ObjectId
+
 
 __all__ = [
-    "BaseMongoCRUD",
+    "BaseMongoCRUD", "ObjectId"
 ]
 
 

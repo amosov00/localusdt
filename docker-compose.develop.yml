@@ -32,6 +32,7 @@ services:
       - .env.backend
   celeryworker:
     container_name: localusdt-celeryworker-develop
+    restart: always
     command: sh -c "sleep 30 && celery worker -A celery_app -P celery_pool_asyncio:TaskPool --loglevel=INFO"
     build:
       context: ./
@@ -47,6 +48,7 @@ services:
 
   celerybeat:
     container_name: localusdtt-celerybeat-develop
+    restart: always
     command: sh -c "sleep 40 && celery beat -A celery_app --scheduler celery_pool_asyncio:PersistentScheduler --loglevel=INFO"
     build:
       context: ./
@@ -63,6 +65,7 @@ services:
 
   rabbitmq:
     container_name: localusdt-rabbitmq-develop
+    restart: always
     image: rabbitmq:3.8.4-alpine
     ports:
       - 5672:5672

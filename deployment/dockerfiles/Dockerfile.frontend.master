@@ -5,9 +5,9 @@ ENV ENV=production
 ENV NODE_ENV=production
 ENV NUXT_HOST=0.0.0.0
 ENV NUXT_PORT=3000
-ENV API_URL=null
-ENV API_URL_BROWSER=null
-ENV SENTRY_DNS=null
+ENV API_URL=https://localusdt.com/api
+ENV API_URL_BROWSER=https://localusdt.com/api
+ENV SENTRY_DNS=https://0af76331465c474db03105bfa9b3dd92@sentry.elastoo.com/11
 
 COPY ./frontend/ /app/
 WORKDIR /app/

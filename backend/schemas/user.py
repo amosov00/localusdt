@@ -13,9 +13,10 @@ __all__ = [
     "UserCreationSafe",
     "UserCreationNotSafe",
     "UserLoginResponse",
-    "UserUpdateSafe",
-    "UserUpdateNotSafe",
     "UserChangePassword",
+    "UserVerify",
+    "UserRecover",
+    "UserRecoverLink"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -40,11 +41,15 @@ class BaseUser(BaseModel):
 class User(BaseModel):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
     email: str = Field(...)
-    first_name: Optional[str] = Field(default=None)
-    last_name: Optional[str] = Field(default=None)
-    is_staff: Optional[bool] = Field(default=False, description="Staff role")
-    is_superuser: Optional[bool] = Field(default=False, description="Superuser role")
+    username: str = Field(...)
+    balance: float = Field(default=0)
+    eth_address: Optional[str] = Field(default=None)
+    current_state: Optional[int] = Field(
+        default=None, description="1 - green, 2 - orange, 3 - red"
+    )
     is_active: Optional[bool] = Field(default=True, description="User is active")
+    verification_code: Optional[str] = Field(default=None)
+    recover_code: Optional[str] = Field(default=None, description="JWT token for password recover")
     created_at: Optional[datetime] = Field(default=None)
 
     @property
@@ -53,7 +58,12 @@ class User(BaseModel):
 
     @property
     def display_name(self):
-        return self.email
+        return self.username
+
+
+class UserVerify(BaseModel):
+    email: str = Field(...)
+    verification_code: str = Field(...)
 
 
 class UserLogin(BaseModel):
@@ -76,8 +86,7 @@ class UserChangePassword(BaseModel):
 
 class UserCreationSafe(BaseModel):
     email: str = Field(...)
-    first_name: Optional[str] = Field(default=None)
-    last_name: Optional[str] = Field(default=None)
+    username: str = Field(...)
     repeat_password: str = Field(...)
     password: str = Field(...)
 
@@ -85,23 +94,10 @@ class UserCreationSafe(BaseModel):
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)
 
 
-class UserUpdateSafe(BaseModel):
-    email: Optional[str] = Field(default=None)
-    first_name: Optional[str] = Field(default=None)
-    last_name: Optional[str] = Field(default=None)
-
-    _validate_email = validator("email", allow_reuse=True)(validate_email)
-
-
 class UserCreationNotSafe(BaseModel):
     email: Optional[str] = Field(default=None)
-    first_name: Optional[str] = Field(default=None)
-    last_name: Optional[str] = Field(default=None)
-    telegram: Optional[str] = Field(default=None)
+    username: Optional[str] = Field(default=None)
     ethereum_wallet: Optional[str] = Field(default=None)
-    is_active: Optional[bool] = Field(default=True, description="User is active")
-    is_manager: Optional[bool] = Field(default=False, description="Manager role")
-    is_superuser: Optional[bool] = Field(default=False, description="Superuser role")
     repeat_password: Optional[str] = Field(default=None)
     password: Optional[str] = Field(default=None)
 
@@ -109,5 +105,13 @@ class UserCreationNotSafe(BaseModel):
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)
 
 
-class UserUpdateNotSafe(UserCreationNotSafe):
-    email: Optional[str] = Field(default="")
+class UserRecover(BaseModel):
+    email: str = Field(...)
+
+
+class UserRecoverLink(BaseModel):
+    recover_code: str = Field(...)
+    password: str = Field(...)
+    repeat_password: str = Field(...)
+
+    _validate_passwords = validator("password", allow_reuse=True)(validate_password)

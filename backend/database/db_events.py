@@ -8,6 +8,7 @@ from config import DEBUG, ENV
 
 test_user = {
     "email": "admin@nts.fund",
+    "username": "Admin",
     "first_name": "admin",
     "last_name": "admin",
     "password": "a439a4dAA",
@@ -17,6 +18,7 @@ test_user = {
 if DEBUG:
     test_user = {
         "email": "test@test.test",
+        "username": "Test",
         "first_name": "test",
         "last_name": "test",
         "password": "TestTest",

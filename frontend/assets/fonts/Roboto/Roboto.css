@@ -1,0 +1,47 @@
+/** Roboto Thin **/
+@font-face {
+  font-family: "Roboto";
+  font-weight: 100;
+  font-style: normal;
+  src: url("Roboto-Thin.ttf") format("ttf")
+}
+
+/** Roboto Light **/
+@font-face {
+  font-family: "Roboto";
+  font-weight: 300;
+  font-style: normal;
+  src: url("Roboto-Light.ttf") format("ttf")
+}
+
+/** Roboto Regular **/
+@font-face {
+  font-family: "Roboto";
+  font-weight: 400;
+  font-style: normal;
+  src: url("Roboto-Regular.ttf") format("ttf")
+}
+
+/** Roboto Medium **/
+@font-face {
+  font-family: "Roboto";
+  font-weight: 500;
+  font-style: normal;
+  src: url("Roboto-Medium.ttf") format("ttf")
+}
+
+/** Roboto Bold **/
+@font-face {
+  font-family: "Roboto";
+  font-weight: 700;
+  font-style: normal;
+  src: url("Roboto-Bold.ttf") format("ttf")
+}
+
+/** Roboto Black **/
+@font-face {
+  font-family: "Roboto";
+  font-weight: 900;
+  font-style: normal;
+  src: url("Roboto-Black.ttf") format("ttf")
+}

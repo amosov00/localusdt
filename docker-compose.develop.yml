@@ -9,9 +9,9 @@ services:
     depends_on:
       - backend
     expose:
-      - "3000"
+      - "3014"
     ports:
-      - "3000:3000"
+      - "3014:3014"
     env_file:
       - .env
       - .env.frontend
@@ -19,25 +19,70 @@ services:
   backend:
     container_name: localusdt-backend
     restart: always
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --loop 'uvloop' --lifespan on --proxy-headers
+    command: uvicorn main:app --host 0.0.0.0 --port 8014 --loop 'uvloop' --lifespan on --proxy-headers
     image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/backend:develop-latest
     depends_on:
       - db
     expose:
-      - 8000
+      - 8014
     ports:
-      - 8000:8000
+      - 8014:8014
+    env_file:
+      - .env
+      - .env.backend
+  celeryworker:
+    container_name: localusdt-celeryworker-develop
+    command: sh -c "sleep 30 && celery worker -A celery_app -P celery_pool_asyncio:TaskPool --loglevel=INFO"
+    build:
+      context: ./
+      dockerfile: deployment/dockerfiles/Dockerfile.backend.local
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - db
+      - rabbitmq
     env_file:
       - .env
       - .env.backend
 
+  celerybeat:
+    container_name: localusdtt-celerybeat-develop
+    command: sh -c "sleep 40 && celery beat -A celery_app --scheduler celery_pool_asyncio:PersistentScheduler --loglevel=INFO"
+    build:
+      context: ./
+      dockerfile: deployment/dockerfiles/Dockerfile.backend.local
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - db
+      - rabbitmq
+      - celeryworker
+    env_file:
+      - .env
+      - .env.backend
+
+  rabbitmq:
+    container_name: localusdt-rabbitmq-develop
+    image: rabbitmq:3.8.4-alpine
+    ports:
+      - 5672:5672
+    env_file:
+      - .env.rabbitmq
+
   db:
-    container_name: localusdt-mongodb
-    restart: always
+    container_name: localusdt-mongodb-develop
     image: mongo:4.2-bionic
     command: mongod --port 27022 --auth
+    restart: always
+    volumes:
+      - localusdt-mongodb-develop:/data/db
     ports:
       - 27022:27022
     env_file:
       - .env
       - .env.db
+
+volumes:
+  localusdt-mongodb-develop:
+
+

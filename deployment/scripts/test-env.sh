@@ -31,6 +31,7 @@ test -n "$SSH_KNOWN_HOSTS" || ERROR="SSH_KNOWN_HOSTS"
 test -n "$PROJECT_DIR" || ERROR="PROJECT_DIR"
 test -n "$DOCKER_COMPOSE_FILENAME" || ERROR="DOCKER_COMPOSE_FILENAME"
 test -n "$CI_ENVIRONMENT_SLUG" || ERROR="CI_ENVIRONMENT_SLUG"
+test -n "$ENV_RABBITMQ" || ERROR="ENV_RABBITMQ"
 
 if [ "$ERROR" != "false" ]; then
   echo "Fatal: missing variable $ERROR"

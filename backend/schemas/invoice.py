@@ -6,7 +6,16 @@ from pydantic import Field, validator
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
 
-__all__ = ["Invoice", "InvoiceType", "PaymentMethod", "Currency", "InvoiceCreate", "InvoiceInDB"]
+__all__ = [
+    "Invoice",
+    "InvoiceType",
+    "PaymentMethod",
+    "Currency",
+    "InvoiceCreate",
+    "InvoiceInDB",
+    "InvoiceFilters",
+    "InvoiceInSearch"
+]
 
 
 def validate_profit(v: Optional[int]) -> int:
@@ -27,7 +36,7 @@ class PaymentMethod(IntEnum):
 class Currency(IntEnum):
     RUB = 1
     USD = 2
-    BYN = 3
+    EUR = 3
 
 
 class Invoice(BaseModel):
@@ -57,13 +66,19 @@ class InvoiceInDB(Invoice):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
 
 
+class InvoiceInSearch(InvoiceInDB):
+    username: str = Field(default=None, description="Username of user who opened this invoice")
+
+
 class InvoiceCreate(BaseModel):
     type: InvoiceType = Field(..., description="Type of invoice, 1 = BUY, 2 = SELL")
 
     bot_limit: float = Field(...)
     top_limit: float = Field(...)
 
-    payment_method: PaymentMethod = Field(default=PaymentMethod.BANK, description="Payment method, 1 = BANK")
+    payment_method: PaymentMethod = Field(
+        default=PaymentMethod.BANK, description="Payment method, 1 = BANK"
+    )
     bank_title: str = Field(...)
     currency: str = Field(default=Currency.RUB)
 
@@ -71,3 +86,11 @@ class InvoiceCreate(BaseModel):
 
     _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
 
+
+class InvoiceFilters(BaseModel):
+    type: Optional[InvoiceType] = Field(default=None)
+    price_bot: Optional[float] = Field(default=None)
+    price_top: Optional[float] = Field(default=None)
+    currency: Optional[Currency] = Field(default=Currency.RUB)
+    payment_method: Optional[PaymentMethod] = Field(default=PaymentMethod.BANK)
+    limit: int = Field(...)

@@ -70,7 +70,7 @@ services:
       - .env.rabbitmq
 
   db:
-    container_name: localusdt-mongodb-local
+    container_name: localusdt-mongodb-develop
     image: mongo:4.2-bionic
     command: mongod --port 27022 --auth
     restart: always
@@ -83,6 +83,6 @@ services:
       - .env.db
 
 volumes:
-  localusdt-mongodb-local:
+  localusdt-mongodb-develop:
 
 

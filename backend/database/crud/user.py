@@ -52,6 +52,8 @@ class UserCRUD(BaseMongoCRUD):
 
         if user and pwd_context.verify(password, user["password"]):
             token = encode_jwt_token({"id": str(user["_id"])})
+            if not user.get("is_active"):
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Activate your account")
             return {"token": token, "user": User(**user).dict()}
         else:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Invalid user data")

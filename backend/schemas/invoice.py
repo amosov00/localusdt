@@ -54,6 +54,7 @@ class Invoice(BaseModel):
     payment_method: PaymentMethod = Field(default=PaymentMethod.BANK)
     bank_title: str = Field(default=None)
     currency: Currency = Field(default=None)
+    condition: str = Field(default=None, description="Condition of the invoice")
 
     # Datetimes
     created_at: datetime = Field(default_factory=datetime.utcnow, description="UTC")
@@ -81,6 +82,7 @@ class InvoiceCreate(BaseModel):
     )
     bank_title: str = Field(...)
     currency: str = Field(default=Currency.RUB)
+    condition: str = Field(default="", description="Condition of the invoice")
 
     profit: int = Field(default=0)
 

@@ -20,8 +20,9 @@ export default {
 					path: '/',
 					maxAge: 60 * 60 * 24 * 7,
 				});
+				this.$toast.showMessage({ content: 'Вы успешно зарегистрированны!' })
 				await this.$authFetchUser()
-				this.$nuxt.context.redirect('/')
+				this.$router.push('/')
 			}
 		},
 		async asyncData({ query, store }) {

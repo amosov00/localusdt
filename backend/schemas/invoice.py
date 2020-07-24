@@ -43,6 +43,7 @@ class Invoice(BaseModel):
     # Common
     user_id: ObjectIdPydantic = Field(...)
     type: InvoiceType = Field(...)  # 1 - BUY, 2 - SELL
+    amount_usdt: float = Field(defaul=None)
 
     # Prices
     price: float = Field(default=None, description="Price for 1 usdt token")
@@ -76,6 +77,8 @@ class InvoiceCreate(BaseModel):
 
     bot_limit: float = Field(...)
     top_limit: float = Field(...)
+
+    amount_usdt: float = Field(...)
 
     payment_method: PaymentMethod = Field(
         default=PaymentMethod.BANK, description="Payment method, 1 = BANK"

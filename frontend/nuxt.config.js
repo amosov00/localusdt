@@ -27,7 +27,11 @@ export default {
 
   css: ["~/assets/scss/global.scss"],
 
-  plugins: ["~/plugins/auth.js", "~/plugins/axios.js"],
+  plugins: [
+    "~/plugins/auth.js",
+    "~/plugins/axios.js",
+    "~/plugins/toast.js"
+  ],
   modules: [
     "@nuxtjs/axios",
     "@nuxtjs/dotenv",

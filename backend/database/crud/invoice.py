@@ -6,7 +6,7 @@ from http import HTTPStatus
 
 
 from database.crud.base import BaseMongoCRUD
-from database.crud import UserCRUD
+from database.crud import UserCRUD, CurrencyCRUD
 from core.utils import to_objectid
 from schemas.invoice import (
     Invoice,
@@ -54,7 +54,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             user_id=user.id,
             created_at=datetime.now()
         )
-        current_rate = await BinanceRate().get_tether_rate()
+        current_rate = (await CurrencyCRUD.find_last())["current_rate"]
         if not current_rate:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate")
         invoice.price = current_rate * (float(invoice.profit) / 100. + 1.)

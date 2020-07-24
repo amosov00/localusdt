@@ -1,9 +1,9 @@
 <template lang="pug">
-	form.signup
+	section.signup
 		header.signup__header
 			h1.signup__title Регистрация
 			nuxt-link.signup__subtitle(to="/login") Вход
-		main.signup__inputs
+		form.signup__form
 			Input(v-model="registerForm.userName" placeholder="Имя пользователя" icon="user" type="text")
 			Input(v-model="registerForm.email" placeholder="Эл. почта" icon="email" type="email")
 			Input(v-model="registerForm.password" placeholder="Пароль" icon="password" type="password")
@@ -33,12 +33,7 @@ export default {
 	},
 	methods: {
 		async signUp() {
-      console.log(this.registerForm)
-			let resp = await this.$store.dispatch("signUp", this.registerForm);
-      if (resp) {
-        this.$router.push('/');
-      }
-
+			await this.$store.dispatch("signUp", this.registerForm);
 		}
 	}
 };
@@ -65,7 +60,7 @@ export default {
 		opacity: 0.5;
 	}
 
-	&__inputs {
+	&__form {
 		& > * {
 			margin-bottom: 20px;
 		}

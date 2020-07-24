@@ -28,3 +28,9 @@
     background-color: $white;
   }
 }
+.grey-dark {
+  color: $grey-dark;
+  &--bg {
+    background-color: $grey-dark;
+  }
+}

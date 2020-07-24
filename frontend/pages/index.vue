@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    NonAuthorizedHero
+    NonAuthorizedHero(v-if="!$userIsLoggedIn()")
     section.table-section
       h1.table-section__title Купить USDT
       Table
@@ -32,7 +32,12 @@ export default {
     selectedOption(option) {
       this.selected = option.name;
     }
-  }
+  },
+  computed: {
+    isUserLogged() {
+      return this.$userIsLoggedIn()
+    }
+  },
 };
 </script>
 

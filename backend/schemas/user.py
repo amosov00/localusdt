@@ -16,7 +16,8 @@ __all__ = [
     "UserChangePassword",
     "UserVerify",
     "UserRecover",
-    "UserRecoverLink"
+    "UserRecoverLink",
+    "UserUpdate"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -42,7 +43,8 @@ class User(BaseModel):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
     email: str = Field(...)
     username: str = Field(...)
-    balance: float = Field(default=0)
+    balance_usdt: float = Field(default=0)
+    usdt_in_invoices: float = Field(default=0)
     eth_address: Optional[str] = Field(default=None)
     current_state: Optional[int] = Field(
         default=None, description="1 - green, 2 - orange, 3 - red"
@@ -51,6 +53,7 @@ class User(BaseModel):
     verification_code: Optional[str] = Field(default=None)
     recover_code: Optional[str] = Field(default=None, description="JWT token for password recover")
     created_at: Optional[datetime] = Field(default=None)
+    about_me: str = Field(default="", description="About me field")
 
     @property
     def is_authenticated(self):
@@ -115,3 +118,7 @@ class UserRecoverLink(BaseModel):
     repeat_password: str = Field(...)
 
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)
+
+
+class UserUpdate(BaseModel):
+    about_me: str = Field(..., description="'About me' field")

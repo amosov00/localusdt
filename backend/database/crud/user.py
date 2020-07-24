@@ -20,6 +20,7 @@ from schemas.user import (
     UserVerify,
     UserRecover,
     UserRecoverLink,
+    UserUpdate
 )
 
 __all__ = ["UserCRUD"]
@@ -171,3 +172,17 @@ class UserCRUD(BaseMongoCRUD):
         )
 
         return True
+
+    @classmethod
+    async def update(cls, user: User, payload: UserUpdate):
+        await cls.update_one(
+            query={
+                "_id": user.id
+            },
+            payload={
+                **payload.dict()
+            }
+        )
+        updated_user = await cls.find_by_id(user.id)
+        print(updated_user)
+        return updated_user

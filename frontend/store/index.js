@@ -17,10 +17,7 @@ export const actions = {
 	async signUp({ commit }, data) {
 		if (!data) return false;
 		return await this.$axios
-			.post("/account/signup/", {
-				email: data.email,
-				password: data.password,
-			})
+			.post("/account/signup/", data)
 			.then(resp => {
 				this.$axios.setToken(resp.data.token, "Bearer");
 				this.$cookies.set("token", resp.data.token, {
@@ -28,8 +25,8 @@ export const actions = {
 					maxAge: 60 * 60 * 24 * 7
 						});
 				commit("setUser", resp.data.user);
-				this.$toast.showMessage({ content: 'Вы успешно зарегистрировались!' })
-				return this.$router.push({ path: '/' })
+				this.$toast.showMessage({ content: 'Проверьте свою почту!' })
+				return this.$router.push('/')
 			})
 			.catch(_ => {
 			});

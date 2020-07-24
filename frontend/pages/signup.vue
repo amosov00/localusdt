@@ -4,10 +4,10 @@
 			h1.signup__title Регистрация
 			nuxt-link.signup__subtitle(to="/login") Вход
 		form.signup__form
-			Input(v-model="registerForm.userName" placeholder="Имя пользователя" icon="user" type="text")
+			Input(v-model="registerForm.username" placeholder="Имя пользователя" icon="user" type="text")
 			Input(v-model="registerForm.email" placeholder="Эл. почта" icon="email" type="email")
 			Input(v-model="registerForm.password" placeholder="Пароль" icon="password" type="password")
-			Input(v-model="registerForm.passwordRepeat" placeholder="Подтверждение пароля" icon="password" type="password")
+			Input(v-model="registerForm.repeat_password" placeholder="Подтверждение пароля" icon="password" type="password")
 		div.signup__action
 			Button(green @click.native="signUp") Зарегистрироваться
 		p.signup__terms Нажимая “зарегистрироваться”, я принимаю 
@@ -24,16 +24,16 @@ export default {
 	data() {
 		return {
 			registerForm: {
-        userName: '',
-        email: '',
-        password: '',
-        passwordRepeat: ''
+				username: '',
+				email: '',
+				password: '',
+				repeat_password: ''
 			}
 		}
 	},
 	methods: {
-		async signUp() {
-			await this.$store.dispatch("signUp", this.registerForm);
+		signUp() {
+			this.$store.dispatch("signUp", this.registerForm);
 		}
 	}
 };

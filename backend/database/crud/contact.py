@@ -34,12 +34,12 @@ class ContactCRUD(BaseMongoCRUD):
     async def find_by_user_id(cls, _id: str) -> Optional[list]:
         seller: list = await super().find_many(
             query={"seller_id": to_objectid(_id)}
-        ) if _id else None
+        ) if _id else []
         buyer: list = await super().find_many(
             query={"buyer_id": to_objectid(_id)}
-        ) if _id else None
-        if seller:
-            return seller + buyer
+        ) if _id else []
+        result = seller if seller else []
+        return result if not buyer else seller + buyer
 
     @classmethod
     async def find_by_status(cls, status: ContactStatus) -> Optional[list]:

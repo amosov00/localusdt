@@ -5,3 +5,40 @@ hr {
 .inline-link {
   text-decoration: underline;
 }
+
+.auth-form {
+  width: 390px;
+  margin: auto;
+  padding-top: 100px;
+
+  &__header {
+    margin-bottom: 60px;
+  }
+
+  &__title {
+    margin-bottom: 8px;
+  }
+
+  &__subtitle {
+    @include montserrat;
+    @include reset-link;
+    text-decoration-line: underline;
+    opacity: 0.5;
+  }
+
+  &__form {
+    & > * {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__action {
+    margin-top: 50px;
+    margin-bottom: 20px;
+  }
+
+  &__forgot-password {
+    text-decoration: underline;
+    color: $orange;
+  }
+}

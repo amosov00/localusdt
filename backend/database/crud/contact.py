@@ -8,6 +8,7 @@ from sentry_sdk import capture_message
 
 from database.crud.base import BaseMongoCRUD
 from database.crud.invoice import InvoiceCRUD
+from database.crud.user import UserCRUD
 from core.utils import to_objectid
 
 from schemas.user import User
@@ -64,13 +65,16 @@ class ContactCRUD(BaseMongoCRUD):
         else:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Invoice got corrupted")
 
+        # Give roles to users
+
         contact = Contact(
             **payload.dict(),
             buyer_id=buyer_id,
             seller_id=seller_id,
             status=ContactStatus.WAITING_FOR_PAYMENT,
             created_at=datetime.utcnow(),
-            status_changed_at=datetime.utcnow()
+            status_changed_at=datetime.utcnow(),
+            amount_rub=invoice["price"] * payload.amount_usdt,
         )
 
         if payload.amount_usdt > invoice["amount_usdt"]:
@@ -82,6 +86,7 @@ class ContactCRUD(BaseMongoCRUD):
                 payload={"amount_usdt": invoice["amount_usdt"]},
             )
         # Check money is enough and transfer
+
         inserted_id = (await cls.insert_one(payload={**contact.dict()})).inserted_id
 
         invoice_in_db = await cls.find_one(query={"_id": inserted_id})
@@ -94,18 +99,22 @@ class ContactCRUD(BaseMongoCRUD):
             invoice["amount_usdt"] += contact.get("amount_usdt")
             await InvoiceCRUD.update_one(
                 query={"_id": invoice["_id"]},
-                payload={"amount_usdt": invoice["amount_usdt"]}
+                payload={"amount_usdt": invoice["amount_usdt"]},
             )
             await cls.update_one(
                 query={"_id": contact["_id"]},
                 payload={
                     "status": ContactStatus.CANCELLED,
-                    "finished_at": datetime.utcnow()
+                    "finished_at": datetime.utcnow(),
                 },
             )
         else:
-            capture_message(f"Error while cancelling contact, contact_id: {contact['_id']}")
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Error while cancelling contact")
+            capture_message(
+                f"Error while cancelling contact, contact_id: {contact['_id']}"
+            )
+            raise HTTPException(
+                HTTPStatus.BAD_REQUEST, "Error while cancelling contact"
+            )
 
     @classmethod
     async def cancel_contact(cls, user: User, contact_id: str):
@@ -115,8 +124,8 @@ class ContactCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong contact id")
 
         if (
-                contact.get("buyer_id") != user.id
-                or contact.get("status") != ContactStatus.WAITING_FOR_PAYMENT
+            contact.get("buyer_id") != user.id
+            or contact.get("status") != ContactStatus.WAITING_FOR_PAYMENT
         ):
             raise HTTPException(
                 HTTPStatus.BAD_REQUEST, "Wrong user role or contact status"
@@ -125,3 +134,68 @@ class ContactCRUD(BaseMongoCRUD):
         await cls._cancel_contact_db(contact)
 
         return await cls.find_by_id(contact_id)
+
+    @classmethod
+    async def approve_contact(cls, user: User, contact_id: str):
+        contact = await cls.find_by_id(contact_id)
+
+        if not contact:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong contact id")
+
+        if (
+            contact.get("buyer_id") != user.id
+            or contact.get("status") != ContactStatus.WAITING_FOR_PAYMENT
+        ):
+            raise HTTPException(
+                HTTPStatus.BAD_REQUEST, "Wrong user role or contact status"
+            )
+
+        await cls.update_one(
+            query={"_id": contact["_id"]},
+            payload={
+                "status": ContactStatus.WAITING_FOR_TOKENS,
+                "status_changed_at": datetime.utcnow(),
+            },
+        )
+
+        return True
+
+    @classmethod
+    async def transfer_tokens(cls, user: User, contact_id: str):
+        contact = await cls.find_by_id(contact_id)
+
+        if not contact:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong contact id")
+
+        if (
+            contact.get("seller_id") != user.id
+            or contact.get("status") != ContactStatus.WAITING_FOR_TOKENS
+        ):
+            raise HTTPException(
+                HTTPStatus.BAD_REQUEST, "Wrong user role or contact status"
+            )
+
+        buyer = await UserCRUD.find_by_id(contact["buyer_id"])
+        if not buyer:
+            capture_message(f"Contact got corrupted, contact id: {contact_id}")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Contact got corrupted")
+
+        await cls.update_one(
+            query={"_id": contact["_id"]},
+            payload={
+                "status": ContactStatus.COMPLETED,
+                "finished_at": datetime.utcnow(),
+                "status_changed_at": datetime.utcnow(),
+            },
+        )
+
+        await UserCRUD.update_one(
+            query={"_id": contact["buyer_id"]},
+            payload={
+                "balance_usdt": buyer.get("balance_usdt") + contact["amount_usdt"]
+                if buyer.get("balance_usdt")
+                else contact["amount_usdt"]
+            },
+        )
+
+        return True

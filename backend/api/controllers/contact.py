@@ -25,6 +25,17 @@ async def contact_cancel(user: User = Depends(get_user), contact_id: str = Path(
     return await ContactCRUD.cancel_contact(user, contact_id)
 
 
+@router.put("/{contact_id}/confirm/")
+async def contact_approve(user: User = Depends(get_user), contact_id: str = Path(...)):
+    return await ContactCRUD.approve_contact(user, contact_id)
+
+
+@router.put("/{contact_id}/transfer/")
+async def contact_approve(user: User = Depends(get_user), contact_id: str = Path(...)):
+    return await ContactCRUD.transfer_tokens(user, contact_id)
+
+
 @router.get("/", response_model=List[ContactInDB])
 async def contact_search(user: User = Depends(get_user)):
     return await ContactCRUD.find_by_user_id(user.id)
+

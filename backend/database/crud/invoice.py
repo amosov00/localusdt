@@ -49,6 +49,13 @@ class InvoiceCRUD(BaseMongoCRUD):
 
     @classmethod
     async def create(cls, user: User, payload: InvoiceCreate):
+        if payload.amount_usdt > user.balance_usdt:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough usdt on your account.")
+        else:
+            user.balance_usdt -= payload.amount_usdt
+            await UserCRUD.update_one(query={"_id": user.id}, payload={"balance_usdt": user.balance_usdt})
+        # Money check and transfer to invoice
+
         invoice = Invoice(
             **payload.dict(),
             user_id=user.id,
@@ -56,7 +63,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         )
         current_rate = (await CurrencyCRUD.find_last())["current_rate"]
         if not current_rate:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate.")
         invoice.price = current_rate * (float(invoice.profit) / 100. + 1.)
         inserted_id = (
             await cls.insert_one(payload={

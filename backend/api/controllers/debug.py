@@ -2,6 +2,10 @@ from typing import List, Optional, Literal
 from os import environ
 from fastapi import APIRouter, HTTPException, Query, Depends, Body, Request
 from celery_app.tasks.crypto import update_usdt_rate
+from database.crud import ContactCRUD, InvoiceCRUD
+from schemas.contact import ContactStatus
+from datetime import datetime
+from http import HTTPStatus
 
 
 __all__ = ["router"]
@@ -13,11 +17,7 @@ router = APIRouter()
 async def debug_get(
     request: Request,
 ):
-    await update_usdt_rate()
-    return {
-        "headers": request.headers,
-        "envvars": dict(environ),
-    }
+    pass
 
 
 @router.post("/")

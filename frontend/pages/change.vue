@@ -1,36 +1,51 @@
 <template>
-	<section class="change">
-    <header class="change__header">
-      <h1 class="change__title">Изменить пароль</h1>
+  <section class="auth-form">
+    <header class="auth-form__header">
+      <h1 class="auth-form__title">Изменить пароль</h1>
     </header>
-		<form class="change__form">
-			<Input v-model="changeForm.old_password" placeholder="Старый пароль" type="password" icon="password" />
-			<Input v-model="changeForm.password" placeholder="Новый пароль" type="password" icon="password" />
-			<Input v-model="changeForm.repeat_password" placeholder="Подтверждение пароля" type="password" icon="password" />
-		</form>
-    <div class="change__action">
-      <Button @click.native="change" green >Сменить пароль</Button>
+    <form class="auth-form__form">
+      <Input
+        v-model="changeForm.old_password"
+        placeholder="Старый пароль"
+        type="password"
+        icon="password"
+      />
+      <Input
+        v-model="changeForm.password"
+        placeholder="Новый пароль"
+        type="password"
+        icon="password"
+      />
+      <Input
+        v-model="changeForm.repeat_password"
+        placeholder="Подтверждение пароля"
+        type="password"
+        icon="password"
+      />
+    </form>
+    <div class="auth-form__action">
+      <Button @click.native="change" green>Сменить пароль</Button>
     </div>
-	</section>
+  </section>
 </template>
 
 <script>
 import Input from '~/components/app/Input'
 import Button from '~/components/app/Button'
 export default {
-	name: 'change',
-	components: {
+  name: 'change',
+  components: {
     Input,
     Button
-	},
-	data() {
-		return {
+  },
+  data() {
+    return {
       changeForm: {
         old_password: '',
         password: '',
-        repeat_password: '',
+        repeat_password: ''
       }
-		}
+    }
   },
   methods: {
     change() {
@@ -40,25 +55,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.change {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding-top: 100px;
-
-  &__title {
-    margin-bottom: 20px;
-  }
-
-	&__form {
-		width: 390px;
-	  margin: auto;
-    
-    & > * {
-			margin-bottom: 20px;
-		}
-	}
-}
-</style>
+<style lang="scss"></style>

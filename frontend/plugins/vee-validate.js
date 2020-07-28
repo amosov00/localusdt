@@ -38,7 +38,11 @@ extend('confirmed', {
   ...confirmed,
   message: 'Пароли не совпадают'
 })
-extend('min_value', {
-  ...min_value,
-  message: 'Value must be greater than or equal to 500 characters'
+extend('upCase', {
+  message: "Пароль должен содержать минимум один заглавный символ",
+  validate: value => value.match(/[A-Z]/g) !== null
+})
+extend('number', {
+  message: "Пароль должен содержать минимум одину цифру",
+  validate: value => value.match(/[0-9]/g) !== null
 })

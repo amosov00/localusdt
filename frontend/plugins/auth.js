@@ -2,19 +2,20 @@ export default ({ app, redirect }, inject) => {
 	inject('authLogin', async (email, password) => {
 		return await app.$axios.post('/account/login/',
 			{
-				email: email,
-				password: password,
+				email,
+				password,
 			}
 		).then(resp => {
+			console.log(resp)
 			app.store.commit('setUser', resp.data.user);
 			app.$axios.setToken(resp.data.token, 'Bearer');
 			app.$cookies.set('token', resp.data.token, {
 				path: '/',
 				maxAge: 60 * 60 * 24 * 7,
 			});
-			redirect('/profile/');
+			redirect('/');
 			return true;
-		}).catch(resp => {
+		}).catch(_ => {
 		  return false;
     })
 	});

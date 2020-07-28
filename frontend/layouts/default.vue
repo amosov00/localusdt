@@ -1,6 +1,7 @@
 <template>
   <div>
     <Navbar />
+    <Toast />
     <div class="container">
       <nuxt />
     </div>
@@ -11,10 +12,12 @@
 <script>
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
+import Toast from '~/components/app/Toast'
 export default {
-  components: { Navbar, Footer },
+  name: 'default-layout',
+  components: { Navbar, Footer, Toast },
   middleware: ["fetchUser"]
 };
 </script>
 
-<style scoped></style>
+<style></style>

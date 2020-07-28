@@ -1,67 +1,80 @@
-<template lang="pug">
-  form.signup
-    header.signup__header
-      h1.signup__title Регистрация
-      nuxt-link.signup__subtitle(to="/login") Вход
-    main.signup__inputs
-      Input(placeholder="Имя пользователя" icon="user" type="text")
-      Input(placeholder="Эл. почта" icon="email" type="email")
-      Input(placeholder="Пароль" icon="password" type="password")
-    div.signup__action
-      Button(green) Зарегистрироваться
-    p.signup__terms Нажимая “зарегистрироваться”, я принимаю 
-      nuxt-link.signup__link(to="/") политику в отношении персональных данных 
-      span и 
-      nuxt-link.signup__link(to="/")  пользовательское соглашение 
+<template>
+	<section class="auth-form">
+		<header class="auth-form__header">
+			<h1 class="auth-form__title">Регистрация</h1>
+			<nuxt-link class="auth-form__subtitle" to="/login"
+				>Вход</nuxt-link
+			>
+		</header>
+		<ValidationObserver v-slot="{ invalid }">
+			<form class="auth-form__form">
+				<Input
+					v-model="registerForm.username" placeholder="Имя пользователя" icon="user" type="text"
+				/>
+					<ValidationProvider
+				tag="div"
+				rules="required|email"
+				v-slot="{ errors }"
+				>
+					<Input
+						v-model="registerForm.email"
+						placeholder="Эл. почта"
+						icon="email"
+						type="email"
+					/>
+					<span class="error">{{ errors[0] }}</span>
+				</ValidationProvider>
+				<ValidationProvider tag="div" rules="required|min:8|confirmed:confirmation"  v-slot="{ errors }">
+					<Input
+						v-model="registerForm.password"
+						placeholder="Пароль"
+						icon="password"
+						type="password"
+					/>
+					<span class="error">{{ errors[0] }}</span>
+				</ValidationProvider>
+				<ValidationProvider tag="div"  rules="required|min:8" vid="confirmation" v-slot="{ errors }">
+					<Input
+						v-model="registerForm.repeat_password"
+						placeholder="Пароль"
+						icon="password"
+						type="password"
+					/>
+					<span class="error">{{ errors[0] }}</span>
+				</ValidationProvider>
+			</form>
+			<div class="auth-form__action">
+				<Button@click.native="signUp" :disabled="invalid" green>Зарегистрироваться</Button>
+			</div>
+		</ValidationObserver>
+		<nuxt-link to="/forgot" class="auth-form__forgot-password"
+			>Забыли пароль?</nuxt-link
+		>
+	</section>
 </template>
 
 <script>
-import Input from "~/components/UI/Input";
-import Button from "~/components/UI/Button";
+import Input from '~/components/app/Input'
+import Button from '~/components/app/Button'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
 export default {
-  components: { Input, Button }
-};
+	components: { Input, Button, ValidationObserver, ValidationProvider },
+	data() {
+		return {
+			registerForm: {
+				username: '',
+				email: '',
+				password: '',
+				repeat_password: ''
+			}
+		}
+	},
+	methods: {
+		signUp() {
+			this.$store.dispatch('signUp', this.registerForm)
+		}
+	}
+}
 </script>
 
-<style lang="scss">
-.signup {
-  width: 390px;
-  margin: auto;
-  padding-top: 100px;
-
-  &__header {
-    margin-bottom: 60px;
-  }
-
-  &__title {
-    margin-bottom: 8px;
-  }
-
-  &__subtitle {
-    @include montserrat;
-    @include reset-link;
-    text-decoration-line: underline;
-    opacity: 0.5;
-  }
-
-  &__inputs {
-    height: 175px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  &__action {
-    margin-top: 50px;
-    margin-bottom: 20px;
-  }
-
-  &__terms {
-  }
-
-  &__link {
-    @include reset-link;
-    color: $orange !important;
-  }
-}
-</style>
+<style lang="scss"></style>

@@ -43,6 +43,7 @@ class Invoice(BaseModel):
     # Common
     user_id: ObjectIdPydantic = Field(...)
     type: InvoiceType = Field(...)  # 1 - BUY, 2 - SELL
+    amount_usdt: float = Field(defaul=None)
 
     # Prices
     price: float = Field(default=None, description="Price for 1 usdt token")
@@ -54,6 +55,7 @@ class Invoice(BaseModel):
     payment_method: PaymentMethod = Field(default=PaymentMethod.BANK)
     bank_title: str = Field(default=None)
     currency: Currency = Field(default=None)
+    condition: str = Field(default=None, description="Condition of the invoice")
 
     # Datetimes
     created_at: datetime = Field(default_factory=datetime.utcnow, description="UTC")
@@ -76,11 +78,14 @@ class InvoiceCreate(BaseModel):
     bot_limit: float = Field(...)
     top_limit: float = Field(...)
 
+    amount_usdt: float = Field(...)
+
     payment_method: PaymentMethod = Field(
         default=PaymentMethod.BANK, description="Payment method, 1 = BANK"
     )
     bank_title: str = Field(...)
     currency: str = Field(default=Currency.RUB)
+    condition: str = Field(default="", description="Condition of the invoice")
 
     profit: int = Field(default=0)
 

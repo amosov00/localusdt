@@ -20,6 +20,7 @@ from schemas.user import (
     UserVerify,
     UserRecover,
     UserRecoverLink,
+    UserUpdate
 )
 
 __all__ = ["UserCRUD"]
@@ -102,9 +103,9 @@ class UserCRUD(BaseMongoCRUD):
                 HTTPStatus.BAD_REQUEST, "User with this email is already exists",
             )
 
-        if await cls.find_by_username(user.username.lower()):
+        if await cls.find_by_username(user.username):
             raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "User with this email is already exists",
+                HTTPStatus.BAD_REQUEST, "User with this username is already exists",
             )
 
         verification_code = pwd.genword()
@@ -171,3 +172,17 @@ class UserCRUD(BaseMongoCRUD):
         )
 
         return True
+
+    @classmethod
+    async def update(cls, user: User, payload: UserUpdate):
+        await cls.update_one(
+            query={
+                "_id": user.id
+            },
+            payload={
+                **payload.dict()
+            }
+        )
+        updated_user = await cls.find_by_id(user.id)
+        print(updated_user)
+        return updated_user

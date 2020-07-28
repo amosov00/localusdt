@@ -1,3 +1,4 @@
+import re
 from typing import Optional
 from datetime import datetime
 
@@ -32,6 +33,10 @@ def validate_password(v: Optional[str], values: dict) -> str:
         raise ValueError("password should be longer than 8 characters")
     if "repeat_password" in values and v != values["repeat_password"]:
         raise ValueError("passwords do not match")
+    if not bool(re.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", v)): # noqa
+        raise ValueError(
+            "password does not match password policy (at least one uppercase letter, one lowercase, one number)"
+        )
     return pwd_context.hash(v)
 
 

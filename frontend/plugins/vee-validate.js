@@ -42,6 +42,10 @@ extend('upCase', {
   message: "Пароль должен содержать минимум один заглавный символ",
   validate: value => value.match(/[A-Z]/g) !== null
 })
+extend('lowCase', {
+  message: "Пароль должен содержать минимум один строчный символ",
+  validate: value => value.match(/[a-z]/g) !== null
+})
 extend('number', {
   message: "Пароль должен содержать минимум одину цифру",
   validate: value => value.match(/[0-9]/g) !== null

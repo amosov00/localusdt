@@ -10,7 +10,7 @@ from fastapi.exceptions import HTTPException
 from .base import ObjectId
 from database.crud.base import BaseMongoCRUD
 from core.utils.jwt import decode_jwt_token, encode_jwt_token
-from core.utils.email import Email
+from core.utils.email import MailGunEmail
 from core.utils import to_objectid
 from schemas.user import (
     User,
@@ -122,7 +122,7 @@ class UserCRUD(BaseMongoCRUD):
         ).inserted_id
 
         asyncio.create_task(
-            Email().send_verification_code(user.email, verification_code)
+            MailGunEmail().send_verification_code(user.email, verification_code)
         )
 
         return True
@@ -150,7 +150,7 @@ class UserCRUD(BaseMongoCRUD):
         recover_code = encode_jwt_token({"_id": user["_id"]}, timedelta(hours=3))
 
         await cls.update_one({"_id": user["_id"]}, {"recover_code": recover_code})
-        asyncio.create_task(Email().send_recover_code(user["email"], recover_code))
+        asyncio.create_task(MailGunEmail().send_recover_code(user["email"], recover_code))
         return True
 
     @classmethod

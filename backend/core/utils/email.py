@@ -6,8 +6,25 @@ from urllib.parse import urlencode
 
 from fastapi import HTTPException
 from sentry_sdk import capture_exception
+from tenacity import retry, stop_after_attempt, wait_fixed
+import httpx
 
-from config import EMAIL_LOGIN, EMAIL_PASSWORD, EMAIL_PORT, EMAIL_SERVER, HOST_URL
+from config import (
+    EMAIL_LOGIN,
+    EMAIL_PASSWORD,
+    EMAIL_PORT,
+    EMAIL_SERVER,
+    HOST_URL,
+    MAILGUN_MESSAGE_LINK,
+    MAILGUN_DOMAIN_NAME,
+    MAILGUN_API_KEY
+)
+
+
+__all__ = [
+    "Email",
+    "MailGunEmail"
+]
 
 
 class Email:
@@ -78,3 +95,72 @@ class Email:
         self.mailserver.quit()
         return None
 
+
+class MailGunEmail:
+    def __init__(self):
+        self.api_key = MAILGUN_API_KEY
+        self.domain = MAILGUN_DOMAIN_NAME
+        self.send_message_link = MAILGUN_MESSAGE_LINK
+        self.email_from = EMAIL_LOGIN
+
+    @staticmethod
+    def _get_link(code: str, email: str, method: str) -> str:
+        if method == "verification":
+            params = {f"{method}_code": code, "email": email}
+            return f"{HOST_URL}activate?{urlencode(params)}"
+        if method == "recover":
+            params = {f"{method}_code": code}
+            return f"{HOST_URL}recover?{urlencode(params)}"
+
+    def _create_message(self, to: str, body: str, subject: str = "LocalUSDT verification message") -> dict:
+        msg = {
+            "from": f"LocalUSDT {self.email_from}",
+            "subject": subject,
+            "to": to,
+            "html": body,
+        }
+        return msg
+
+    async def _send_message(self, msg: dict) -> None:
+        async with httpx.AsyncClient() as client:
+            try:
+                resp = (
+                    await client.post(
+                        self.send_message_link,
+                        auth=("api", self.api_key),
+                        data=msg,
+                    )
+                )
+            except Exception as e:
+                capture_exception(e)
+                raise HTTPException(HTTPStatus.BAD_REQUEST, f"Error while sending email, {e}")
+
+        if not resp.text or not resp.json() or resp.json().get("message") != "Queued. Thank you.":
+            capture_exception(f"Error while sending email, response - {str(resp.json())}", level="error")
+
+        return None
+
+    async def send_verification_code(self, to: str, code: str) -> None:
+
+        msg = self._create_message(
+            to,
+            "Добрый день! <br>\n"
+            'Перейдите по <a href="{}">этой</a> ссылке для регистрации в LocalUSDT<br>\n'
+            "Надеемся вам понравится! До встречи!".format(MailGunEmail._get_link(code, to, method="verification")),
+        )
+
+        await self._send_message(msg)
+
+        return None
+
+    async def send_recover_code(self, to: str, code: str) -> None:
+        msg = self._create_message(
+            to,
+            "Добрый день! <br>\n"
+            'Перейдите по <a href="{}">этой</a> ссылке для восстановления пароля в LocalUSDT<br>\n'
+            "До встречи!".format(MailGunEmail._get_link(code, "", method="recover")),
+        )
+
+        await self._send_message(msg)
+
+        return None

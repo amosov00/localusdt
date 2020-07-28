@@ -65,8 +65,4 @@ export default {
 </script>
 
 <style lang="scss">
-.error {
-  font-size: 12px;
-  color: red;
-}
 </style>

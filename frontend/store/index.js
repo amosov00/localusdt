@@ -49,8 +49,7 @@ export const actions = {
         this.$router.push({ path: '/' })
       })
       .catch(() => {
-        this.$toast.showMessage({ content: 'Ошибка' })
-        this.$router.push({ path: '/' })
+        this.$toast.showMessage({ content: 'Ошибка в веденных данных ' })
       })
   },
   logOut({ commit }) {

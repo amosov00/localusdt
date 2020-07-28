@@ -25,7 +25,7 @@ export const actions = {
           maxAge: 60 * 60 * 24 * 7
         })
         commit('setUser', resp.data.user)
-        this.$toast.showMessage({ content: 'Проверьте свою почту!' })
+        this.$toast.showMessage({ content: 'Вы успешно зарегистрировались, проверьте почту для активации аккаунта', green: true })
         return this.$router.push('/')
       })
       .catch((error) => {
@@ -47,7 +47,7 @@ export const actions = {
           maxAge: 60 * 60 * 24 * 7
         })
         commit('setUser', resp.data.user)
-        this.$toast.showMessage({ content: 'Успешный вход в систему!' })
+        this.$toast.showMessage({ content: 'Успешный вход в систему!', green: true })
         this.$router.push({ path: '/' })
       })
       .catch(error => {
@@ -74,30 +74,29 @@ export const actions = {
     return await this.$axios
       .post('/account/change_password/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: 'Пароль изменен!' })
+        this.$toast.showMessage({ content: 'Пароль изменен!', green: true })
         this.$router.push('/profile')
-        return true
       })
-      .catch(err => {
-        return false
+      .catch(error => {
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   },
   async activateAccount({}, data) {
-    if (!data) return false
     return await this.$axios
       .post('/account/verify/', data)
       .then(resp => {
-        return resp.data
+        this.$toast.showMessage({ content: 'Учетная запись активирована!', green: true })
+        return resp.data;
       })
-      .catch(_ => {
-        return false
+      .catch(error => {
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   },
   async startRecover({}, data) {
     return await this.$axios
       .post('/account/recover/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: ' Проверьте свою почту!' })
+        this.$toast.showMessage({ content: ' Проверьте свою почту!', green: true })
         this.$router.push('/')
         return true
       })
@@ -109,7 +108,7 @@ export const actions = {
     return await this.$axios
       .put('/account/recover/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: ' Пароль успешно восстановлен!' })
+        this.$toast.showMessage({ content: ' Пароль успешно восстановлен!', green: true })
         this.$router.push('/login')
         return true
       })

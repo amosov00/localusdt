@@ -21,3 +21,4 @@ httpx==0.13.3
 celery==4.4.5
 celery-decorator-taskcls==0.1.4
 celery-pool-asyncio==0.2.0
+tenacity==6.2.0

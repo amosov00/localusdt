@@ -24,7 +24,7 @@
 					/>
 					<span class="error">{{ errors[0] }}</span>
 				</ValidationProvider>
-				<ValidationProvider tag="div" rules="required|min:8|confirmed:confirmation"  v-slot="{ errors }">
+				<ValidationProvider tag="div" rules="required|min:8|confirmed:confirmation|upCase|number"  v-slot="{ errors }">
 					<Input
 						v-model="registerForm.password"
 						placeholder="Пароль"
@@ -33,7 +33,7 @@
 					/>
 					<span class="error">{{ errors[0] }}</span>
 				</ValidationProvider>
-				<ValidationProvider tag="div"  rules="required|min:8" vid="confirmation" v-slot="{ errors }">
+				<ValidationProvider tag="div"  rules="required|min:8|upCase|number" vid="confirmation" v-slot="{ errors }">
 					<Input
 						v-model="registerForm.repeat_password"
 						placeholder="Пароль"

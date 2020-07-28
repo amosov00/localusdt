@@ -28,7 +28,9 @@ export const actions = {
         this.$toast.showMessage({ content: 'Проверьте свою почту!' })
         return this.$router.push('/')
       })
-      .catch(_ => {})
+      .catch((error) => {
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+      })
   },
   async logIn({ commit }, data) {
     return await this.$axios
@@ -48,8 +50,8 @@ export const actions = {
         this.$toast.showMessage({ content: 'Успешный вход в систему!' })
         this.$router.push({ path: '/' })
       })
-      .catch(() => {
-        this.$toast.showMessage({ content: 'Ошибка в веденных данных ' })
+      .catch(error => {
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   },
   logOut({ commit }) {

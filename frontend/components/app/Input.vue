@@ -2,7 +2,7 @@
 	div.input(:style="{width: `${width}px`}")
 		div.input__box
 			div.input__header(v-if="inputHeader") {{header}}
-			input.input__field(@input="updateValue($event.target.value)" :value="value" :placeholder="placeholder" :type="showPasswordField" min="0")
+			input.input__field(@input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" :type="showPasswordField" min="0")
 			InlineSvg.input__icon(v-if="inputIcon" :src="require(`~/assets/icons/${icon}.svg`)")
 			span.input__icon--end(v-if="inputEndIcon") {{endIcon}}
 			InlineSvg.input__icon--eye(:src="require(`~/assets/icons/${passwordIcon}.svg`)" v-if="type === 'password'" @click="toggleShowPassword")

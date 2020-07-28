@@ -7,7 +7,7 @@
       <form class="auth-form__form">
         <ValidationProvider
           tag="div"
-          rules="required|min:8|upCase|number"
+          rules="required|min:8|upCase|lowCase|number"
           v-slot="{ errors }"
         >
           <Input
@@ -20,7 +20,7 @@
         </ValidationProvider>
         <ValidationProvider
           tag="div"
-          rules="required|min:8|confirmed:confirmation|upCase|number"
+          rules="required|min:8|upCase|lowCase|number|confirmed:confirmation"
           v-slot="{ errors }"
         >
           <Input
@@ -33,7 +33,7 @@
         </ValidationProvider>
         <ValidationProvider
           tag="div"
-          rules="required|min:8|upCase|number"
+          rules="required|min:8|upCase|lowCase|number"
           vid="confirmation"
           v-slot="{ errors }"
         >

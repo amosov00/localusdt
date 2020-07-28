@@ -21,7 +21,7 @@
 					/>
 					<span class="error">{{ errors[0] }}</span>
 				</ValidationProvider>
-				<ValidationProvider rules="required|min:8|upCase|number" v-slot="{ errors }">
+				<ValidationProvider rules="required|min:8|upCase|lowCase|number" v-slot="{ errors }">
 					<Input
 						v-model="loginForm.password"
 						placeholder="Пароль"

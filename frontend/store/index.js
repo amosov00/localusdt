@@ -96,7 +96,7 @@ export const actions = {
     return await this.$axios
       .post('/account/recover/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: ' Проверьте свою почту!' })
+        this.$toast.showMessage({ content: ' Проверьте свою почту!', green: true })
         this.$router.push('/')
         return true
       })
@@ -108,7 +108,7 @@ export const actions = {
     return await this.$axios
       .put('/account/recover/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: ' Пароль успешно восстановлен!' })
+        this.$toast.showMessage({ content: ' Пароль успешно восстановлен!', green: true })
         this.$router.push('/login')
         return true
       })

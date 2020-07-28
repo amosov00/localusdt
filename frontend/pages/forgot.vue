@@ -1,19 +1,40 @@
-<template lang="pug">
-	section.auth-form
-		header.auth-form__header
-			h1.auth-form__title Восстановление пароля
-		form.auth-form__form
-			Input(v-model="forgotForm.email" placeholder="Эл. почта" icon="email" type="email")
-		div.auth-form__action
-			Button(@click.native="startRecover" green) Отправить
+<template>
+  <section class="auth-form">
+    <header class="auth-form__header">
+      <h1 class="auth-form__title">Восстановление пароля</h1>
+    </header>
+    <ValidationObserver v-slot="{ invalid }">
+      <form class="auth-form__form">
+        <ValidationProvider
+          tag="div"
+          rules="required|email"
+          v-slot="{ errors }"
+        >
+          <Input
+            v-model="forgotForm.email"
+            placeholder="Эл. почта"
+            icon="email"
+            type="email"
+          />
+          <span class="error">{{ errors[0] }}</span>
+        </ValidationProvider>
+      </form>
+      <div class="auth-form__action">
+        <Button @click.native="startRecover" :disabled="invalid" green
+          >Отправить</Button
+        >
+      </div>
+    </ValidationObserver>
+  </section>
 </template>
 
 <script>
 import Input from '~/components/app/Input'
 import Button from '~/components/app/Button'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
 export default {
   name: 'forgot',
-  components: { Input, Button },
+  components: { Input, Button, ValidationObserver, ValidationProvider },
   data() {
     return {
       forgotForm: {

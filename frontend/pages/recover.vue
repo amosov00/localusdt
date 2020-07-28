@@ -1,20 +1,54 @@
-<template lang="pug">
-	section.auth-form
-		header.auth-form__header
-			h1.auth-form__title Восстановление пароля
-		form.auth-form__form
-			Input(v-model="recoverForm.password" placeholder="Новый пароль" icon="password" type="password")
-			Input(v-model="recoverForm.repeat_password" placeholder="Подтверждение пароля" icon="password" type="password")
-		div.auth-form__action
-			Button(@click.native="recover" green) Отправить
+<template>
+  <section class="auth-form">
+    <header class="auth-form__header">
+      <h1 class="auth-form__title">Восстановление пароля</h1>
+    </header>
+    <ValidationObserver v-slot="{ invalid }">
+      <form class="auth-form__form">
+        <ValidationProvider
+          tag="div"
+          rules="required|min:8|confirmed:confirmation"
+          v-slot="{ errors }"
+        >
+          <Input
+            v-model="recoverForm.password"
+            placeholder="Новый пароль"
+            icon="password"
+            type="password"
+          />
+          <span class="error">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          tag="div"
+          rules="required|min:8"
+          vid="confirmation"
+          v-slot="{ errors }"
+        >
+          <Input
+            v-model="recoverForm.repeat_password"
+            placeholder="Подтверждение пароля"
+            icon="password"
+            type="password"
+          />
+          <span class="error">{{ errors[0] }}</span>
+        </ValidationProvider>
+      </form>
+      <div class="auth-form__action">
+        <Button @click.native="recover" :disabled="invalid" green
+          >Отправить</Button
+        >
+      </div>
+    </ValidationObserver>
+  </section>
 </template>
 
 <script>
 import Input from '~/components/app/Input'
 import Button from '~/components/app/Button'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
 export default {
   name: 'recover',
-  components: { Input, Button },
+  components: { Input, Button, ValidationObserver, ValidationProvider },
   data() {
     return {
       recoverForm: {

@@ -46,9 +46,12 @@ export const actions = {
         })
         commit('setUser', resp.data.user)
         this.$toast.showMessage({ content: 'Успешный вход в систему!' })
-        return this.$router.push({ path: '/' })
+        this.$router.push({ path: '/' })
       })
-      .catch(_ => {})
+      .catch(() => {
+        this.$toast.showMessage({ content: 'Ошибка' })
+        this.$router.push({ path: '/' })
+      })
   },
   logOut({ commit }) {
     commit('deleteUser')

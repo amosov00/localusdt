@@ -1,11 +1,12 @@
 <template lang="pug">
-  button(type="button" :class="{'button--lg': lg, 'button--outlined': outlined, 'button--rounded': rounded, 'orange--bg': orange, 'green--bg': green, 'red--bg': red}" class="button")
+  button(type="button" :class="{'button--lg': lg, 'button--outlined': outlined, 'button--rounded': rounded, 'orange--bg': orange, 'green--bg': green, 'red--bg': red}" class="button" :disabled="disabled")
     slot
 </template>
 
 <script>
 export default {
   props: {
+    disabled: Boolean,
     rounded: {
       type: Boolean,
       default: false
@@ -31,12 +32,12 @@ export default {
       default: false
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
 .button {
-  font-family: "Montserrat";
+  font-family: 'Montserrat';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;

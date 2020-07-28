@@ -44,7 +44,7 @@
 				</ValidationProvider>
 			</form>
 			<div class="auth-form__action">
-				<Button@click.native="signUp" :disabled="invalid" green>Войти</Button>
+				<Button@click.native="signUp" :disabled="invalid" green>Зарегистрироваться</Button>
 			</div>
 		</ValidationObserver>
 		<nuxt-link to="/forgot" class="auth-form__forgot-password"

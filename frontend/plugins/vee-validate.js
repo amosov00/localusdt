@@ -19,11 +19,11 @@ localize({
 
 extend('email', {
   ...email,
-  message: 'This field must be a valid email'
+  message: 'Не валидная почта'
 })
 extend('min', {
   ...min,
-  message: 'Password must be greater than or equal to 8 characters'
+  message: 'Пароль должен быть больше или равен 8 символам'
 })
 extend('max', max)
 extend('regex', regex)
@@ -32,11 +32,11 @@ extend('alpha_num', alpha_num)
 extend('alpha_spaces', alpha_spaces)
 extend('required', {
   ...required,
-  message: 'This field is required'
+  message: 'Это поле обязательно'
 })
 extend('confirmed', {
   ...confirmed,
-  message: 'Password does not match'
+  message: 'Пароли не совпадают'
 })
 extend('min_value', {
   ...min_value,

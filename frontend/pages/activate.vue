@@ -25,6 +25,12 @@ export default {
         green: true
 			})
 			this.$router.push('/profile')
+    } else {
+      this.$toast.showMessage({
+        content: 'Учетная запись уже активирована!',
+        red: true
+      })
+      this.$router.push('/')
     }
   },
   async asyncData({ query, store }) {

@@ -10,7 +10,7 @@ export const getters = {
 
 export const mutations = {
   setUser: (state, user) => (state.user = user),
-  deleteUser: state => (state.user = null)
+  deleteUser: state => (state.user = false)
 }
 
 export const actions = {
@@ -29,7 +29,7 @@ export const actions = {
         return this.$router.push('/')
       })
       .catch((error) => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        this.$toast.showMessage({ content: error.response.data.detail[0].msg, red: true })
       })
   },
   async logIn({ commit }, data) {
@@ -85,11 +85,10 @@ export const actions = {
     return await this.$axios
       .post('/account/verify/', data)
       .then(resp => {
-        this.$toast.showMessage({ content: 'Учетная запись активирована!', green: true })
         return resp.data;
       })
-      .catch(error => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+      .catch(() => {
+        return false
       })
   },
   async startRecover({}, data) {
@@ -100,8 +99,8 @@ export const actions = {
         this.$router.push('/')
         return true
       })
-      .catch(err => {
-        return false
+      .catch(error => {
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   },
   async finishRecover({}, data) {
@@ -112,8 +111,8 @@ export const actions = {
         this.$router.push('/login')
         return true
       })
-      .catch(err => {
-        return false
+      .catch(error => {
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   }
 }

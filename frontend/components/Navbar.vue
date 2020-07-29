@@ -53,7 +53,7 @@ export default {
 <style lang="scss">
 .header {
 	height: 70px;
-	width: 100vw;
+	width: 100%;
 	background-color: $white;
 	box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.15);
 

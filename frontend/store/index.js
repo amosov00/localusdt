@@ -29,7 +29,7 @@ export const actions = {
         return this.$router.push('/')
       })
       .catch((error) => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        this.$toast.showMessage({ content: error.response.data.detail[0].msg, red: true })
       })
   },
   async logIn({ commit }, data) {
@@ -99,8 +99,8 @@ export const actions = {
         this.$router.push('/')
         return true
       })
-      .catch(err => {
-        return false
+      .catch(error => {
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   },
   async finishRecover({}, data) {

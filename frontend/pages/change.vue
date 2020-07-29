@@ -7,7 +7,7 @@
       <form class="auth-form__form">
         <ValidationProvider
           tag="div"
-          rules="required|userName"
+          rules="required|pwdContain|pwdLength|pwdLowChar|pwdUpChar|pwdDigit"
           v-slot="{ errors }"
         >
           <Input
@@ -20,7 +20,7 @@
         </ValidationProvider>
         <ValidationProvider
           tag="div"
-          rules="required|userName|confirmed:confirmation"
+          rules="required|pwdContain|pwdLength|pwdLowChar|pwdUpChar|pwdDigit|confirmed:confirmation"
           v-slot="{ errors }"
         >
           <Input
@@ -33,7 +33,7 @@
         </ValidationProvider>
         <ValidationProvider
           tag="div"
-          rules="required|userName"
+          rules="required|pwdContain|pwdLength|pwdLowChar|pwdUpChar|pwdDigit"
           vid="confirmation"
           v-slot="{ errors }"
         >

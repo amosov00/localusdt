@@ -10,13 +10,13 @@
 			<form class="auth-form__form">
 				<ValidationProvider
 				tag="div"
-				rules="required|userLenght"
+				rules="required|userName"
 				v-slot="{ errors }"
 				>
 				<Input
 					v-model="registerForm.username" placeholder="Имя пользователя" icon="user" type="text"
 				/>
-				<span class="error">{{ errors[0] }}</span>
+				<span class="error" v-html="errors[0]"></span>
 				</ValidationProvider>
 					<ValidationProvider
 				tag="div"
@@ -31,23 +31,23 @@
 					/>
 					<span class="error">{{ errors[0] }}</span>
 				</ValidationProvider>
-				<ValidationProvider tag="div" rules="required|min:8|upCase|lowCase|number|confirmed:confirmation"  v-slot="{ errors }">
+				<ValidationProvider tag="div" rules="required|pwd|confirmed:confirmation"  v-slot="{ errors }">
 					<Input
 						v-model="registerForm.password"
 						placeholder="Пароль"
 						icon="password"
 						type="password"
 					/>
-					<span class="error">{{ errors[0] }}</span>
+					<span class="error" v-html="errors[0]"></span>
 				</ValidationProvider>
-				<ValidationProvider tag="div"  rules="required|min:8|upCase|lowCase|number" vid="confirmation" v-slot="{ errors }">
+				<ValidationProvider tag="div"  rules="required|pwd" vid="confirmation" v-slot="{ errors }">
 					<Input
 						v-model="registerForm.repeat_password"
-						placeholder="Пароль"
+						placeholder="Подтверждение пароля"
 						icon="password"
 						type="password"
 					/>
-					<span class="error">{{ errors[0] }}</span>
+					<span class="error" v-html="errors[0]"></span>
 				</ValidationProvider>
 			</form>
 			<div class="auth-form__action">

@@ -19,8 +19,7 @@ html {
 	max-width: 1170px;
 	width: 100%;
 	min-height: calc(100vh - 75px - 71px);
-	overflow-y: scroll;
-	// min-height: 100vh;
+	overflow: hidden;
 	height: 100%;
 	margin-left: auto;
 	margin-right: auto;

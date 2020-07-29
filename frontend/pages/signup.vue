@@ -7,7 +7,7 @@
 			>
 		</header>
 		<ValidationObserver v-slot="{ invalid }">
-			<form class="auth-form__form">
+			<form class="auth-form__form" autocomplete="off">
 				<ValidationProvider
 				tag="div"
 				rules="required|userName"

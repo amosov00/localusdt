@@ -10,7 +10,7 @@
 			<form class="auth-form__form" autocomplete="off">
 				<ValidationProvider
 				tag="div"
-				rules="required|userName"
+				rules="required|userLength|user__|"
 				v-slot="{ errors }"
 				>
 				<Input
@@ -31,7 +31,7 @@
 					/>
 					<span class="error">{{ errors[0] }}</span>
 				</ValidationProvider>
-				<ValidationProvider tag="div" rules="required|pwd|confirmed:confirmation"  v-slot="{ errors }">
+				<ValidationProvider tag="div" rules="required|pwdLength|pwdLowChar|pwdUpChar|pwdDigit|confirmed:confirmation"  v-slot="{ errors }">
 					<Input
 						v-model="registerForm.password"
 						placeholder="Пароль"
@@ -40,7 +40,7 @@
 					/>
 					<span class="error" v-html="errors[0]"></span>
 				</ValidationProvider>
-				<ValidationProvider tag="div"  rules="required|pwd" vid="confirmation" v-slot="{ errors }">
+				<ValidationProvider tag="div"  rules="required|pwdLength|pwdLowChar|pwdUpChar|pwdDigit" vid="confirmation" v-slot="{ errors }">
 					<Input
 						v-model="registerForm.repeat_password"
 						placeholder="Подтверждение пароля"

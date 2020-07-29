@@ -78,7 +78,7 @@ export const actions = {
         this.$router.push('/profile')
       })
       .catch(error => {
-        this.$toast.showMessage({ content: error.response.data.detail[0].msg, red: true })
+        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   },
   async activateAccount({}, data) {

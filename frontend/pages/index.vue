@@ -33,10 +33,8 @@ export default {
       this.selected = option.name;
     }
   },
-  computed: {
-    isUserLogged() {
-      return this.$userIsLoggedIn()
-    }
+  created() {
+    this.$store.dispatch('ads/fetchAds')
   },
 };
 </script>

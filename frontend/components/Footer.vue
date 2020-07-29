@@ -32,7 +32,7 @@ export default {
 <style lang="scss">
 .footer {
 	height: 75px;
-	width: 100vw;
+	width: 100%;
 	border-top: 1px solid rgba(17, 23, 29, 0.2);
 
 	&__container {

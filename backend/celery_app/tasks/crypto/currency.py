@@ -1,6 +1,6 @@
 import logging
 from core.utils.binance import BinanceRate
-from database.crud import CurrencyCRUD, InvoiceCRUD
+from database.crud import CurrencyCRUD, AdsCRUD
 
 from celery_app.celeryconfig import app
 
@@ -14,7 +14,7 @@ async def update_usdt_rate(self, *args, **kwargs):
     logging.info(f"Starting updating usdt rate from binance {current_rate}")
     await CurrencyCRUD.update(current_rate)
     if current_rate:
-        await InvoiceCRUD.db[InvoiceCRUD.collection].update_many(
+        await AdsCRUD.db[AdsCRUD.collection].update_many(
             {},
             [  # noqa
                 {

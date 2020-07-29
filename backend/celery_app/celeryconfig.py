@@ -31,8 +31,8 @@ app.conf.beat_schedule = {
         "schedule": crontab(minute="*/5"),
         "args": (),
     },
-    "update_contacts_status":{
-        "task": "update_contacts_status",
+    "update_invoices_status": {
+        "task": "update_invoices_status",
         "schedule": crontab(minute="*/1"),
         "args": (),
     }

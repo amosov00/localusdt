@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, Literal
 from datetime import datetime
 
 from pydantic import Field, validator
@@ -8,94 +8,49 @@ from schemas.base import BaseModel, ObjectIdPydantic
 
 __all__ = [
     "Invoice",
-    "InvoiceType",
-    "PaymentMethod",
-    "Currency",
-    "InvoiceCreate",
     "InvoiceInDB",
-    "InvoiceFilters",
-    "InvoiceInSearch"
+    "InvoiceStatus",
+    "InvoiceCreate"
 ]
 
 
-def validate_profit(v: Optional[int]) -> int:
-    if v > 100 or v < 0:
-        raise ValueError("Incorrect profit")
-    return v
+class InvoiceStatus:
+    WAITING_FOR_PAYMENT = "waiting_for_payment"  # Waiting 90 minutes for bank payment
+    APPROVED = "approved"
+    WAITING_FOR_TOKENS = "waiting_for_tokens"  # Waiting 30 minutes for token
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
 
-
-class InvoiceType(IntEnum):
-    BUY = 1
-    SELL = 2
-
-
-class PaymentMethod(IntEnum):
-    BANK = 1
-
-
-class Currency(IntEnum):
-    RUB = 1
-    USD = 2
-    EUR = 3
+    ALL = (WAITING_FOR_PAYMENT, WAITING_FOR_TOKENS, COMPLETED, CANCELLED, APPROVED)
 
 
 class Invoice(BaseModel):
-    # Common
-    user_id: ObjectIdPydantic = Field(...)
-    type: InvoiceType = Field(...)  # 1 - BUY, 2 - SELL
-    amount_usdt: float = Field(defaul=None)
-
-    # Prices
-    price: float = Field(default=None, description="Price for 1 usdt token")
-    bot_limit: int = Field(default=None)
-    top_limit: int = Field(default=None)
-    profit: int = Field(default=None)
-
-    # Extra info
-    payment_method: PaymentMethod = Field(default=PaymentMethod.BANK)
-    bank_title: str = Field(default=None)
-    currency: Currency = Field(default=None)
-    condition: str = Field(default=None, description="Condition of the invoice")
-
-    # Datetimes
+    ads_id: ObjectIdPydantic = Field(...)
+    seller_id: ObjectIdPydantic = Field(...)
+    buyer_id: ObjectIdPydantic = Field(...)
+    amount_rub: float = Field(default=None)
+    amount_usdt: float = Field(...)
+    status: Literal[InvoiceStatus.ALL] = Field( # noqa
+        ...,
+        description="Status of Invoice: created, waiting, processing, completed, cancelled",
+    )
+    chat_id: ObjectIdPydantic = Field(
+        default=None, description="Id for chat room between seller and buyer"
+    )
     created_at: datetime = Field(default_factory=datetime.utcnow, description="UTC")
-
-    # Contact
-    contacts_id: List[ObjectIdPydantic] = Field(default=[])
+    status_changed_at: datetime = Field(
+        default_factory=datetime.utcnow,
+        description="UTC, Timer start after status change"
+    )
+    finished_at: Optional[datetime] = Field(
+        default=None, description="Update when user close Invoice"
+    )
 
 
 class InvoiceInDB(Invoice):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
 
 
-class InvoiceInSearch(InvoiceInDB):
-    username: str = Field(default=None, description="Username of user who opened this invoice")
-
-
 class InvoiceCreate(BaseModel):
-    type: InvoiceType = Field(..., description="Type of invoice, 1 = BUY, 2 = SELL")
-
-    bot_limit: float = Field(...)
-    top_limit: float = Field(...)
-
+    ads_id: ObjectIdPydantic = Field(...)
     amount_usdt: float = Field(...)
-
-    payment_method: PaymentMethod = Field(
-        default=PaymentMethod.BANK, description="Payment method, 1 = BANK"
-    )
-    bank_title: str = Field(...)
-    currency: str = Field(default=Currency.RUB)
-    condition: str = Field(default="", description="Condition of the invoice")
-
-    profit: int = Field(default=0)
-
-    _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
-
-
-class InvoiceFilters(BaseModel):
-    type: Optional[InvoiceType] = Field(default=None)
-    price_bot: Optional[float] = Field(default=None)
-    price_top: Optional[float] = Field(default=None)
-    currency: Optional[Currency] = Field(default=Currency.RUB)
-    payment_method: Optional[PaymentMethod] = Field(default=PaymentMethod.BANK)
-    limit: int = Field(...)

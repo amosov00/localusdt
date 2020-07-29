@@ -41,7 +41,7 @@ extend('confirmed', {
 
 // PASSWORD EXCEPTIONS
 extend('pwdLength', {
-  message: 'Пароль должен быть больше или равен 8 символам',
+  message: 'Пароль должен быть больше или равен 8 символам и содержать только латинские символы',
   validate: value => value.match(/^[a-zA-Z\d]{8,}/) !== null
 })
 extend('pwdLowChar', {

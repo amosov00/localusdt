@@ -10,7 +10,7 @@
 			<form class="auth-form__form" autocomplete="off">
 				<ValidationProvider
 				tag="div"
-				rules="required|userLength|user__|"
+				rules="required|userLength|user__"
 				v-slot="{ errors }"
 				>
 				<Input

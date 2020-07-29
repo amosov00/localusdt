@@ -40,6 +40,16 @@ def validate_password(v: Optional[str], values: dict) -> str:
     return pwd_context.hash(v)
 
 
+def validate_username(v: Optional[str], values: dict) -> str:
+    if len(v) < 6:
+        raise ValueError("username should be longer than 6 characters")
+    if not bool(re.match("^(?=[a-zA-Z0-9._]{6,20}$)(?!.*[_.]{2})[^_.].*[^_.]$", v)): # noqa
+        raise ValueError(
+            "username does not match username policy (contains only alphabetic, underline and dots)"
+        )
+    return v
+
+
 class BaseUser(BaseModel):
     pass
 
@@ -100,6 +110,7 @@ class UserCreationSafe(BaseModel):
 
     _validate_email = validator("email", allow_reuse=True)(validate_email)
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)
+    _validate_username = validator("username", allow_reuse=True)(validate_username)
 
 
 class UserCreationNotSafe(BaseModel):

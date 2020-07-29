@@ -18,7 +18,7 @@ export default {
     halfLife() {
       setTimeout(() => {
         this.show = false
-      }, 4000)
+      }, 10000)
     }
   },
   created() {

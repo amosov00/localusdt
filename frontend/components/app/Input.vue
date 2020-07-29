@@ -47,9 +47,9 @@ export default {
 	computed: {
 		passwordIcon() {
 			if (this.showPassword) {
-				return 'eye-off'
-			} else {
 				return 'eye'
+			} else {
+				return 'eye-off'
 			}
 		},
 		showPasswordField() {

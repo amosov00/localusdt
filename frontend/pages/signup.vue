@@ -8,9 +8,16 @@
 		</header>
 		<ValidationObserver v-slot="{ invalid }">
 			<form class="auth-form__form">
+				<ValidationProvider
+				tag="div"
+				rules="required|userLenght"
+				v-slot="{ errors }"
+				>
 				<Input
 					v-model="registerForm.username" placeholder="Имя пользователя" icon="user" type="text"
 				/>
+				<span class="error">{{ errors[0] }}</span>
+				</ValidationProvider>
 					<ValidationProvider
 				tag="div"
 				rules="required|email"

@@ -25,6 +25,10 @@ extend('min', {
   ...min,
   message: 'Пароль должен быть больше или равен 8 символам'
 })
+extend('userLenght', {
+  message: 'Имя пользователя должно быть больше или равно 6 символам',
+  validate: value => value.match(/^.{6,}$/) !== null
+})
 extend('max', max)
 extend('regex', regex)
 extend('alpha', alpha)

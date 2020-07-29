@@ -44,6 +44,10 @@ extend('pwdLength', {
   message: 'Пароль должен быть больше или равен 8 символам и содержать только латинские символы',
   validate: value => value.match(/^[a-zA-Z\d]{8,}/) !== null
 })
+extend('pwdContain', {
+  message: 'Пароль должен состоять только из символов латинского алфавита и цифр',
+  validate: value => value.match(/^(?=.*[a-zA-Z\d])/) !== null
+})
 extend('pwdLowChar', {
   message: 'Пароль должен содержать минимум один строчный символ',
   validate: value => value.match(/^(?=.*[a-z])/) !== null

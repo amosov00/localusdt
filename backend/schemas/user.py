@@ -47,9 +47,10 @@ def validate_password(v: Optional[str], values: dict) -> str:
 
 def validate_username(v: Optional[str], values: dict) -> str:
     if len(v) < 6:
-        raise ValueError("username should be longer than 6 characters")
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "username should be longer than 6 characters")
     if not bool(re.match("^(?=[a-zA-Z0-9._]{6,20}$)(?!.*[_.]{2})[^_.].*[^_.]$", v)): # noqa
-        raise ValueError(
+        raise HTTPException(
+            HTTPStatus.BAD_REQUEST,
             "username does not match username policy (contains only alphabetic, underline and dots)"
         )
     return v

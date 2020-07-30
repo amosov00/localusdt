@@ -5,6 +5,7 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends, Body, Response, Path
 
 from database.crud.ads import AdsCRUD
+from database.crud.user import UserCRUD
 from api.dependencies import get_user
 from schemas.ads import (
     AdsFilters,
@@ -56,6 +57,11 @@ async def ads_fetch_all(
     return await AdsCRUD.find_with_filters(filters)
 
 
-@router.get("/{ads_id}", response_model=AdsInDB)
+@router.get("/{ads_id}", response_model=AdsInSearch)
 async def ads_by_id(ads_id: str = Path(...)):
-    return await AdsCRUD.find_by_id(ads_id)
+    ads = await AdsCRUD.find_by_id(ads_id)
+    user = await UserCRUD.find_by_id(ads["user_id"])
+    if not user:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "No user")
+    ads["username"] = user.get("username")
+    return ads

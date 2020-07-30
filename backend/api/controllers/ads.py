@@ -2,7 +2,7 @@ from http import HTTPStatus
 from typing import List, Optional
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Depends, Body, Response
+from fastapi import APIRouter, HTTPException, Depends, Body, Response, Path
 
 from database.crud.ads import AdsCRUD
 from api.dependencies import get_user
@@ -55,3 +55,7 @@ async def ads_fetch_all(
     )
     return await AdsCRUD.find_with_filters(filters)
 
+
+@router.get("/{ads_id}", response_model=AdsInDB)
+async def ads_by_id(ads_id: str = Path(...)):
+    return await AdsCRUD.find_by_id(ads_id)

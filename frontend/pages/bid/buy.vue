@@ -5,19 +5,19 @@
       span ₽/USDT
     header.bid__navigation
       h1 Продать USDT
-      nuxt-link(to="/bid/sell/") Купить USDT
+      nuxt-link(class="bid__link" to="/bid/sell/") Купить USDT
     hr
     div.bid__form
-      Input.bid__input(header="Название банка" placeholder="Банк")
+      Input.bid__input(v-model="adForm.bank_title" header="Название банка" placeholder="Банк")
       div.bid__input--hint
-        Input.bid__input(header="Прибыль" placeholder="Прибыль" endIcon="%" :width="475")
+        Input.bid__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="%" :width="475")
         p.paragraph-1 Размер прибыли, которую Вы хотите получить сверху рыночной цены.
-      Input.bid__input(header="Уравнение установление цены" placeholder="Уравнение")
+      //- Input.bid__input(header="Уравнение установление цены" placeholder="Уравнение")
       div.bid__gap
-        Input(:width="200" endIcon="RUB" type="number" header="Минимальный лимит транзакции")
-        Input(:width="200" endIcon="RUB" type="number" header="Минимальный лимит транзакции")
-      Textarea.bid__conditions(placeholder="Напишите условия сделки")
-      Button.bid__action(green) создать объявление
+        Input(v-model="adForm.bot_limit" :width="200" endIcon="RUB" type="number" header="Минимальный лимит транзакции")
+        Input(v-model="adForm.top_limit" :width="200" endIcon="RUB" type="number" header="Максимальный лимит транзакции")
+      Textarea.bid__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
+      Button.bid__action(green @click.native="createAd") создать объявление
 </template>
 
 <script>
@@ -25,7 +25,25 @@ import Input from '~/components/app/Input'
 import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 export default {
-  components: { Input, Textarea, Button }
+  components: { Input, Textarea, Button },
+  data() {
+    return {
+      adForm: {
+        bank_title: '',
+        profit: 1,
+        bot_limit: 0,
+        top_limit: 0,
+        condition: '',
+        amount_usdt: 0,
+        type: 1
+      }
+    }
+  },
+  methods: {
+    createAd() {
+      this.$store.dispatch('ads/createAd', this.adForm)
+    }
+  },
 }
 </script>
 
@@ -40,6 +58,15 @@ export default {
   &__navigation {
     margin-top: 50px;
     margin-bottom: 10px;
+  }
+
+  &__link {
+    @include montserrat
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 20px;
+    opacity: .5;
+    text-decoration: underline;
   }
 
   &__form {

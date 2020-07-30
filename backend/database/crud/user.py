@@ -54,10 +54,10 @@ class UserCRUD(BaseMongoCRUD):
         if user and pwd_context.verify(password, user["password"]):
             token = encode_jwt_token({"id": str(user["_id"])})
             if not user.get("is_active"):
-                raise HTTPException(HTTPStatus.BAD_REQUEST, "Activate your account")
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Активируйте аккаунт через email для входа в аккаунт")
             return {"token": token, "user": User(**user).dict()}
         else:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Invalid user data")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Неправильно введены данные")
 
     @classmethod
     async def autenticate_by_token(cls, token: str) -> Optional[dict]:
@@ -72,14 +72,14 @@ class UserCRUD(BaseMongoCRUD):
         user = await cls.find_by_email(email)
 
         if not user:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "No such user with that email")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Пользователи с таки email нет")
         if user.get("is_active"):
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "User already verified")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Пользователь уже верифицирован")
 
         if user["verification_code"] == verification_code:
             user["is_active"] = True
         else:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong verification code")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Неправильный код")
 
         user["verification_code"] = None
 
@@ -100,12 +100,12 @@ class UserCRUD(BaseMongoCRUD):
     async def create_safe(cls, user: UserCreationSafe, **kwargs) -> bool:
         if await cls.find_by_email(user.email):
             raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "User with this email is already exists",
+                HTTPStatus.BAD_REQUEST, "Пользователь с таким email уже существует",
             )
 
         if await cls.find_by_username(user.username):
             raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "User with this username is already exists",
+                HTTPStatus.BAD_REQUEST, "Пользователь с таким именем уже существует",
             )
 
         verification_code = pwd.genword()
@@ -132,7 +132,7 @@ class UserCRUD(BaseMongoCRUD):
         old_password_obj = await cls.find_one({"_id": user.id})
 
         if not pwd_context.verify(payload.old_password, old_password_obj["password"]):
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Old password doesn't match")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Неверный пароль")
 
         await cls.update_one(
             query={"_id": user.id}, payload={"password": payload.password}
@@ -145,7 +145,7 @@ class UserCRUD(BaseMongoCRUD):
         user = await cls.find_by_email(payload.email)
 
         if not user:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "No such user")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Такого пользователя нет")
 
         recover_code = encode_jwt_token({"_id": user["_id"]}, timedelta(hours=3))
 
@@ -165,7 +165,7 @@ class UserCRUD(BaseMongoCRUD):
         user = await cls.find_one({"_id": ObjectId(user_id)})
 
         if "recover_code" not in user or user["recover_code"] != payload.recover_code:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Incorrect code")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Неправильный код")
 
         await cls.update_one(
             query={"_id": user["_id"]}, payload={"password": payload.password, "recover_code": None}

@@ -1,11 +1,9 @@
-from typing import Union
 from bson.errors import InvalidId
-from fastapi import exceptions as ex, responses
-from fastapi.encoders import jsonable_encoder
+from fastapi import responses
 from fastapi.exceptions import RequestValidationError, HTTPException
 from pydantic import ValidationError
-from starlette.requests import Request
 from starlette import status
+from starlette.requests import Request
 
 __all__ = ["exception_handlers"]
 
@@ -24,8 +22,14 @@ async def pydantic_exception_handler_func(request: Request, exc: ValidationError
 
 
 async def http_exception_handler_func(request: Request, exception: HTTPException):
+    if isinstance(exception.detail, list):
+        content = [{"message": detail} for detail in exception.detail]
+    elif isinstance(exception.detail, dict):
+        content = exception.detail
+    else:
+        content = [{"message": exception.detail}]
     return responses.UJSONResponse(
-        content=[{"message": exception.detail}],
+        content=content,
         status_code=getattr(exception, "status_code", status.HTTP_500_INTERNAL_SERVER_ERROR),
         headers={"Access-Control-Allow-Origin": "*"},
     )
@@ -41,7 +45,7 @@ async def invalid_object_id_exception_handler(request: Request, exception: Inval
 
 exception_handlers = {
     RequestValidationError: pydantic_exception_handler_func,
-    ex.HTTPException: http_exception_handler_func,
+    HTTPException: http_exception_handler_func,
     status.HTTP_422_UNPROCESSABLE_ENTITY: pydantic_exception_handler_func,
     ValidationError: pydantic_exception_handler_func,
     InvalidId: invalid_object_id_exception_handler,

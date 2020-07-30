@@ -1,29 +1,30 @@
 <template>
-	<section class="profile">
-		<div class="profile__header">
+  <section class="profile">
+    <div class="profile__header">
       <div class="profile__user">
-			  <h1 class="profile__username">{{user.username}}</h1>
+        <h1 class="profile__username">{{ user.username }}</h1>
         <span class="profile__activity"></span>
       </div>
       <div class="profile__actions">
-        <nuxt-link class="profile__link profile__link--grey" to="/change">Изменить пароль</nuxt-link>
+        <nuxt-link class="profile__link profile__link--grey" to="/change"
+          >Изменить пароль</nuxt-link
+        >
         <p class="profile__link red" @click="logout()">Выйти</p>
       </div>
-		</div>
-	</section>
+    </div>
+  </section>
 </template>
 
 <script>
 export default {
-	data() {
-		return {
-
-		}
-	},
-	computed: {
-		user() {
-			return this.$store.getters.user
-		}
+  middleware: ['authRequired'],
+  data() {
+    return {}
+  },
+  computed: {
+    user() {
+      return this.$store.getters.user
+    }
   },
   methods: {
     logout() {
@@ -35,17 +36,16 @@ export default {
 
 <style lang="scss">
 .profile {
-
-	&__header {
+  &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-		margin-top: 50px;
+    margin-top: 50px;
     padding-bottom: 40px;
-		border-bottom: 1px solid $grey;
-	}
+    border-bottom: 1px solid $grey;
+  }
 
-	&__user {
+  &__user {
     display: flex;
     align-items: center;
   }
@@ -58,7 +58,7 @@ export default {
     border-radius: 50%;
     background-color: $green;
   }
-  
+
   &__actions {
     display: flex;
     flex-direction: column;

@@ -6,30 +6,47 @@
         <span class="profile__activity"></span>
       </div>
       <div class="profile__actions">
-        <nuxt-link class="profile__link profile__link--grey" to="/change"
+        <nuxt-link class="underline-link underline-link--grey" to="/change"
           >Изменить пароль</nuxt-link
         >
-        <p class="profile__link red" @click="logout()">Выйти</p>
+        <p class="underline-link red" @click="logout()">Выйти</p>
       </div>
+    </div>
+    <div class="bio">
+      <invoicesTable :tableData="invoices" />
     </div>
   </section>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import invoicesTable from '~/components/app/invoicesTable'
 export default {
-  middleware: ['authRequired'],
+  middleware: ['authRequired', 'fetchUser'],
+  components: {
+    invoicesTable
+  },
   data() {
     return {}
   },
   computed: {
+    // ...mapGetters({
+    //   invoices: 'invoice/invoices'
+    // }),
     user() {
       return this.$store.getters.user
+    },
+    invoices() {
+      return this.$store.getters['invoice/invoices']
     }
   },
   methods: {
     logout() {
       this.$store.dispatch('logOut')
     }
+  },
+  asyncData({ store }) {
+    return store.dispatch('invoice/fetchInvoices')
   }
 }
 </script>
@@ -63,25 +80,6 @@ export default {
     display: flex;
     flex-direction: column;
     text-align: right;
-  }
-
-  &__link {
-    text-decoration: underline;
-    font-weight: 500;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:last-child {
-      margin-top: 10px;
-    }
-
-    &--grey {
-      color: rgba(17, 23, 29, 0.5) !important;
-    }
-
-    .red {
-      color: $red;
-    }
   }
 }
 </style>

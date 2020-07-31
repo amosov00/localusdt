@@ -26,6 +26,7 @@ import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 export default {
   name: 'bid-sell',
+  middleware: ['authRequired'],
   components: { Input, Textarea, Button },
   data() {
     return {

@@ -26,6 +26,7 @@ import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 export default {
   components: { Input, Textarea, Button },
+  middleware: ['authRequired'],
   data() {
     return {
       adForm: {

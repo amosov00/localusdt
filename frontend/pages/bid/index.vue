@@ -11,7 +11,9 @@ div.bid-type
 </template>
 
 <script>
-export default {}
+export default {
+  middleware: ['authRequired']
+}
 </script>
 
 <style lang="scss">

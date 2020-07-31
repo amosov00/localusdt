@@ -37,12 +37,10 @@ export const actions = {
   },
   async fetchInvoices({ commit }) {
     const { data } = await this.$axios.get('/invoice/')
-    console.log(data)
     commit('setInvoices', data)
   },
   async fetchInvoiceById({ commit }, id) {
     const { data } = await this.$axios.get(`/invoice/${id}/`)
-    console.log(data)
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {

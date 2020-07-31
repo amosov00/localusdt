@@ -31,7 +31,7 @@ async def invoice_approve(user: User = Depends(get_user), invoice_id: str = Path
 
 
 @router.put("/{invoice_id}/transfer/")
-async def invoice_approve(user: User = Depends(get_user), invoice_id: str = Path(...)):
+async def invoice_transfer(user: User = Depends(get_user), invoice_id: str = Path(...)):
     return await InvoiceCRUD.transfer_tokens(user, invoice_id)
 
 

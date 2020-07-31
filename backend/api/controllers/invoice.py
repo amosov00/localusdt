@@ -40,3 +40,7 @@ async def invoice_transfer(user: User = Depends(get_user), invoice_id: str = Pat
 async def invoice_search(user: User = Depends(get_user)):
     return await InvoiceCRUD.find_by_user_id(user.id)
 
+
+@router.get("/{invoice_id}/", response_model=InvoiceInSearch)
+async def invoice_get(user: User = Depends(get_user), invoice_id: str = Path(...)):
+    return await InvoiceCRUD.get_invoice(user, invoice_id)

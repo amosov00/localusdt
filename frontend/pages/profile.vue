@@ -1,51 +1,68 @@
 <template>
-	<section class="profile">
-		<div class="profile__header">
+  <section class="profile">
+    <div class="profile__header">
       <div class="profile__user">
-			  <h1 class="profile__username">{{user.username}}</h1>
+        <h1 class="profile__username">{{ user.username }}</h1>
         <span class="profile__activity"></span>
       </div>
       <div class="profile__actions">
-        <nuxt-link class="profile__link profile__link--grey" to="/change">Изменить пароль</nuxt-link>
-        <p class="profile__link red" @click="logout()">Выйти</p>
+        <nuxt-link class="underline-link underline-link--grey" to="/change"
+          >Изменить пароль</nuxt-link
+        >
+        <p class="underline-link red" @click="logout()">Выйти</p>
       </div>
-		</div>
-	</section>
+    </div>
+    <div class="bio">
+      <invoicesTable :tableData="invoices" />
+    </div>
+  </section>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import invoicesTable from '~/components/app/invoicesTable'
 export default {
-	data() {
-		return {
-
-		}
-	},
-	computed: {
-		user() {
-			return this.$store.getters.user
-		}
+  middleware: ['authRequired', 'fetchUser'],
+  components: {
+    invoicesTable
+  },
+  data() {
+    return {}
+  },
+  computed: {
+    // ...mapGetters({
+    //   invoices: 'invoice/invoices'
+    // }),
+    user() {
+      return this.$store.getters.user
+    },
+    invoices() {
+      return this.$store.getters['invoice/invoices']
+    }
   },
   methods: {
     logout() {
       this.$store.dispatch('logOut')
     }
+  },
+  asyncData({ store }) {
+    return store.dispatch('invoice/fetchInvoices')
   }
 }
 </script>
 
 <style lang="scss">
 .profile {
-
-	&__header {
+  &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-		margin-top: 50px;
+    margin-top: 50px;
     padding-bottom: 40px;
-		border-bottom: 1px solid $grey;
-	}
+    border-bottom: 1px solid $grey;
+  }
 
-	&__user {
+  &__user {
     display: flex;
     align-items: center;
   }
@@ -58,30 +75,11 @@ export default {
     border-radius: 50%;
     background-color: $green;
   }
-  
+
   &__actions {
     display: flex;
     flex-direction: column;
     text-align: right;
-  }
-
-  &__link {
-    text-decoration: underline;
-    font-weight: 500;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:last-child {
-      margin-top: 10px;
-    }
-
-    &--grey {
-      color: rgba(17, 23, 29, 0.5) !important;
-    }
-
-    .red {
-      color: $red;
-    }
   }
 }
 </style>

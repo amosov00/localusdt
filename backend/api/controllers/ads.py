@@ -1,20 +1,16 @@
 from http import HTTPStatus
-from typing import List, Optional
+from typing import List
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Depends, Body, Response, Path
+from fastapi import APIRouter, HTTPException, Depends, Body, Response
 
 from database.crud.ads import AdsCRUD
-from database.crud.user import UserCRUD
 from api.dependencies import get_user
 from schemas.ads import (
     AdsFilters,
     AdsCreate,
     AdsInDB,
-    AdsInSearch,
-    AdsType,
-    Currency,
-    PaymentMethod
+    AdsInSearch
 )
 from schemas.user import User
 
@@ -37,31 +33,6 @@ async def ads_fetch_users(user: User = Depends(get_user)):
 
 
 @router.get("/", response_model=List[AdsInSearch])
-async def ads_fetch_all(
-        ad_type: Optional[AdsType] = None,
-        price_bot: Optional[float] = None,
-        price_top: Optional[float] = None,
-        currency: Optional[Currency] = Currency.RUB,
-        payment_method: Optional[PaymentMethod] = PaymentMethod.BANK,
-        limit: int = 10
-):
-
-    filters = AdsFilters(
-        type=ad_type,
-        price_bot=price_bot,
-        price_top=price_top,
-        currency=currency,
-        payment_method=payment_method,
-        limit=limit
-    )
+async def ads_fetch_all(filters: AdsFilters = Body(...)):
     return await AdsCRUD.find_with_filters(filters)
 
-
-@router.get("/{ads_id}", response_model=AdsInSearch)
-async def ads_by_id(ads_id: str = Path(...)):
-    ads = await AdsCRUD.find_by_id(ads_id)
-    user = await UserCRUD.find_by_id(ads["user_id"])
-    if not user:
-        raise HTTPException(HTTPStatus.BAD_REQUEST, "No user")
-    ads["username"] = user.get("username")
-    return ads

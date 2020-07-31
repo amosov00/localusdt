@@ -3,42 +3,48 @@
     NonAuthorizedHero(v-if="!$userIsLoggedIn()")
     section.table-section
       h1.table-section__title Купить USDT
-      Table
+      Table(:tableData="sellAds")
       p.table-section__subtitle Показать больше объявлений
     section.table-section
       h1.table-section__title Продать USDT
-      Table
+      Table(:tableData="buyAds")
       p.table-section__subtitle Показать больше объявлений
 </template>
 
 <script>
-import NonAuthorizedHero from "~/components/NonAuthorizedHero";
-import SellBuyTab from "~/components/SellBuyTab";
-import Table from "~/components/app/Table";
-import Select from "~/components/app/Select";
+import { mapGetters } from 'vuex'
+import NonAuthorizedHero from '~/components/NonAuthorizedHero'
+import SellBuyTab from '~/components/SellBuyTab'
+import Table from '~/components/app/Table'
+import Select from '~/components/app/Select'
 export default {
   components: { NonAuthorizedHero, SellBuyTab, Table, Select },
+  name: 'index',
   data() {
     return {
       options: [
-        { name: "RUB", value: "rub" },
-        { name: "USD", value: "usd" },
-        { name: "EUR", value: "eur" }
+        { name: 'RUB', value: 'rub' },
+        { name: 'USD', value: 'usd' },
+        { name: 'EUR', value: 'eur' }
       ],
-      selected: "Selected"
-    };
-  },
-  methods: {
-    selectedOption(option) {
-      this.selected = option.name;
+      selected: 'Selected'
     }
   },
   computed: {
-    isUserLogged() {
-      return this.$userIsLoggedIn()
+    ...mapGetters({
+      sellAds: 'ads/sellAds',
+      buyAds: 'ads/buyAds'
+    })
+  },
+  methods: {
+    selectedOption(option) {
+      this.selected = option.name
     }
   },
-};
+  created() {
+    this.$store.dispatch('ads/fetchAds')
+  }
+}
 </script>
 
 <style lang="scss">

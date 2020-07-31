@@ -4,8 +4,6 @@ from datetime import datetime
 
 from pydantic import Field, validator
 from passlib.context import CryptContext
-from fastapi import HTTPException
-from http import HTTPStatus
 
 from schemas.base import BaseModel, ObjectIdPydantic
 
@@ -20,7 +18,7 @@ __all__ = [
     "UserVerify",
     "UserRecover",
     "UserRecoverLink",
-    "UserUpdate",
+    "UserUpdate"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -32,25 +30,21 @@ def validate_email(v: str) -> str:
 
 def validate_password(v: Optional[str], values: dict) -> str:
     if len(v) < 8:
-        raise HTTPException(
-            HTTPStatus.BAD_REQUEST, "password should be longer than 8 characters"
-        )
+        raise ValueError("password should be longer than 8 characters")
     if "repeat_password" in values and v != values["repeat_password"]:
-        raise HTTPException(HTTPStatus.BAD_REQUEST, "passwords do not match")
-    if not bool(re.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", v)):  # noqa
-        raise HTTPException(
-            HTTPStatus.BAD_REQUEST,
-            "password does not match password policy (at least one uppercase letter, one lowercase, one number)",
+        raise ValueError("passwords do not match")
+    if not bool(re.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", v)): # noqa
+        raise ValueError(
+            "password does not match password policy (at least one uppercase letter, one lowercase, one number)"
         )
     return pwd_context.hash(v)
 
 
 def validate_username(v: Optional[str], values: dict) -> str:
     if len(v) < 6:
-        raise HTTPException(HTTPStatus.BAD_REQUEST, "username should be longer than 6 characters")
+        raise ValueError("username should be longer than 6 characters")
     if not bool(re.match("^(?=[a-zA-Z0-9._]{6,20}$)(?!.*[_.]{2})[^_.].*[^_.]$", v)): # noqa
-        raise HTTPException(
-            HTTPStatus.BAD_REQUEST,
+        raise ValueError(
             "username does not match username policy (contains only alphabetic, underline and dots)"
         )
     return v
@@ -72,9 +66,7 @@ class User(BaseModel):
     )
     is_active: Optional[bool] = Field(default=True, description="User is active")
     verification_code: Optional[str] = Field(default=None)
-    recover_code: Optional[str] = Field(
-        default=None, description="JWT token for password recover"
-    )
+    recover_code: Optional[str] = Field(default=None, description="JWT token for password recover")
     created_at: Optional[datetime] = Field(default=None)
     about_me: str = Field(default="", description="About me field")
 

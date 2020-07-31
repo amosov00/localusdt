@@ -5,18 +5,18 @@
       span ₽/USDT
     header.bid__navigation
       h1 Купить USDT
-      nuxt-link(to="/bid/buy/") Продать USDT
+      nuxt-link(class="bid__link" to="/bid/buy/") Продать USDT
     hr
     div.bid__form
-      Input.bid__input(header="Название банка" placeholder="Банк")
+      Input.bid__input(v-model="adForm.bank_title" header="Название банка" placeholder="Банк")
       div.bid__input--hint
-        Input.bid__input(header="Прибыль" placeholder="Прибыль" endIcon="%" :width="475")
+        Input.bid__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="%" :width="475")
         p.paragraph-1 Размер прибыли, которую Вы хотите получить сверху рыночной цены.
-      Input.bid__input(header="Уравнение установление цены" placeholder="Уравнение")
+      //- Input.bid__input(header="Уравнение установление цены" placeholder="Уравнение")
       div.bid__gap
-        Input(:width="200" endIcon="RUB" type="number" header="Минимальный лимит транзакции")
-        Input(:width="200" endIcon="RUB" type="number" header="Минимальный лимит транзакции")
-      Textarea.bid__conditions(placeholder="Напишите условия сделки")
+        Input(v-model="adForm.bot_limit" :width="200" endIcon="RUB" type="number" header="Минимальный лимит транзакции")
+        Input(v-model="adForm.top_limit" :width="200" endIcon="RUB" type="number" header="Максимальный лимит транзакции")
+      Textarea.bid__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
       Button.bid__action(green) создать объявление
 </template>
 
@@ -25,7 +25,21 @@ import Input from '~/components/app/Input'
 import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 export default {
-  components: { Input, Textarea, Button }
+  name: 'bid-sell',
+  middleware: ['authRequired'],
+  components: { Input, Textarea, Button },
+  data() {
+    return {
+      adForm: {
+        bank_title: '',
+        profit: 1,
+        bot_limit: '',
+        top_limit: '',
+        condition: '',
+        type: 2
+      }
+    }
+  },
 }
 </script>
 

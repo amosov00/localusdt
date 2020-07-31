@@ -7,84 +7,43 @@
         th.table__head Лимит
         th.table__head Цена за токен
     tbody.table__body
-      tr.table__row
-        td.table__data userUser
+      tr.table__row(v-for="ad in tableData" :key="ad._id")
+        td.table__data {{ad.username}}
           span.status.green--bg
-        td.table__data Банковский перевод: Сбербанк
-        td.table__data 0 - 10 000 ₽
-        td.table__data 70,44 ₽
+        td.table__data Банковский перевод: {{ad.bank_title}}
+        td.table__data {{ad.bot_limit}} - {{spaceSplitting(ad.top_limit)}} ₽
+        td.table__data {{commaSplitting(ad.price)}} ₽
         td.table__data
-          Button(rounded green) Купить
-      tr.table__row
-        td.table__data userUser
-          span.status.green--bg
-        td.table__data Банковский перевод: Сбербанк
-        td.table__data 0 - 10 000 ₽
-        td.table__data 70,44 ₽
-        td.table__data
-          Button(rounded green) Купить
-      tr.table__row
-        td.table__data userUser
-          span.status.orange--bg
-        td.table__data Банковский перевод: Сбербанк
-        td.table__data 0 - 10 000 ₽
-        td.table__data 70,44 ₽
-        td.table__data
-          Button(rounded green) Купить
-      tr.table__row
-        td.table__data userUser
-          span.status.red--bg
-        td.table__data Банковский перевод: Сбербанк
-        td.table__data 0 - 10 000 ₽
-        td.table__data 70,44 ₽
-        td.table__data
-          Button(rounded green) Купить
-      tr.table__row
-        td.table__data userUser
-          span.status.green--bg
-        td.table__data Банковский перевод: Сбербанк
-        td.table__data 0 - 10 000 ₽
-        td.table__data 70,44 ₽
-        td.table__data
-          Button(rounded green) Купить
+          nuxt-link(:to="`/ad/${ad._id}`" v-if="isBuy")
+            Button(rounded outlined green) Купить
+          nuxt-link(:to="`/ad/${ad._id}`" v-else)
+            Button(rounded outlined green) Продать
 </template>
 
 <script>
 import Button from '~/components/app/Button'
+import formatCurreny from '~/mixins/formatCurrency'
 export default {
+  props: {
+    tableData: Array
+  },
+  mixins: [formatCurreny],
   components: {
     Button
   },
   data() {
     return {
-      tableData: [
-        {
-          seller: 'userUser',
-          paymentMethod: 'Сбербанк',
-          limit: '0 - 10 000 ₽',
-          tokenPrice: '70,44 ₽'
-        },
-        {
-          seller: 'userUser',
-          paymentMethod: 'Сбербанк',
-          limit: '0 - 10 000 ₽',
-          tokenPrice: '70,44 ₽'
-        },
-        {
-          seller: 'userUser',
-          paymentMethod: 'Сбербанк',
-          limit: '0 - 10 000 ₽',
-          tokenPrice: '70,44 ₽'
-        },
-        {
-          seller: 'userUser',
-          paymentMethod: 'Сбербанк',
-          limit: '0 - 10 000 ₽',
-          tokenPrice: '70,44 ₽'
-        }
-      ]
     }
-  }
+  },
+  computed: {
+    isBuy() {
+      if(this.tableData[0].type === 1) {
+        return false
+      } else {
+        return true
+      }
+    }
+  },
 }
 </script>
 

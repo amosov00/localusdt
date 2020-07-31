@@ -98,4 +98,4 @@ class AdsFilters(BaseModel):
     price_top: Optional[float] = Field(default=None)
     currency: Optional[Currency] = Field(default=Currency.RUB)
     payment_method: Optional[PaymentMethod] = Field(default=PaymentMethod.BANK)
-    limit: int = Field(default=5)
+    limit: int = Field(...)

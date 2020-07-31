@@ -51,7 +51,7 @@ export default {
     outline: none;
     border-radius: $border-radius;
     padding: 20px;
-    transition: $interaction-transition;
+    // transition: $interaction-transition;
     width: 475px;
     height: 175px;
 

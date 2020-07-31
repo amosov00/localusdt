@@ -5,12 +5,14 @@ from pydantic import Field, validator
 
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
+from schemas.ads import AdsType
 
 __all__ = [
     "Invoice",
     "InvoiceInDB",
     "InvoiceStatus",
-    "InvoiceCreate"
+    "InvoiceCreate",
+    "InvoiceInSearch"
 ]
 
 
@@ -49,6 +51,12 @@ class Invoice(BaseModel):
 
 class InvoiceInDB(Invoice):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
+
+
+class InvoiceInSearch(InvoiceInDB):
+    seller_username: str = Field(default=None)
+    buyer_username: str = Field(default=None)
+    ads_type: AdsType = Field(default=None)
 
 
 class InvoiceCreate(BaseModel):

@@ -40,7 +40,24 @@ class InvoiceCRUD(BaseMongoCRUD):
             query={"buyer_id": to_objectid(_id)}
         ) if _id else []
         result = seller if seller else []
-        return result if not buyer else seller + buyer
+        result = result if not buyer else seller + buyer
+        users = await UserCRUD.find_many(query={})
+        users_kw = {}
+        for user in users:
+            if user.get("username"):
+                users_kw[user["_id"]] = user["username"]
+
+        adses = await AdsCRUD.find_many(query={})
+        adses_kw = {}
+        for ads in adses:
+            if ads.get("type"):
+                adses_kw[ads["_id"]] = ads["type"]
+
+        for invoice in result:
+            invoice["seller_username"] = users_kw.get(invoice["seller_id"])
+            invoice["buyer_username"] = users_kw.get(invoice["buyer_id"])
+            invoice["ads_type"] = adses_kw.get(invoice["ads_id"])
+        return result
 
     @classmethod
     async def find_by_status(cls, status: InvoiceStatus) -> Optional[list]:

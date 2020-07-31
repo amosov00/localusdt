@@ -6,7 +6,8 @@ from api.dependencies import get_user
 from schemas.invoice import (
     InvoiceCreate,
     InvoiceInDB,
-    InvoiceStatus
+    InvoiceStatus,
+    InvoiceInSearch
 )
 from schemas.user import User
 
@@ -35,7 +36,7 @@ async def invoice_transfer(user: User = Depends(get_user), invoice_id: str = Pat
     return await InvoiceCRUD.transfer_tokens(user, invoice_id)
 
 
-@router.get("/", response_model=List[InvoiceInDB])
+@router.get("/", response_model=List[InvoiceInSearch])
 async def invoice_search(user: User = Depends(get_user)):
     return await InvoiceCRUD.find_by_user_id(user.id)
 

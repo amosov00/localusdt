@@ -1,7 +1,8 @@
 <template>
   <section class="ad">
     <header class="ad__header">
-      <h1 class="ad__title">Покупка USDT</h1>
+      <h1 class="ad__title" v-if="ad.type === 1">Покупка USDT</h1>
+      <h1 class="ad__title" v-else>Продажа USDT</h1>
       <p class="ad__payment-method">
         <span class="opacity-50">Банковский перевод: </span>{{ ad.bank_title }}
       </p>
@@ -23,7 +24,9 @@
         </div>
         <div class="box">
           <p class="body__field">Ограничения по сделке:</p>
-          <p class="body__field">{{ad.bot_limit}} - {{spaceSplitting(ad.top_limit)}} ₽</p>
+          <p class="body__field">
+            {{ ad.bot_limit }} - {{ spaceSplitting(ad.top_limit) }} ₽
+          </p>
         </div>
         <div class="box">
           <p class="body__field">Местоположение:</p>
@@ -41,22 +44,67 @@
         </div>
       </div>
     </main>
+    <div class="ad__footer">
+      <h2 v-if="ad.type === 1">Сколько Вы хотите продать?</h2>
+      <h2 v-else>Сколько Вы хотите купить?</h2>
+      <div v-if="$userIsLoggedIn()">
+        <Input
+          v-model="invoiceForm.amount_usdt"
+          type="number"
+          :width="150"
+          placeholder="0,00"
+        />
+        <Textarea
+          placeholder="Напишите трейдеру сообщение с контактной или другой информацией 
+(необязательно)"
+        />
+        <Button green @click.native="createInvoice"
+          >Отправить запрос на сделку</Button
+        >
+      </div>
+      <nuxt-link v-else to="/signup">
+        <Button orange>Зарегистрируйтесь бесплатно</Button>
+      </nuxt-link>
+    </div>
   </section>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import formatCurreny from '~/mixins/formatCurrency'
+import Button from '~/components/app/Button'
+import Textarea from '~/components/app/Textarea'
+import Input from '~/components/app/Input'
 export default {
   name: 'ad_by_id',
   mixins: [formatCurreny],
+  components: {
+    Button,
+    Textarea,
+    Input
+  },
   data() {
-    return {}
+    return {
+      invoiceForm: {
+        ads_id: this.$route.params.id,
+        amount_usdt: 0
+      }
+    }
   },
   computed: {
     ...mapGetters({
       ad: 'ads/adById'
     })
+  },
+  methods: {
+    createInvoice() {
+      if (this.invoiceForm.amount_usdt) {
+        this.$store.dispatch('invoice/createInvoice', this.invoiceForm)
+      } else {
+        this.$toast.showMessage({ content: 'Введите сумму', red: true })
+        window.scrollTo(0,0)
+      }
+    }
   },
   asyncData({ store, params }) {
     return store.dispatch('ads/fetchAdById', params.id)
@@ -68,14 +116,13 @@ export default {
 .ad {
   margin-top: 50px;
 
-  &__header {
-  }
-
-  &__title {
-  }
-
   &__payment-method {
     margin-top: 20px;
+  }
+
+  &__footer {
+    margin-top: 30px;
+    margin-bottom: 30px;
   }
 
   .body {

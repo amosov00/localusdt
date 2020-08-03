@@ -2,8 +2,12 @@
   <section class="ad">
     <header class="ad__header">
       <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
-      <span class="opacity-50 fz-20"
+      <span class="opacity-50 fz-20" v-if="invoice.ads_type === 1"
         >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
+        {{ commaSplitting(invoice.amount_rub) }} ₽</span
+      >
+      <span class="opacity-50 fz-20" v-else-if="invoice.ads_type === 2"
+        >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
       >
       <p class="ad__payment-method">
@@ -16,7 +20,9 @@
         </p>
         <p
           class="underline-link red"
-          v-if="invoice.status === 'waiting_for_payment'"
+          v-if="
+            invoice.status === 'waiting_for_payment' && invoice.ads_type === 1
+          "
           @click="cancel"
         >
           Отменить сделку
@@ -63,7 +69,7 @@
     </main>
     <div class="ad__footer">
       <div class="chat"></div>
-      <div class="steps">
+      <div class="steps" v-if="invoice.ads_type === 1">
         <div class="step-1">
           <p><span class="opacity-50">Шаг 1: </span> Заплатите продавцу</p>
           <p>
@@ -81,10 +87,12 @@
         <div class="step-2">
           <p><span class="opacity-50">Шаг 2: </span> Подтвердите платеж</p>
           <p>
-            Токены удерживаются на счете в течение <span class="orange">90 минут</span>, за это время
-            необходимо осуществить оплату. После оплаты Вам необходимо <span class="orange"> отметить
-            платеж как завершенный</span>, нажав на кнопку “я заплатил”, в противном
-            случае сделка будет автоматически отменена.
+            Токены удерживаются на счете в течение
+            <span class="orange">90 минут</span>, за это время необходимо
+            осуществить оплату. После оплаты Вам необходимо
+            <span class="orange"> отметить платеж как завершенный</span>, нажав
+            на кнопку “я заплатил”, в противном случае сделка будет
+            автоматически отменена.
           </p>
           <Button
             class="w-100 mt-20"
@@ -96,8 +104,32 @@
         </div>
         <div class="step-3" v-if="invoice.status === 'waiting_for_tokens'">
           <p><span class="opacity-50">Шаг 3: </span> Ожидайте токены</p>
-          <p>В течении <span class="orange">30 минут</span> продавец отпрвит токены на ваш адрес.</p>
+          <p>
+            В течении <span class="orange">30 минут</span> продавец отпрвит
+            токены на ваш адрес.
+          </p>
         </div>
+      </div>
+      <div class="steps" v-else-if="invoice.ads_type === 2">
+        <p class="fz-20">Отправить токены</p>
+        <p>
+          Покупатель еще не отметил платеж как завершенный, и остается <span class="green">89 минут</span>
+          для проведения оплаты. Если оплата не будет осуществлена, сделка
+          автоматически отменится. Когда Вы получите платеж, <span class="orange">отправьте токены</span> из
+          депонирования.
+        </p>
+        <div class="ma-0 pa-20">
+            <p>
+              <span class="opacity-50">Не забудьте дать покупателю указания об оплате</span>
+            </p>
+          </div>
+        <Button
+            class="w-100 mt-20"
+            green
+            @click.native="paid"
+            :disabled="invoice.status !== 'waiting_for_payment'"
+            >отправить токены</Button
+          >
       </div>
     </div>
     <!-- <Modal /> -->
@@ -148,7 +180,7 @@ export default {
       //   })
       //   console.log(res.error)
       // }
-    },
+    }
   },
   asyncData({ route, store }) {
     return store.dispatch('invoice/fetchInvoiceById', route.params.id)

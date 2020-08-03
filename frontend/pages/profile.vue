@@ -30,9 +30,6 @@ export default {
     return {}
   },
   computed: {
-    // ...mapGetters({
-    //   invoices: 'invoice/invoices'
-    // }),
     user() {
       return this.$store.getters.user
     },

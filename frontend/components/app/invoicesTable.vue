@@ -15,19 +15,20 @@
         td.table__data {{invoice.seller_username}}
         td.table__data {{commaSplitting(invoice.amount_usdt)}} USDT 
           span.opacity-50 за {{commaSplitting(invoice.amount_rub)}} ₽
-        td.table__data(:class="invoiceStatus(invoice.status).color")
-          nuxt-link( :to="`/invoice/${invoice._id}`")  {{invoiceStatus(invoice.status).message}}
+        td.table__data(:class="invoiceStatus(invoice.status)")
+          nuxt-link( :to="`/invoice/${invoice._id}`")  {{invoiceStatusShort(invoice.status)}}
 </template>
 
 <script>
 import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
 import formatDate from '~/mixins/formatDate'
+import invoiceStatuses from '~/mixins/invoiceStatuses'
 export default {
   props: {
     tableData: Array
   },
-  mixins: [formatCurreny, formatDate],
+  mixins: [formatCurreny, formatDate, invoiceStatuses],
   components: {
     Button
   },
@@ -44,11 +45,6 @@ export default {
     }
   },
   methods: {
-    invoiceStatus(status) {
-      if (status === 'waiting_for_payment') {
-        return { message: 'В процессе', color: 'orange' }
-      } else return { message: status, color: 'red' }
-    }
   }
 }
 </script>

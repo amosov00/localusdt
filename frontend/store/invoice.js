@@ -41,6 +41,7 @@ export const actions = {
   },
   async fetchInvoiceById({ commit }, id) {
     const { data } = await this.$axios.get(`/invoice/${id}/`)
+    // console.log(data)
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {
@@ -62,9 +63,9 @@ export const actions = {
   },
   async confirmInvoice({}, id) {
     return await this.$axios.put(`/invoice/${id}/confirm/`).then(res => {
-      return res
+      return true
     }).catch(error => {
-      return error
+      return false
     })
   }
 }

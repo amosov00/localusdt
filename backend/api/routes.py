@@ -7,7 +7,7 @@ from api.controllers import account, debug, ads, invoice
 api_router = APIRouter()
 
 api_router.include_router(account.router, prefix="/account", tags=["account"])
-api_router.include_router(ads.router, prefix="/adv", tags=["adv"])
+api_router.include_router(ads.router, prefix="/order", tags=["order"])
 api_router.include_router(invoice.router, prefix="/invoice", tags=["invoice"])
 
 

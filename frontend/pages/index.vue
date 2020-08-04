@@ -4,11 +4,13 @@
     section.table-section
       h1.table-section__title Купить USDT
       Table(:tableData="sellAds")
-      p.table-section__subtitle Показать больше объявлений
+      nuxt-link(to="/buy")
+        p.table-section__subtitle.fz-20 Показать больше объявлений
     section.table-section
       h1.table-section__title Продать USDT
       Table(:tableData="buyAds")
-      p.table-section__subtitle Показать больше объявлений
+      nuxt-link(to="/sell")
+        p.table-section__subtitle.fz-20 Показать больше объявлений
 </template>
 
 <script>

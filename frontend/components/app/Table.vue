@@ -1,49 +1,97 @@
 <template lang="pug">
-  table.table
-    thead.table__header
-      tr.table__row
-        th.table__head Продавец
-        th.table__head Способ оплаты
-        th.table__head Лимит
-        th.table__head Цена за токен
-    tbody.table__body
-      tr.table__row(v-for="ad in tableData" :key="ad._id")
-        td.table__data {{ad.username}}
-          span.status.green--bg
-        td.table__data Банковский перевод: {{ad.bank_title}}
-        td.table__data {{ad.bot_limit}} - {{spaceSplitting(ad.top_limit)}} ₽
-        td.table__data {{commaSplitting(ad.price)}} ₽
-        td.table__data
-          nuxt-link(:to="`/ad/${ad._id}`" v-if="isBuy")
-            Button(rounded outlined green) Купить
-          nuxt-link(:to="`/ad/${ad._id}`" v-else)
-            Button(rounded outlined green) Продать
+  div
+    table.table
+      thead.table__header
+        tr.table__row
+          th.table__head Продавец
+          th.table__head Способ оплаты
+          th.table__head Лимит
+          th.table__head Цена за токен
+      tbody.table__body
+        tr.table__row(v-for="ad in tableData" :key="ad._id")
+          td.table__data {{ad.username}}
+            span.status.green--bg
+          td.table__data Банковский перевод: {{ad.bank_title}}
+          td.table__data {{ad.bot_limit}} - {{spaceSplitting(ad.top_limit)}} ₽
+          td.table__data {{commaSplitting(ad.price)}} ₽
+          td.table__data
+            nuxt-link(:to="`/ad/${ad._id}`" v-if="isBuy")
+              Button(rounded outlined green) Купить
+            nuxt-link(:to="`/ad/${ad._id}`" v-else)
+              Button(rounded outlined green) Продать
+    div.pagination(v-if="pagination")
+      div.pagination__controller
+        span.pagination__arrow-button(@click="prevPage")
+          InlineSvg(:src="require('~/assets/icons/arrow-left.svg')")
+        span {{paginatedTableData}}
+        span.pagination__arrow-button(@click="nextPage")
+          InlineSvg(:src="require('~/assets/icons/arrow-right.svg')")
+      div.pagination__quantity
 </template>
 
 <script>
 import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
+import InlineSvg from 'vue-inline-svg'
 export default {
   props: {
-    tableData: Array
+    tableData: Array,
+    pagination: {
+      type: Boolean,
+      default: false
+    }
   },
   mixins: [formatCurreny],
   components: {
-    Button
+    Button,
+    InlineSvg
   },
   data() {
     return {
+      currentPage: 1,
+      contentPerPage: 25,
+      tableContent: [],
+      paginatedTableData: []
+    }
+  },
+  watch: {
+    currentPage: function(val) {
+      let quantity = this.tableContent.slice(
+        val * this.contentPerPage,
+        this.contentPerPage
+      )
     }
   },
   computed: {
     isBuy() {
-      if(this.tableData[0].type === 1) {
+      if (this.tableData[0].type === 1) {
         return false
       } else {
         return true
       }
+    },
+    // paginatedTableData() {
+    //   return this.tableContent.slice(
+    //     this.currentPage * this.contentPerPage,
+    //     this.contentPerPage
+    //   )
+    // }
+  },
+  methods: {
+    prevPage() {
+      this.currentPage -= 1
+      console.log(this.currentPage, this.currentPage * this.contentPerPage)
+    },
+    nextPage() {
+      this.currentPage += 1
+      console.log(this.currentPage, this.currentPage * this.contentPerPage)
     }
   },
+  created() {
+    for (let i = 0; i < 300; i++) {
+      this.tableContent.push(i)
+    }
+  }
 }
 </script>
 
@@ -88,6 +136,33 @@ export default {
     // padding: 25px;
     border-right: 1px solid $grey;
     position: relative;
+  }
+}
+
+.pagination {
+  width: 100%;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+
+  &__controller {
+    display: inline-block;
+    max-width: 350px;
+    width: 100%;
+    height: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__arrow-button {
+    cursor: pointer;
+  }
+
+  &__quantity {
+    justify-self: end;
+    display: inline-block;
+    width: 100px;
+    height: 20px;
   }
 }
 </style>

@@ -50,8 +50,8 @@ export default {
   data() {
     return {
       footerLinks: [
-        { title: 'Купить Tether', url: '/' },
-        { title: 'Продать Tether', url: '/' }
+        { title: 'Купить Tether', url: '/buy' },
+        { title: 'Продать Tether', url: '/sell' }
       ]
     }
   },

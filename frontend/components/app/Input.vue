@@ -1,15 +1,19 @@
-<template lang="pug">
-	div.input(:style="{width: `${width}px`}")
-		div.input__box
-			div.input__header(v-if="inputHeader") {{header}}
-			input.input__field(@input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" :type="showPasswordField" min="0")
-			InlineSvg.input__icon(v-if="inputIcon" :src="require(`~/assets/icons/${icon}.svg`)")
-			span.input__icon--end(v-if="inputEndIcon") {{endIcon}}
-			InlineSvg.input__icon--eye(:src="require(`~/assets/icons/${passwordIcon}.svg`)" v-if="type === 'password'" @click="toggleShowPassword")
+<template>
+  <div class="input" :style="{width: `${width}px`}">
+    <p class="input__header" v-if="header">{{ header }}</p>
+    <div class="input__body">
+      <span class="input__icon" v-if="icon">
+        <InlineSvg :src="require(`~/assets/icons/${icon}.svg`)" />
+      </span>
+      <input class="input__field" :type="type" @input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" />
+      <span class="input__icon" v-if="endIcon || type === 'password'" @click="toggleShowPassword">
+        <InlineSvg :src="require(`~/assets/icons/${endIcon}.svg`)" />
+      </span>
+    </div>
+  </div>
 </template>
 
 <script>
-/* eslint-disable */
 import InlineSvg from 'vue-inline-svg'
 export default {
   components: { InlineSvg },
@@ -83,6 +87,7 @@ export default {
   },
   methods: {
     toggleShowPassword() {
+      console.log('click')
       this.showPassword = !this.showPassword
     },
     updateValue(value) {
@@ -98,7 +103,6 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
-  position: relative;
 
   &__header {
     font-size: 12px;
@@ -107,54 +111,45 @@ export default {
     margin-bottom: 5px;
   }
 
-  &__field {
+  &__body {
+    display: flex;
+    align-items: center;
+    background-color: #eee;
     height: 45px;
     width: 100%;
     opacity: 0.8;
     background-color: $grey-light;
     border: 1px solid transparent;
-    outline: none;
     border-radius: $border-radius;
-    padding: 20px 45px;
     transition: $interaction-transition;
+    padding: 10px;
+
+    &:focus-within {
+      border: 1px solid #c8c8c8;
+      caret-color: $orange;
+
+      box-shadow: 0px 8px 9px rgba(67, 78, 74, 0.07),
+        0px 16px 23px rgba(67, 78, 74, 0.09);
+    }
+  }
+
+  &__field {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    border: none;
+    background-color: inherit;
 
     &:focus {
-      box-shadow: $box-shadow;
-      border: 1px solid #c8c8c8;
       caret-color: $orange;
     }
   }
 
   &__icon {
-    transform: translate(-50%, -50%);
-    position: absolute;
-    top: 50%;
-    left: 25px;
-
-    &--end {
-      transform: translate(-50%, -50%);
-      position: absolute;
-      top: 70%;
-      right: 10px;
-      font-size: 16px;
-      word-wrap: break-word;
-      text-transform: uppercase;
-      opacity: 0.5;
-    }
-
-    &--eye {
-      cursor: pointer;
-      transform: translate(-50%, -50%);
-      position: absolute;
-      top: 50%;
-      right: 20px;
-      opacity: 0.5;
-    }
-  }
-
-  &__error {
-    color: $red;
-    // margin: 2px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>

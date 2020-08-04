@@ -43,7 +43,7 @@ export default {
   font-size: 16px;
   height: 45px;
   border: none;
-  // outline: none;
+  outline: none;
   border-radius: $border-radius;
   padding: 15px 30px;
   text-transform: uppercase;

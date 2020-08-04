@@ -16,8 +16,8 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchAds({ commit }) {
-    const { data } = await this.$axios.get('/ads/')
+  async fetchAds({ commit }, type = '') {
+    const { data } = await this.$axios.get(`/ads/?limit=100&${type ? `ad_type=${type}` : ''}`)
     commit('setAds', data)
   },
   async fetchAdById({ commit }, id) {
@@ -26,7 +26,7 @@ export const actions = {
   },
   async createAd({}, adForm) {
     return await this.$axios
-      .post('/ads/', { adForm })
+      .post('/ads/', adForm)
       .then(() => {
         this.$toast.showMessage({
           content: 'Ваше объявление успешно размещено!',
@@ -34,7 +34,6 @@ export const actions = {
         })
       })
       .catch(error => {
-        console.log(error.response)
         this.$toast.showMessage({ content: error.response.data[0].message, red: true })
       })
   }

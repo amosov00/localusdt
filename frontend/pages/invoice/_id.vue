@@ -10,9 +10,6 @@
         >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
       >
-      <p class="ad__payment-method">
-        <!-- <span class="opacity-50">Банковский перевод: </span>{{ ad.bank_title }} -->
-      </p>
       <div class="ad__subtitle">
         <p>
           <span class="green">Статус сделки: </span>
@@ -29,44 +26,7 @@
         </p>
       </div>
     </header>
-    <main class="body">
-      <div class="body__info">
-        <div class="box">
-          <p class="body__field">Цена:</p>
-          <p class="body__field">
-            {{ commaSplitting(invoice.amount_rub) }} ₽/USDT
-          </p>
-        </div>
-        <div class="box" v-if="invoice.ads_type === 1">
-          <p class="body__field">Продавец:</p>
-          <p class="body__field">{{ invoice.seller_username }}</p>
-        </div>
-        <div class="box" v-else-if="invoice.ads_type === 2">
-          <p class="body__field">Покупатель:</p>
-          <p class="body__field">{{ invoice.buyer_username }}</p>
-        </div>
-        <hr />
-        <div class="box">
-          <p class="body__field">Способ оплаты:</p>
-          <p class="body__field">Банковский перевод: Сбербанк</p>
-        </div>
-        <div class="box">
-          <p class="body__field">Ограничения по сделке:</p>
-        </div>
-        <div class="box">
-          <p class="body__field">Местоположение:</p>
-          <p class="body__field">Российская Федерация</p>
-        </div>
-        <div class="box">
-          <p class="body__field">Окно оплаты:</p>
-          <p class="body__field">1 час 30 минут</p>
-        </div>
-      </div>
-      <div class="condition">
-        <h2 class="condition__title">Условия сделки</h2>
-        <div class="condition__box"></div>
-      </div>
-    </main>
+    <AdInfo :ad="invoice" />
     <div class="ad__footer">
       <div class="chat"></div>
       <div class="steps" v-if="invoice.ads_type === 1">
@@ -142,12 +102,16 @@ import formatCurrency from '~/mixins/formatCurrency'
 import invoiceStatuses from '~/mixins/invoiceStatuses'
 import Button from '~/components/app/Button'
 import Modal from '~/components/app/Modal'
+import AdForm from '~/components/AdForm'
+import AdInfo from '~/components/AdInfo'
 export default {
   name: 'invoice_by_id',
   mixins: [formatCurrency, invoiceStatuses],
   components: {
     Button,
-    Modal
+    Modal,
+    AdForm,
+    AdInfo
   },
   data() {
     return {}

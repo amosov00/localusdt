@@ -12,7 +12,7 @@
       Input.create-ad__input(v-model="adForm.amount_usdt" type="number" header="Сколько Вы хотите купить" placeholder="0" endIcon="usdt")
       Input.create-ad__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent")
       div.create-ad__gap
-        Input(v-model="adForm.bot_limit" :width="150" type="number" header="Минимальный лимит транзакции")
+        Input.mr-30(v-model="adForm.bot_limit" :width="150" type="number" header="Минимальный лимит транзакции")
         Input(v-model="adForm.top_limit" :width="150" type="number" header="Максимальный лимит транзакции")
       Textarea.create-ad__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
       Button.create-ad__action(green @click.native="createAd") создать объявление

@@ -5,8 +5,11 @@
       <span class="input__icon" v-if="icon">
         <InlineSvg :src="require(`~/assets/icons/${icon}.svg`)" />
       </span>
-      <input class="input__field" :type="type" @input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" />
-      <span class="input__icon" v-if="endIcon || type === 'password'" @click="toggleShowPassword">
+      <input class="input__field" :type="showPasswordField" @input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" />
+      <span class="input__icon" v-if="type === 'password'" @click="toggleShowPassword">
+        <InlineSvg :src="require(`~/assets/icons/${passwordIcon}.svg`)" />
+      </span>
+      <span class="input__icon" v-else-if="endIcon">
         <InlineSvg :src="require(`~/assets/icons/${endIcon}.svg`)" />
       </span>
     </div>
@@ -31,10 +34,12 @@ export default {
     },
     icon: {
       type: String,
+      default: '',
       required: false
     },
     endIcon: {
       type: String,
+      default: '',
       required: false
     },
     header: {
@@ -61,27 +66,6 @@ export default {
         return 'text'
       } else {
         return this.type
-      }
-    },
-    inputIcon() {
-      if (this.icon) {
-        return true
-      } else {
-        return false
-      }
-    },
-    inputEndIcon() {
-      if (this.endIcon) {
-        return true
-      } else {
-        return false
-      }
-    },
-    inputHeader() {
-      if (this.header) {
-        return true
-      } else {
-        return false
       }
     }
   },

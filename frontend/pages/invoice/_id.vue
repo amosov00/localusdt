@@ -28,7 +28,7 @@
     </header>
     <AdInfo :ad="invoice" />
     <div class="ad__footer">
-      <div class="chat"></div>
+      <Chat />
       <div class="steps" v-if="invoice.ads_type === 1">
         <div class="step-1">
           <p><span class="opacity-50">Шаг 1: </span> Заплатите продавцу</p>
@@ -104,6 +104,7 @@ import Button from '~/components/app/Button'
 import Modal from '~/components/app/Modal'
 import AdForm from '~/components/AdForm'
 import AdInfo from '~/components/AdInfo'
+import Chat from '~/components/app/Chat'
 export default {
   name: 'invoice_by_id',
   mixins: [formatCurrency, invoiceStatuses],
@@ -111,7 +112,8 @@ export default {
     Button,
     Modal,
     AdForm,
-    AdInfo
+    AdInfo,
+    Chat
   },
   data() {
     return {}
@@ -175,13 +177,13 @@ export default {
     display: flex;
     justify-content: space-between;
 
-    .chat {
-      max-width: 550px;
-      min-height: 300px;
-      width: 100%;
-      height: 100%;
-      background-color: $green;
-    }
+    // .chat {
+    //   max-width: 550px;
+    //   min-height: 300px;
+    //   width: 100%;
+    //   height: 100%;
+    //   background-color: $green;
+    // }
 
     .steps {
       max-width: 550px;

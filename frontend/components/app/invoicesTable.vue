@@ -15,8 +15,8 @@
         td.table__data {{invoice.seller_username}}
         td.table__data {{commaSplitting(invoice.amount_usdt)}} USDT 
           span.opacity-50 за {{commaSplitting(invoice.amount_rub)}} ₽
-        td.table__data(:class="invoiceStatus(invoice.status)")
-          nuxt-link( :to="`/invoice/${invoice._id}`")  {{invoiceStatusShort(invoice.status)}}
+        td.table__data.orange
+          nuxt-link.table__link( :to="`/invoice/${invoice._id}`")  {{invoiceStatusShort(invoice.status)}}
 </template>
 
 <script>
@@ -90,6 +90,10 @@ export default {
     // padding: 25px;
     border-right: 1px solid $grey;
     position: relative;
+  }
+
+  &__link {
+    color: $orange !important;
   }
 }
 </style>

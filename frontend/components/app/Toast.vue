@@ -39,12 +39,13 @@ export default {
 
 <style lang="scss">
 .toast {
-  // background-color: $red;
   width: 100vw;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: fixed;
+  top: 0;
 
   &__title {
     font-style: normal;

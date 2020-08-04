@@ -13,6 +13,7 @@
         <InlineSvg :src="require(`~/assets/icons/${endIcon}.svg`)" />
       </span>
     </div>
+    <p v-if="hint" class="input__hint">Размер прибыли, которую Вы хотите получить <br> сверху рыночной цены.</p>
   </div>
 </template>
 
@@ -45,7 +46,8 @@ export default {
     header: {
       type: String,
       default: ''
-    }
+    },
+    hint: Boolean
   },
   data() {
     return {
@@ -71,7 +73,6 @@ export default {
   },
   methods: {
     toggleShowPassword() {
-      console.log('click')
       this.showPassword = !this.showPassword
     },
     updateValue(value) {
@@ -87,6 +88,15 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
+  position: relative;
+
+  &__hint {
+    position: absolute;
+    top: 40%;
+    right: -70%;
+    font-style: italic;
+    opacity: .5;
+  }
 
   &__header {
     font-size: 12px;

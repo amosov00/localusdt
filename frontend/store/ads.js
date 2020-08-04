@@ -17,16 +17,16 @@ export const mutations = {
 
 export const actions = {
   async fetchAds({ commit }, type = '') {
-    const { data } = await this.$axios.get(`/ads/?limit=100&${type ? `ad_type=${type}` : ''}`)
+    const { data } = await this.$axios.get(`/adv/?limit=100&${type ? `ad_type=${type}` : ''}`)
     commit('setAds', data)
   },
   async fetchAdById({ commit }, id) {
-    const { data } = await this.$axios.get(`/ads/${id}`)
+    const { data } = await this.$axios.get(`/adv/${id}`)
     commit('setAdById', data)
   },
   async createAd({}, adForm) {
     return await this.$axios
-      .post('/ads/', adForm)
+      .post('/adv/', adForm)
       .then(() => {
         this.$toast.showMessage({
           content: 'Ваше объявление успешно размещено!',

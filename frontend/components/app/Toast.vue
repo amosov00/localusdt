@@ -46,6 +46,7 @@ export default {
   justify-content: center;
   position: sticky;
   top: 0;
+  z-index: 1000000;
 
   &__title {
     font-style: normal;

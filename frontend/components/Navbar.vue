@@ -71,7 +71,7 @@ export default {
   box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.15);
 
   &__container {
-    max-width: 1170px;
+    max-width: 1230px;
     width: 100%;
     margin: auto;
     height: inherit;

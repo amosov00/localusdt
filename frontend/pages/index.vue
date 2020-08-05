@@ -41,7 +41,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('order/fetchOrders')
+    this.$store.dispatch('order/fetchOrders', {limit: 5})
   }
 }
 </script>

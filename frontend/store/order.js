@@ -16,13 +16,17 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchOrders({ commit }, type = '') {
-    const { data } = await this.$axios.get(`/order/?limit=100&${type ? `ad_type=${type}` : ''}`)
+  async fetchOrders({ commit }, query) {
+    const { data } = await this.$axios.get(`/order/?limit=${query.limit}&${query.type ? `ad_type=${query.type}` : ''}`)
     commit('setOrders', data)
   },
   async fetchOrderById({ commit }, id) {
     const { data } = await this.$axios.get(`/order/${id}`)
     commit('setOrderById', data)
+  },
+  async searchOrders({commit}, params) {
+    const { data } = await this.$axios.get(`/order/?ad_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`)
+    commit('setOrders', data)
   },
   async createOrder({}, adForm) {
     return await this.$axios

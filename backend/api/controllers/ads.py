@@ -42,8 +42,8 @@ async def ads_fetch_all(
         price_bot: Optional[float] = None,
         price_top: Optional[float] = None,
         currency: Optional[Currency] = Currency.RUB,
-        payment_method: Optional[PaymentMethod] = PaymentMethod.BANK,
-        limit: int = 10
+        payment_method: Optional[PaymentMethod] = None,
+        limit: int = 10000
 ):
 
     filters = AdsFilters(

@@ -1,8 +1,8 @@
 <template>
-  <div class="ad-condition">
-    <h2 class="ad-condition__title">Условия сделки</h2>
-    <div class="ad-condition__box">
-      <p class="opacity-50">{{ adCondition }}</p>
+  <div class="order-condition">
+    <h2 class="order-condition__title">Условия сделки</h2>
+    <div class="order-condition__box">
+      <p class="opacity-50">{{ orderCondition }}</p>
     </div>
   </div>
 </template>
@@ -10,13 +10,13 @@
 <script>
 export default {
   props: {
-    adCondition: String
+    orderCondition: String
   }
 }
 </script>
 
 <style lang="scss">
-.ad-condition {
+.order-condition {
   min-width: 350px;
   max-width: 500px;
   width: 100%;

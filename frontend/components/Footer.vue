@@ -36,7 +36,7 @@ export default {
 	border-top: 1px solid rgba(17, 23, 29, 0.2);
 
 	&__container {
-		max-width: 1240px;
+		max-width: 1230px;
     width: 100%;
     padding-right: 20px;
     padding-left: 20px;

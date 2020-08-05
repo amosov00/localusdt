@@ -3,12 +3,12 @@
     NonAuthorizedHero(v-if="!$userIsLoggedIn()")
     section.table-section
       h1.table-section__title Купить USDT
-      Table(:tableData="sellAds")
+      Table(:tableData="sellOrders")
       nuxt-link(to="/buy")
         p.table-section__subtitle.fz-20 Показать больше объявлений
     section.table-section
       h1.table-section__title Продать USDT
-      Table(:tableData="buyAds")
+      Table(:tableData="buyOrders")
       nuxt-link(to="/sell")
         p.table-section__subtitle.fz-20 Показать больше объявлений
 </template>
@@ -34,8 +34,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sellAds: 'ads/sellAds',
-      buyAds: 'ads/buyAds'
+      sellOrders: 'order/sellOrders',
+      buyOrders: 'order/buyOrders'
     })
   },
   methods: {
@@ -44,7 +44,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('ads/fetchAds')
+    this.$store.dispatch('order/fetchOrders')
   }
 }
 </script>
@@ -54,6 +54,8 @@ export default {
   margin-top: 120px;
   margin-bottom: 120px;
   &__subtitle {
+    @include montserrat;
+    font-size: 16px;
     margin-top: 30px;
     color: $orange;
     text-decoration: underline;

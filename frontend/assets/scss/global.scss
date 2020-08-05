@@ -17,10 +17,8 @@ html {
 }
 
 .container {
-	max-width: 1170px;
+	max-width: 1230px;
 	width: 100%;
-	// min-height: calc(100vh - 75px - 71px);
-	// overflow-y: scroll;
 	overflow: hidden;
 	min-height: 100vh;
 	margin-left: auto;
@@ -70,15 +68,6 @@ a {
 
 .disabled {
 	opacity: 0.5;
-}
-
-.status {
-	position: absolute;
-	top: 43%;
-	left: 73%;
-	height: 10px;
-	width: 10px;
-	border-radius: 50%;
 }
 
 .page-enter-active,

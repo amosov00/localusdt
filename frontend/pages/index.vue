@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     NonAuthorizedHero(v-if="!$userIsLoggedIn()")
-    Tab
+    Tab(:top="top")
     section.table-section
       h1.table-section__title Купить USDT
       Table(:tableData="sellOrders")
@@ -26,7 +26,14 @@ export default {
     ...mapGetters({
       sellOrders: 'order/sellOrders',
       buyOrders: 'order/buyOrders'
-    })
+    }),
+    top() {
+      if(!this.$userIsLoggedIn()) {
+        return 300
+      } else {
+        return 100
+      }
+    }
   },
   methods: {
     selectedOption(option) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="tab">
+  <div class="tab" :style="{'top': `${top}px`}">
     <nav class="tab-nav">
       <div
         class="tab-nav__item"
@@ -31,6 +31,9 @@ import Input from '~/components/app/Input'
 import Select from '~/components/app/Select'
 import Button from '~/components/app/Button'
 export default {
+  props: {
+    top: Number
+  },
   components: {
     Input,
     Select,

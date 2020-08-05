@@ -8,16 +8,19 @@
           th.table__head Лимит
           th.table__head Цена за токен
       tbody.table__body
-        tr.table__row(v-for="ad in tableData" :key="ad._id")
-          td.table__data {{ad.username}}
+        tr.table__row(v-for="order in tableData" :key="order._id")
+          td.table__data {{order.username}}
             span.status.green--bg
-          td.table__data Банковский перевод: {{ad.bank_title}}
-          td.table__data {{ad.bot_limit}} - {{spaceSplitting(ad.top_limit)}} ₽
-          td.table__data {{commaSplitting(ad.price)}} ₽
+            span.orders-count (10+)
+          td.table__data 
+            span.opacity-50 Банковский перевод: 
+            span {{order.bank_title}}
+          td.table__data {{order.bot_limit}} - {{spaceSplitting(order.top_limit)}} ₽
+          td.table__data {{commaSplitting(order.price)}} ₽
           td.table__data
-            nuxt-link(:to="`/ad/${ad._id}`" v-if="isBuy")
+            nuxt-link(:to="`/order/${order._id}`" v-if="isBuy")
               Button(rounded outlined green) Купить
-            nuxt-link(:to="`/ad/${ad._id}`" v-else)
+            nuxt-link(:to="`/order/${order._id}`" v-else)
               Button(rounded outlined green) Продать
     div.pagination(v-if="pagination")
       div.pagination__controller
@@ -69,7 +72,7 @@ export default {
       } else {
         return true
       }
-    },
+    }
     // paginatedTableData() {
     //   return this.tableContent.slice(
     //     this.currentPage * this.contentPerPage,
@@ -97,7 +100,7 @@ export default {
 
 <style lang="scss">
 .table {
-  max-width: 1170px;
+  max-width: 1230px;
   width: 100%;
   border-collapse: collapse;
   margin: 25px 0;
@@ -115,27 +118,45 @@ export default {
     padding: 20px;
     font-weight: 500;
   }
-
   &__body {
-    border: 1px solid $grey;
-    border-radius: 3px;
-
     .table__row {
       line-height: 70px;
+
       &:nth-child(2n) {
-        background-color: rgba(72, 177, 144, 0.07);
+        background-color: #fdfdfd;
       }
 
       &:hover {
-        background-color: rgba(72, 177, 144, 0.07);
+        background-color: #fdfdfd;
       }
     }
   }
 
   &__data {
-    // padding: 25px;
-    border-right: 1px solid $grey;
-    position: relative;
+    text-align: left;
+    padding-left: 30px;
+
+    .status {
+      display: inline-block;
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      margin-left: 6px;
+    }
+
+    .orders-count {
+      display: inline-block;
+      margin-left: 15px;
+      color: $grey-dark;
+    }
+
+    &:not(:last-child) {
+      border-right: 1px solid $grey;
+    }
+
+    &:nth-child(4) {
+      font-weight: 500;
+    }
   }
 }
 

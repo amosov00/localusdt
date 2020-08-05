@@ -13,8 +13,10 @@
         td.table__data(v-if="invoice.ads_type === 1") Покупка USDT
         td.table__data(v-else-if="invoice.ads_type === 2") Продажа USDT
         td.table__data {{invoice.seller_username}}
+          span.status.green--bg
+          span.orders-count (10+)
         td.table__data {{commaSplitting(invoice.amount_usdt)}} USDT 
-          span.opacity-50 за {{commaSplitting(invoice.amount_rub)}} ₽
+          span.opacity-50.fw-400 за {{commaSplitting(invoice.amount_rub)}} ₽
         td.table__data.orange
           nuxt-link.table__link( :to="`/invoice/${invoice._id}`")  {{invoiceStatusShort(invoice.status)}}
 </template>
@@ -49,51 +51,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.table {
-  max-width: 1170px;
-  width: 100%;
-  border-collapse: collapse;
-  margin: 25px 0;
-  text-align: center;
-  &__header {
-    .table__row {
-      color: #000;
-      opacity: 0.4;
-      text-transform: uppercase;
-      text-align: center;
-    }
-  }
-
-  &__head {
-    padding: 20px;
-    font-weight: 500;
-  }
-
-  &__body {
-    border: 1px solid $grey;
-    border-radius: 3px;
-
-    .table__row {
-      line-height: 70px;
-      &:nth-child(2n) {
-        background-color: rgba(72, 177, 144, 0.07);
-      }
-
-      &:hover {
-        background-color: rgba(72, 177, 144, 0.07);
-      }
-    }
-  }
-
-  &__data {
-    // padding: 25px;
-    border-right: 1px solid $grey;
-    position: relative;
-  }
-
-  &__link {
-    color: $orange !important;
-  }
-}
-</style>

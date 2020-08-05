@@ -18,7 +18,7 @@ export default {
     })
   },
   asyncData({ store}) {
-    return store.dispatch('order/fetchOrders', 2)
+    return store.dispatch('order/fetchOrders', 1)
   },
 }
 </script>

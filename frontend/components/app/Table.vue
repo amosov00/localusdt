@@ -18,7 +18,7 @@
           td.table__data {{order.bot_limit}} - {{spaceSplitting(order.top_limit)}} ₽
           td.table__data {{commaSplitting(order.price)}} ₽
           td.table__data
-            nuxt-link(:to="`/order/${order._id}`" v-if="isBuy")
+            nuxt-link(:to="`/order/${order._id}`" v-if="order.type === 1")
               Button(rounded outlined green) Купить
             nuxt-link(:to="`/order/${order._id}`" v-else)
               Button(rounded outlined green) Продать
@@ -66,13 +66,6 @@ export default {
     }
   },
   computed: {
-    isBuy() {
-      if (this.tableData[0].type === 1) {
-        return false
-      } else {
-        return true
-      }
-    }
     // paginatedTableData() {
     //   return this.tableContent.slice(
     //     this.currentPage * this.contentPerPage,

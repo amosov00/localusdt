@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     NonAuthorizedHero(v-if="!$userIsLoggedIn()")
+    Tab
     section.table-section
       h1.table-section__title Купить USDT
       Table(:tableData="sellOrders")
@@ -16,11 +17,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import NonAuthorizedHero from '~/components/NonAuthorizedHero'
-import SellBuyTab from '~/components/SellBuyTab'
 import Table from '~/components/app/Table'
-import Select from '~/components/app/Select'
+import Tab from '~/components/Tab'
 export default {
-  components: { NonAuthorizedHero, SellBuyTab, Table, Select },
+  components: { NonAuthorizedHero, Table, Tab },
   name: 'index',
   computed: {
     ...mapGetters({
@@ -41,7 +41,7 @@ export default {
 
 <style lang="scss">
 .table-section {
-  margin-top: 120px;
+  margin-top: 320px;
   margin-bottom: 120px;
   &__subtitle {
     @include montserrat;

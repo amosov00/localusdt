@@ -108,45 +108,4 @@ export default {
     margin-top: 15px;
   }
 }
-// .select {
-//   position: relative;
-//   padding: 15px 10px;
-//   text-align: center;
-//   background: #ffffff;
-//   border: 1px solid #c8c8c8;
-//   border-radius: 6px;
-//   // min-width: 80px;
-//   width: 100%;
-//   cursor: pointer;
-//   z-index: 100;
-//   transition: $interaction-transition;
-
-//   &__title {
-//     display: flex;
-//     align-items: center;
-//     justify-content: space-between;
-//     height: 20px;
-//   }
-
-//   &__arrow {
-//     display: inline-block;
-//     height: 20px;
-//     // display: flex;
-//     // align-items: center;
-//     // justify-content: center;
-//   }
-
-//   &--active {
-//     background-color: $grey-light;
-//   }
-
-//   &__options {
-//     margin-top: 5px;
-//     // position: absolute;
-//   }
-
-//   &__arrow--active {
-//     transform: rotate(180deg);
-//   }
-// }
 </style>

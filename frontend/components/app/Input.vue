@@ -109,14 +109,14 @@ export default {
     display: flex;
     align-items: center;
     background-color: #eee;
-    height: 45px;
+    height: 51px;
     width: 100%;
     opacity: 0.8;
     background-color: $grey-light;
     border: 1px solid transparent;
     border-radius: $border-radius;
     transition: $interaction-transition;
-    padding: 10px;
+    padding: 10px 20px;
 
     &:focus-within {
       border: 1px solid #c8c8c8;

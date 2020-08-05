@@ -77,8 +77,9 @@ class AdsCRUD(BaseMongoCRUD):
     async def find_with_filters(cls, filters: AdsFilters):
         query = {
             "currency": filters.currency,
-            "payment_method": filters.payment_method
         }
+        if filters.payment_method:
+            query["payment_method"]: filters.payment_method
         if filters.type:
             query["type"] = filters.type
         if filters.price_bot:

@@ -1,6 +1,6 @@
 <template>
-  <section class="ad">
-    <header class="ad__header">
+  <section class="order">
+    <header class="order__header">
       <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
       <span class="opacity-50 fz-20" v-if="invoice.ads_type === 1"
         >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
@@ -26,8 +26,8 @@
         </p>
       </div>
     </header>
-    <AdInfo :ad="invoice" />
-    <div class="ad__footer">
+    <OrderInfo :order="invoice" />
+    <div class="order__footer">
       <Chat />
       <div class="steps" v-if="invoice.ads_type === 1">
         <div class="step-1">
@@ -73,23 +73,26 @@
       <div class="steps" v-else-if="invoice.ads_type === 2">
         <p class="fz-20">Отправить токены</p>
         <p>
-          Покупатель еще не отметил платеж как завершенный, и остается <span class="green">89 минут</span>
-          для проведения оплаты. Если оплата не будет осуществлена, сделка
-          автоматически отменится. Когда Вы получите платеж, <span class="orange">отправьте токены</span> из
+          Покупатель еще не отметил платеж как завершенный, и остается
+          <span class="green">89 минут</span> для проведения оплаты. Если оплата
+          не будет осуществлена, сделка автоматически отменится. Когда Вы
+          получите платеж, <span class="orange">отправьте токены</span> из
           депонирования.
         </p>
         <div class="ma-0 pa-20">
-            <p>
-              <span class="opacity-50">Не забудьте дать покупателю указания об оплате</span>
-            </p>
-          </div>
+          <p>
+            <span class="opacity-50"
+              >Не забудьте дать покупателю указания об оплате</span
+            >
+          </p>
+        </div>
         <Button
-            class="w-100 mt-20"
-            green
-            @click.native="paid"
-            :disabled="invoice.status !== 'waiting_for_payment'"
-            >отправить токены</Button
-          >
+          class="w-100 mt-20"
+          green
+          @click.native="paid"
+          :disabled="invoice.status !== 'waiting_for_payment'"
+          >отправить токены</Button
+        >
       </div>
     </div>
     <!-- <Modal /> -->
@@ -102,8 +105,8 @@ import formatCurrency from '~/mixins/formatCurrency'
 import invoiceStatuses from '~/mixins/invoiceStatuses'
 import Button from '~/components/app/Button'
 import Modal from '~/components/app/Modal'
-import AdForm from '~/components/AdForm'
-import AdInfo from '~/components/AdInfo'
+import OrderForm from '~/components/order/OrderForm'
+import OrderInfo from '~/components/order/OrderInfo'
 import Chat from '~/components/app/Chat'
 export default {
   name: 'invoice_by_id',
@@ -111,8 +114,8 @@ export default {
   components: {
     Button,
     Modal,
-    AdForm,
-    AdInfo,
+    OrderForm,
+    OrderInfo,
     Chat
   },
   data() {
@@ -155,7 +158,7 @@ export default {
 </script>
 
 <style lang="scss">
-.ad {
+.order {
   margin-top: 50px;
 
   &__title {
@@ -176,14 +179,6 @@ export default {
     margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
-
-    // .chat {
-    //   max-width: 550px;
-    //   min-height: 300px;
-    //   width: 100%;
-    //   height: 100%;
-    //   background-color: $green;
-    // }
 
     .steps {
       max-width: 550px;

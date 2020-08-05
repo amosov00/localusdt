@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1 class="table-section__title mt-20">Купить USDT</h1>
-    <Table :tableData="ads" />
+    <Table :tableData="orders" />
   </section>
 </template>
 
@@ -14,11 +14,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      ads: 'ads/ads'
+      orders: 'order/orders'
     })
   },
   asyncData({ store}) {
-    return store.dispatch('ads/fetchAds', 2)
+    return store.dispatch('order/fetchOrders', 2)
   },
 }
 </script>

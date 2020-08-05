@@ -17,11 +17,11 @@
       </div>
     </nav>
     <div class="tab-body">
-      <Input type="number" header="Цена за токен" placeholder="0,00" />
-      <Input type="number" placeholder="0,00" />
-      <Select :width="80" :options="currencyOptions" />
-      <Select :width="370" :options="paymentOptions" />
-      <Button green>Найти</Button>
+      <Input v-model="searchForm.bot_limit" type="number" header="Цена за токен" placeholder="0,00" />
+      <Input v-model="searchForm.top_limit" type="number" placeholder="0,00" />
+      <Select v-model="searchForm.currency" :width="80" :options="currencyOptions" />
+      <Select v-model="searchForm.payment_method" :width="370" :options="paymentOptions" />
+      <Button green @click.native="searchOrders" >Найти</Button>
     </div>
   </div>
 </template>
@@ -41,6 +41,12 @@ export default {
   },
   data() {
     return {
+      searchForm: {
+        payment_method: 1,
+        currency: 1,
+        bot_limit: 0,
+        top_limit: 0,
+      },
       firstTab: true,
       secondTab: false,
       currencyOptions: [
@@ -50,9 +56,26 @@ export default {
       ],
       paymentOptions: [
         { name: 'Банковский перевод: Сбербанк', value: 1 },
-        { name: 'Банковский перевод: Тиньков', value: 2 },
-        { name: 'Свой вариант', value: 3 }
+        { name: 'Банковский перевод: Тинькофф', value: 2 },
+        { name: 'Банковский перевод: Альфа Банк', value: 3 },
+        { name: 'Иной способ', value: 4 }
       ]
+    }
+  },
+  computed: {
+    routePath() {
+      if(this.firstTab) {
+        return '/buy'
+      } else {
+        return '/sell'
+      }
+    },
+    adType() {
+      if(this.firstTab) {
+        return 1
+      } else {
+        return 2
+      }
     }
   },
   methods: {
@@ -64,6 +87,10 @@ export default {
         this.secondTab = false
         this.firstTab = true
       }
+    },
+    searchOrders() {
+      this.$store.dispatch('order/searchOrders', {...this.searchForm, ad_type: this.adType})
+      this.$router.push(this.routePath)
     }
   }
 }

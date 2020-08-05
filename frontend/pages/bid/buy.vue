@@ -8,14 +8,17 @@
       nuxt-link(class="create-order__link" to="/bid/sell/") Продать USDT
     hr
     div.create-order__form
-      Select(:options="options" :selected="selected")
+      div.create-order__options
+        Select(:options="paymentOptions" v-model="adForm.currency" :width="350" header="Способ оплаты")
+        Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты")
       Input.create-order__input(v-model="adForm.bank_title" header="Название банка" placeholder="Банк")
-      Input.create-order__input(v-model="adForm.amount_usdt" type="number" header="Сколько Вы хотите купить" placeholder="0" endIcon="usdt")
+      Input.create-order__input.mb-110(v-model="adForm.amount_usdt" type="number" header="Сколько Вы хотите купить" placeholder="0" endIcon="usdt")
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
       Input.create-order__input(v-model="adForm.profit" header="Уравнение установление цены" placeholder="" type="text")
       div.create-order__gap
         Input.mr-30(v-model="adForm.bot_limit" :width="150" type="number" header="Минимальный лимит транзакции")
         Input(v-model="adForm.top_limit" :width="150" type="number" header="Максимальный лимит транзакции")
+        Select.create-order__gap--select(:options="currencyOptions" v-model="adForm.currency" :width="80")
       Textarea.create-order__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
       Checkbox(label="Вставить условия сделки из профиля")
       Button.create-order__action(green @click.native="createAd") создать объявление
@@ -43,12 +46,16 @@ export default {
         condition: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.  Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.',
         profit: 0
       },
-      options: [
-        { name: 'RUB', value: 'rub' },
-        { name: 'USD', value: 'usd' },
-        { name: 'EUR', value: 'eur' }
+      currencyOptions: [
+        { name: 'RUB', value: 1 },
+        { name: 'USD', value: 2 },
+        { name: 'EUR', value: 3 }
       ],
-      selected: 'Selected'
+      paymentOptions: [
+        { name: 'Банковский перевод: Сбербанк', value: 1 },
+        { name: 'Банковский перевод: Тиньков', value: 2 },
+        { name: 'Банковский перевод: Альфабанк', value: 3 }
+      ]
     }
   },
   methods: {

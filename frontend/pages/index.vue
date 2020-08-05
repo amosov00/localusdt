@@ -22,16 +22,6 @@ import Select from '~/components/app/Select'
 export default {
   components: { NonAuthorizedHero, SellBuyTab, Table, Select },
   name: 'index',
-  data() {
-    return {
-      options: [
-        { name: 'RUB', value: 'rub' },
-        { name: 'USD', value: 'usd' },
-        { name: 'EUR', value: 'eur' }
-      ],
-      selected: 'Selected'
-    }
-  },
   computed: {
     ...mapGetters({
       sellOrders: 'order/sellOrders',

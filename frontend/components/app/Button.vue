@@ -41,7 +41,7 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  height: 45px;
+  height: 51px;
   border: none;
   outline: none;
   border-radius: $border-radius;

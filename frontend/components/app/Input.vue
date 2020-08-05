@@ -1,11 +1,11 @@
 <template>
-  <div class="input" :style="{width: `${width}px`}">
+  <div class="input" :class="{'input--disabled': disabled}" :style="{width: `${width}px`}">
     <p class="input__header" v-if="header">{{ header }}</p>
-    <div class="input__body">
+    <div  class="input__body">
       <span class="input__icon" v-if="icon">
         <InlineSvg :src="require(`~/assets/icons/${icon}.svg`)" />
       </span>
-      <input class="input__field" :type="showPasswordField" @input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" />
+      <input :class="{'input--disabled': disabled}" :disabled="disabled" class="input__field" :type="showPasswordField" @input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" />
       <span class="input__icon" v-if="type === 'password'" @click="toggleShowPassword">
         <InlineSvg :src="require(`~/assets/icons/${passwordIcon}.svg`)" />
       </span>
@@ -22,6 +22,9 @@ import InlineSvg from 'vue-inline-svg'
 export default {
   components: { InlineSvg },
   props: {
+    value: {
+      require: false
+    },
     type: {
       type: String,
       default: 'text'
@@ -47,12 +50,12 @@ export default {
       type: String,
       default: ''
     },
-    hint: Boolean
+    hint: Boolean,
+    disabled: Boolean
   },
   data() {
     return {
       showPassword: false,
-      value: ''
     }
   },
   computed: {
@@ -90,6 +93,10 @@ export default {
   font-size: 12px;
   position: relative;
 
+  &--disabled {
+    cursor: not-allowed;
+  }
+
   &__hint {
     position: absolute;
     top: 40%;
@@ -109,14 +116,14 @@ export default {
     display: flex;
     align-items: center;
     background-color: #eee;
-    height: 45px;
+    height: 51px;
     width: 100%;
     opacity: 0.8;
     background-color: $grey-light;
     border: 1px solid transparent;
     border-radius: $border-radius;
     transition: $interaction-transition;
-    padding: 10px;
+    padding: 10px 20px;
 
     &:focus-within {
       border: 1px solid #c8c8c8;

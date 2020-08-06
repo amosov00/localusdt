@@ -138,7 +138,7 @@ export default {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding-top: 40px;
+    padding-top: 50px;
 
     & > * {
       margin-left: 25px;

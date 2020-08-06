@@ -33,7 +33,10 @@ import Button from '~/components/app/Button'
 export default {
   props: {
     top: Number,
-    nav: Boolean,
+    nav: {
+      type: Boolean,
+      default: true
+    },
     type: Number
   },
   components: {

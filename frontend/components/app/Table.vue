@@ -13,8 +13,7 @@
             span.status.green--bg
             span.orders-count (10+)
           td.table__data 
-            span.opacity-50 Банковский перевод: 
-            span {{order.bank_title}}
+            span {{paymentMethod(order.payment_method)}}
           td.table__data {{order.bot_limit}} - {{spaceSplitting(order.top_limit)}} ₽
           td.table__data {{commaSplitting(order.price)}} ₽
           td.table__data
@@ -33,9 +32,10 @@
 </template>
 
 <script>
+import InlineSvg from 'vue-inline-svg'
 import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
-import InlineSvg from 'vue-inline-svg'
+import paymentMethod from '~/mixins/paymentMethod'
 export default {
   props: {
     tableData: Array,
@@ -44,7 +44,7 @@ export default {
       default: false
     }
   },
-  mixins: [formatCurreny],
+  mixins: [formatCurreny, paymentMethod],
   components: {
     Button,
     InlineSvg

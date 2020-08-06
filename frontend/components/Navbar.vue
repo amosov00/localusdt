@@ -10,6 +10,7 @@
             v-for="link in footerLinks"
             :key="link.title"
             :to="link.url"
+            @click.native="forceReload(link.url)"
             class="nav__item"
             >{{ link.title }}</nuxt-link
           >
@@ -59,7 +60,14 @@ export default {
     user() {
       return this.$store.getters.user
     }
-  }
+  },
+  methods: {
+    forceReload(url) {
+      if(this.$route.path === url) {
+        window.location.reload();
+      }
+    }
+  },
 }
 </script>
 

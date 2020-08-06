@@ -136,9 +136,9 @@ export default {
     height: 150px;
     margin-top: -1px;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: center;
-    padding-bottom: 40px;
+    padding-top: 40px;
 
     & > * {
       margin-left: 25px;

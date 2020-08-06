@@ -14,7 +14,8 @@ from schemas.ads import (
     AdsInSearch,
     AdsType,
     Currency,
-    PaymentMethod
+    PaymentMethod,
+    AdsSort
 )
 from schemas.user import User
 
@@ -43,6 +44,7 @@ async def ads_fetch_all(
         price_top: Optional[float] = None,
         currency: Optional[Currency] = Currency.RUB,
         payment_method: Optional[PaymentMethod] = None,
+        sort: Optional[AdsSort] = AdsSort.ASC,
         limit: int = 10000
 ):
 
@@ -52,6 +54,7 @@ async def ads_fetch_all(
         price_top=price_top,
         currency=currency,
         payment_method=payment_method,
+        sort=sort,
         limit=limit
     )
     return await AdsCRUD.find_with_filters(filters)

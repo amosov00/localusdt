@@ -14,7 +14,8 @@ __all__ = [
     "AdsCreate",
     "AdsInDB",
     "AdsFilters",
-    "AdsInSearch"
+    "AdsInSearch",
+    "AdsSort"
 ]
 
 
@@ -96,10 +97,16 @@ class AdsCreate(BaseModel):
     _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
 
 
+class AdsSort(IntEnum):
+    ASC = 1
+    DESC = -1
+
+
 class AdsFilters(BaseModel):
     type: Optional[AdsType] = Field(default=None)
     price_bot: Optional[float] = Field(default=None)
     price_top: Optional[float] = Field(default=None)
     currency: Optional[Currency] = Field(default=Currency.RUB)
     payment_method: Optional[PaymentMethod] = Field(default=PaymentMethod.SBERBANK)
+    sort: Optional[AdsSort] = Field(default=AdsSort.ASC)
     limit: int = Field(...)

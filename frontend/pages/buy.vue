@@ -1,6 +1,7 @@
 <template>
   <section>
-    <h1 class="table-section__title mt-20">Купить USDT</h1>
+    <h1 class="table-section__title mt-330">Купить USDT</h1>
+    <Tab :nav="false" :type="1" />
     <Table :tableData="orders" />
   </section>
 </template>
@@ -8,17 +9,28 @@
 <script>
 import { mapGetters } from 'vuex'
 import Table from '~/components/app/Table'
+import Tab from '~/components/Tab'
 export default {
   components: {
-    Table
+    Table,
+    Tab
   },
   computed: {
     ...mapGetters({
       orders: 'order/orders'
     })
   },
-  asyncData({ store }) {
-    return store.dispatch('order/fetchOrders', { limit: 1000, type: 1 })
+  asyncData({ store, query }) {
+    const isQuery = Boolean(Object.keys(query).length)
+    if (isQuery) {
+      return store.dispatch('order/fetchOrders', {
+        limit: 1000,
+        type: 1,
+        sort: 1,
+        ...query
+      })
+    }
+    return store.dispatch('order/fetchOrders', { limit: 1000, type: 1, sort: 1 })
   }
 }
 </script>

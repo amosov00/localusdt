@@ -16,8 +16,8 @@
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
       Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text")
       div.create-order__gap
-        Input.mr-30(v-model="adForm.bot_limit" :width="150" type="number" header="Минимальный лимит транзакции")
-        Input(v-model="adForm.top_limit" :width="150" type="number" header="Максимальный лимит транзакции")
+        Input.mr-30(v-model="adForm.bot_limit" :width="250" type="number" header="Минимальный лимит транзакции")
+        Input(v-model="adForm.top_limit" :width="250" type="number" header="Максимальный лимит транзакции")
         //- Select.create-order__gap--select(:options="currencyOptions" v-model="adForm.currency" :width="80")
       Textarea.create-order__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
       Checkbox(label="Вставить условия сделки из профиля")

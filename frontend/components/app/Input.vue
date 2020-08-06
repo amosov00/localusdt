@@ -106,13 +106,15 @@ export default {
   }
 
   &__header {
+    position: absolute;
+    top: -20px;
+    left: 2px;
     font-size: 12px;
     opacity: 0.7;
-    margin-left: 2px;
-    margin-bottom: 5px;
   }
 
   &__body {
+    position: relative;
     display: flex;
     align-items: center;
     background-color: #eee;

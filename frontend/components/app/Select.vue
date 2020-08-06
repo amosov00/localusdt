@@ -70,6 +70,8 @@ export default {
 <style lang="scss">
 .select {
   @include montserrat;
+  position: relative;
+  z-index: 10000;
   &__header {
     font-size: 12px;
     opacity: 0.7;
@@ -104,8 +106,17 @@ export default {
     display: inline-block;
   }
 
+  &__options {
+  }
+
   &__option {
     margin-top: 15px;
+    opacity: .5;
+    transition: $interaction-transition;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 </style>

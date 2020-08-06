@@ -23,10 +23,11 @@ export default {
       return store.dispatch('order/fetchOrders', {
         limit: 1000,
         type: 1,
+        sort: 1,
         ...query
       })
     }
-    return store.dispatch('order/fetchOrders', { limit: 1000, type: 1 })
+    return store.dispatch('order/fetchOrders', { limit: 1000, type: 1, sort: 1 })
   }
 }
 </script>

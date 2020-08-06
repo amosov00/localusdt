@@ -1,6 +1,6 @@
 <template>
   <div class="tab" :style="{'top': `${top}px`}">
-    <nav class="tab-nav">
+    <nav v-if="nav" class="tab-nav">
       <div
         class="tab-nav__item"
         :class="{ 'tab-nav__item--active': firstTab }"
@@ -32,7 +32,9 @@ import Select from '~/components/app/Select'
 import Button from '~/components/app/Button'
 export default {
   props: {
-    top: Number
+    top: Number,
+    nav: Boolean,
+    type: Number
   },
   components: {
     Input,
@@ -64,7 +66,7 @@ export default {
   },
   computed: {
     routePath() {
-      if(this.firstTab) {
+      if(this.firstTab && this.type === 1) {
         return '/buy'
       } else {
         return '/sell'
@@ -74,7 +76,7 @@ export default {
       return `/?payment_method=${this.searchForm.payment_method}&currency=${this.searchForm.currency}&price_bot=${this.searchForm.bot_limit}&price_top=${this.searchForm.top_limit}`
     },
     adType() {
-      if(this.firstTab) {
+      if(this.firstTab && this.type === 1) {
         return 1
       } else {
         return 2

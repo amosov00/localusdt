@@ -1,6 +1,7 @@
 <template>
   <section>
-    <h1 class="table-section__title mt-20">Продать USDT</h1>
+    <h1 class="table-section__title mt-330">Продать USDT</h1>
+    <Tab :nav="false" :type="2" />
     <Table :tableData="orders" />
   </section>
 </template>
@@ -8,9 +9,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import Table from '~/components/app/Table'
+import Tab from '~/components/Tab'
 export default {
   components: {
-    Table
+    Table,
+    Tab
   },
   computed: {
     ...mapGetters({

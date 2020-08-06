@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import Table from '~/components/app/Table'
 export default {
   components: {
@@ -17,12 +17,18 @@ export default {
       orders: 'order/orders'
     })
   },
-  asyncData({ store}) {
+  asyncData({ store, query }) {
+    const isQuery = Boolean(Object.keys(query).length)
+    if (isQuery) {
+      return store.dispatch('order/fetchOrders', {
+        limit: 1000,
+        type: 2,
+        ...query
+      })
+    }
     return store.dispatch('order/fetchOrders', { limit: 1000, type: 2 })
-  },
+  }
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

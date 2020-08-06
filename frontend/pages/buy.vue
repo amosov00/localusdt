@@ -17,7 +17,15 @@ export default {
       orders: 'order/orders'
     })
   },
-  asyncData({ store }) {
+  asyncData({ store, query }) {
+    const isQuery = Boolean(Object.keys(query).length)
+    if (isQuery) {
+      return store.dispatch('order/fetchOrders', {
+        limit: 1000,
+        type: 1,
+        ...query
+      })
+    }
     return store.dispatch('order/fetchOrders', { limit: 1000, type: 1 })
   }
 }

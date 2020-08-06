@@ -70,6 +70,9 @@ export default {
         return '/sell'
       }
     },
+    queries() {
+      return `/?payment_method=${this.searchForm.payment_method}&currency=${this.searchForm.currency}&price_bot=${this.searchForm.bot_limit}&price_top=${this.searchForm.top_limit}`
+    },
     adType() {
       if(this.firstTab) {
         return 1
@@ -90,7 +93,7 @@ export default {
     },
     searchOrders() {
       this.$store.dispatch('order/searchOrders', {...this.searchForm, ad_type: this.adType})
-      this.$router.push(this.routePath)
+      this.$router.push(this.routePath + this.queries)
     }
   }
 }

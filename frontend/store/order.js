@@ -17,7 +17,8 @@ export const mutations = {
 
 export const actions = {
   async fetchOrders({ commit }, query) {
-    const { data } = await this.$axios.get(`/order/?limit=${query.limit}&${query.type ? `ad_type=${query.type}` : ''}`)
+    // console.log(query)
+    const { data } = await this.$axios.get(`/order/?limit=${query.limit}&${query.type ? `ad_type=${query.type}` : ''}&${query.currency ? `currency=${query.currency}` : ''}&${query.payment_method ? `payment_method=${query.payment_method}` : ''}&${query.price_bot ? `price_bot=${query.price_bot}` : ''}&${query.price_top ? `price_top=${query.price_top}` : ''}`)
     commit('setOrders', data)
   },
   async fetchOrderById({ commit }, id) {

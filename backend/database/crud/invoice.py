@@ -40,7 +40,24 @@ class InvoiceCRUD(BaseMongoCRUD):
             query={"buyer_id": to_objectid(_id)}
         ) if _id else []
         result = seller if seller else []
-        return result if not buyer else seller + buyer
+        result = result if not buyer else seller + buyer
+        users = await UserCRUD.find_many(query={})
+        users_kw = {}
+        for user in users:
+            if user.get("username"):
+                users_kw[user["_id"]] = user["username"]
+
+        adses = await AdsCRUD.find_many(query={})
+        adses_kw = {}
+        for ads in adses:
+            if ads.get("type"):
+                adses_kw[ads["_id"]] = ads["type"]
+
+        for invoice in result:
+            invoice["seller_username"] = users_kw.get(invoice["seller_id"])
+            invoice["buyer_username"] = users_kw.get(invoice["buyer_id"])
+            invoice["ads_type"] = adses_kw.get(invoice["ads_id"])
+        return result
 
     @classmethod
     async def find_by_status(cls, status: InvoiceStatus) -> Optional[list]:
@@ -199,3 +216,16 @@ class InvoiceCRUD(BaseMongoCRUD):
         )
 
         return True
+
+    @classmethod
+    async def get_invoice(cls, user: User, invoice_id: str):
+        invoice = await InvoiceCRUD.find_by_id(invoice_id)
+        if not (invoice.get("seller_id") == user.id or invoice.get("buyer_id") == user.id):
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
+        buyer_username = (await UserCRUD.find_by_id(invoice.get("buyer_id"))).get("username")
+        seller_username = (await UserCRUD.find_by_id(invoice.get("seller_id"))).get("username")
+        ads_type = (await AdsCRUD.find_by_id(invoice.get("ads_id"))).get("type")
+        invoice["buyer_username"] = buyer_username
+        invoice["seller_username"] = seller_username
+        invoice["ads_type"] = ads_type
+        return invoice

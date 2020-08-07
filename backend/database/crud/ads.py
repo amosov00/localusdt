@@ -77,8 +77,9 @@ class AdsCRUD(BaseMongoCRUD):
     async def find_with_filters(cls, filters: AdsFilters):
         query = {
             "currency": filters.currency,
-            "payment_method": filters.payment_method
         }
+        if filters.payment_method:
+            query["payment_method"]: filters.payment_method
         if filters.type:
             query["type"] = filters.type
         if filters.price_bot:
@@ -88,7 +89,7 @@ class AdsCRUD(BaseMongoCRUD):
                 query["price"] = {"$lte": filters.price_top}
             else:
                 query["price"]["$lte"] = filters.price_top
-        result = await cls.find_many(query=query, limit=filters.limit)
+        result = await cls.find_many(query=query, limit=filters.limit, sort=[("price", filters.sort)])
         users = await UserCRUD.find_many(query={})
         users_kw = {}
         for user in users:

@@ -184,5 +184,4 @@ class UserCRUD(BaseMongoCRUD):
             }
         )
         updated_user = await cls.find_by_id(user.id)
-        print(updated_user)
         return updated_user

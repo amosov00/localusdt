@@ -13,6 +13,7 @@ async def update_invoice_status(self, *args, **kwargs):
     for invoice in invoices:
         date = invoice.get("status_changed_at")
         if date:
+            print((datetime.utcnow() - date).seconds / 60.0)
             if (datetime.utcnow() - date).seconds / 60.0 >= 90.0:
                 await InvoiceCRUD._cancel_invoice_db(invoice)
     return True

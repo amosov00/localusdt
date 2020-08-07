@@ -1,5 +1,5 @@
 <template lang="pug">
-  button(type="button" :class="{'button--lg': lg, 'button--outlined': outlined, 'button--rounded': rounded, 'orange--bg': orange, 'green--bg': green, 'red--bg': red}" class="button" :disabled="disabled")
+  button(type="button" :class="{'button--lg': lg, 'button--outlined': outlined, 'button--rounded': rounded, 'button--disabled': disabled, 'orange--bg': orange, 'green--bg': green, 'red--bg': red}" class="button" :disabled="disabled")
     slot
 </template>
 
@@ -41,9 +41,9 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  height: 45px;
+  height: 51px;
   border: none;
-  // outline: none;
+  outline: none;
   border-radius: $border-radius;
   padding: 15px 30px;
   text-transform: uppercase;
@@ -74,12 +74,16 @@ export default {
   }
   &--rounded {
     border-radius: 50px;
-    // height: 40px;
-    // width: 140px;
-    // padding: 10px 30px;
-    // background-color: inherit;
-    // border: 1px solid $green;
-    // color: $green;
+  }
+
+  &--disabled {
+    background-color: #11171d;
+    opacity: 0.2;
+
+    &:hover {
+      transform: translateY(0);
+      box-shadow: none;
+    }
   }
 
   &--lg {

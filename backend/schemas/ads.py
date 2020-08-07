@@ -14,7 +14,8 @@ __all__ = [
     "AdsCreate",
     "AdsInDB",
     "AdsFilters",
-    "AdsInSearch"
+    "AdsInSearch",
+    "AdsSort"
 ]
 
 
@@ -30,7 +31,10 @@ class AdsType(IntEnum):
 
 
 class PaymentMethod(IntEnum):
-    BANK = 1
+    SBERBANK = 1
+    TINKOFF = 2
+    ALFA_BANK = 3
+    OTHER = 4
 
 
 class Currency(IntEnum):
@@ -52,8 +56,8 @@ class Ads(BaseModel):
     profit: int = Field(default=None)
 
     # Extra info
-    payment_method: PaymentMethod = Field(default=PaymentMethod.BANK)
-    bank_title: str = Field(default=None)
+    payment_method: PaymentMethod = Field(default=None)
+    other_payment_method: str = Field(default=None)
     currency: Currency = Field(default=None)
     condition: str = Field(default=None, description="Condition of the Ads")
 
@@ -81,9 +85,10 @@ class AdsCreate(BaseModel):
     amount_usdt: float = Field(...)
 
     payment_method: PaymentMethod = Field(
-        default=PaymentMethod.BANK, description="Payment method, 1 = BANK"
+        default=PaymentMethod.SBERBANK,
+        description="Payment method, 1 = Sberbank, 2 = Tinkoff, 3 = Alfa-bank, 4 = Other"
     )
-    bank_title: str = Field(...)
+    other_payment_method: str = Field(default=None)
     currency: str = Field(default=Currency.RUB)
     condition: str = Field(default="", description="Condition of the Ads")
 
@@ -92,10 +97,16 @@ class AdsCreate(BaseModel):
     _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
 
 
+class AdsSort(IntEnum):
+    ASC = 1
+    DESC = -1
+
+
 class AdsFilters(BaseModel):
     type: Optional[AdsType] = Field(default=None)
     price_bot: Optional[float] = Field(default=None)
     price_top: Optional[float] = Field(default=None)
     currency: Optional[Currency] = Field(default=Currency.RUB)
-    payment_method: Optional[PaymentMethod] = Field(default=PaymentMethod.BANK)
-    limit: int = Field(default=5)
+    payment_method: Optional[PaymentMethod] = Field(default=PaymentMethod.SBERBANK)
+    sort: Optional[AdsSort] = Field(default=AdsSort.ASC)
+    limit: int = Field(...)

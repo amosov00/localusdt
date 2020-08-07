@@ -5,6 +5,24 @@ hr {
 .inline-link {
   text-decoration: underline;
 }
+.underline-link {
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:last-child {
+    margin-top: 10px;
+  }
+
+  &--grey {
+    color: rgba(17, 23, 29, 0.5) !important;
+  }
+
+  .red {
+    color: $red;
+  }
+}
 
 .auth-form {
   width: 390px;

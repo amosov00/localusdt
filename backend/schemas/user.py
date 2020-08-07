@@ -78,14 +78,6 @@ class User(BaseModel):
     created_at: Optional[datetime] = Field(default=None)
     about_me: str = Field(default="", description="About me field")
 
-    @property
-    def is_authenticated(self):
-        return True
-
-    @property
-    def display_name(self):
-        return self.username
-
 
 class UserVerify(BaseModel):
     email: str = Field(...)

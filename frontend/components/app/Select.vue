@@ -1,82 +1,122 @@
 <template>
-  <div class="select" :class="{'select--active': areOptionsVisible}">
-    <div class="select__title" @click="areOptionsVisible = !areOptionsVisible">
-      {{ selected }}
-      <InlineSvg :class="{'select__arrow--active': areOptionsVisible}" :src="require('../../assets/icons/arrow-down.svg')" />
-    </div>
-    <div class="select__options" v-if="areOptionsVisible">
-      <p
-        v-for="option in options"
-        :key="option.value"
-        @click="selectOption(option)"
-      >
-        {{ option.name }}
-      </p>
+  <div class="select" @click.stop="areOptionsVisible = !areOptionsVisible" :style="{width: `${width}px`}">
+    <p class="select__header" v-if="header">{{header}}</p>
+    <div class="select__body">
+      <div class="select__selected">
+        <p class="select__title">{{ selected.name }}</p>
+        <span class="select__icon">
+          <img src="~/assets/icons/arrow-down.svg" alt="" />
+        </span>
+      </div>
+      <div class="select__options" v-if="areOptionsVisible">
+        <p
+          class="select__option"
+          v-for="(option, i) in filteredOptions"
+          :key="i"
+          @click.stop="selectOption(option)"
+        >
+          {{ option.name }}
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import InlineSvg from "vue-inline-svg";
+import InlineSvg from 'vue-inline-svg'
 export default {
   components: { InlineSvg },
   props: {
     options: {
       default() {
-        return [];
+        return []
       }
     },
-    selected: {
-      type: String,
-      default: ""
-    }
+    header: String,
+    width: Number
   },
   data() {
     return {
-      areOptionsVisible: false
-    };
+      areOptionsVisible: false,
+      selected: this.options[0]
+    }
+  },
+  computed: {
+    filteredOptions() {
+      return this.options.filter(option => {
+        return option.name !== this.selected.name
+      })
+    }
   },
   methods: {
     selectOption(option) {
-      this.$emit("select", option);
+      this.selected = option
+      this.areOptionsVisible = false
+      this.$emit('input', option.value)
     },
     hideSelect() {
-      this.areOptionsVisible = false;
+      this.areOptionsVisible = false
     }
   },
   mounted() {
-    document.addEventListener("click", this.hideSelect.bind(this), true);
+    document.addEventListener('click', this.hideSelect.bind(this), true)
   },
   beforeDestroy() {
-    document.removeEventListener("click", this.hideSelect);
+    document.removeEventListener('click', this.hideSelect)
   }
-};
+}
 </script>
 
 <style lang="scss">
 .select {
+  @include montserrat;
   position: relative;
-  padding: 15px 10px;
-  text-align: center;
-  background: #ffffff;
-  border: 1px solid #c8c8c8;
-  border-radius: 6px;
-  width: 100px;
-  cursor: pointer;
-  z-index: 100;
-  transition: $interaction-transition;
+  z-index: 10000;
+  &__header {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: 2px;
+    margin-bottom: 5px;
+  }
 
-  &--active {
-    background-color: $grey-light;
+  &__body {
+    background-color: $white;
+    border: 1px solid #c8c8c8;
+    border-radius: $border-radius;
+    min-height: 50px;
+    padding: 15px 10px;
+    transition: $interaction-transition;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $grey-light;
+    }
+  }
+
+  &__selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+  }
+
+  &__icon {
+    display: inline-block;
   }
 
   &__options {
-    margin-top: 5px;
-    // position: absolute;
   }
 
-  &__arrow--active {
-    transform: rotate(180deg);
+  &__option {
+    margin-top: 15px;
+    opacity: .5;
+    transition: $interaction-transition;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 </style>

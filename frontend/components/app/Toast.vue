@@ -1,7 +1,9 @@
 <template>
+<transition name="fade">
   <div class="toast" v-if="show" :class="{ 'red--bg': red, 'green--bg': green }">
     <h2 class="toast__title">{{ message }}</h2>
   </div>
+</transition>
 </template>
 
 <script>
@@ -37,12 +39,14 @@ export default {
 
 <style lang="scss">
 .toast {
-  // background-color: $red;
   width: 100vw;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000000;
 
   &__title {
     font-style: normal;
@@ -50,5 +54,11 @@ export default {
     font-size: 16px;
     color: $white;
   }
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

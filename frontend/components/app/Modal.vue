@@ -1,14 +1,42 @@
 <template>
   <transition name="fade">
-  <div class="modal-wrapper">
-    <div class="modal"></div>
+  <div class="modal-wrapper" v-show="show">
+    <div class="modal">
+      <h1 class="modal__title">Ваше объявление успешно размещено!</h1>
+      <p class="modal__subtitle">Вы можете управлять им на странице покупки/продажи</p>
+      <Button @click.native="hideModal" class="modal__button" green lg>Ок</Button>
+    </div>
   </div>
   </transition>
 </template>
 
 <script>
+import Button from '~/components/app/Button'
 export default {
-
+  props: {
+    show: Boolean
+  },
+  components: {
+    Button
+  },
+  data() {
+    return {
+      // showModalProp: this.show
+    }
+  },
+  computed: {
+    showModalProp() {
+      get: {
+        return this.show
+      }
+    }
+  },
+  methods: {
+    hideModal() {
+      // console.log('hode')
+      this.show = false
+    }
+  },
 }
 </script>
 
@@ -21,12 +49,20 @@ export default {
   justify-content: center;
   position: fixed;
   top: 0;
+  left: 0;
   backdrop-filter: blur(5px);
-  z-index: 1000;
+  z-index: 100000000000000;
+
   .modal {
-    height: 200px;
-    width: 400px;
-    background-color: $orange;
+    text-align: center;
+    
+    &__subtitle {
+      margin-top: 15px;
+    }
+
+    &__button {
+      margin-top: 90px;
+    }
   }
 }
 </style>

@@ -22,6 +22,7 @@
       Textarea.create-order__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
       Checkbox(label="Вставить условия сделки из профиля")
       Button.create-order__action(green @click.native="createAd") создать объявление
+      Modal(:show="showModal")
 </template>
 
 <script>
@@ -30,8 +31,9 @@ import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 import Checkbox from '~/components/app/Checkbox'
 import Select from '~/components/app/Select'
+import Modal from '~/components/app/Modal'
 export default {
-  components: { Input, Textarea, Button, Checkbox, Select },
+  components: { Input, Textarea, Button, Checkbox, Select, Modal },
   middleware: ['authRequired'],
   data() {
     return {
@@ -55,7 +57,8 @@ export default {
         { name: 'Банковский перевод: Сбербанк', value: 1 },
         { name: 'Банковский перевод: Тиньков', value: 2 },
         { name: 'Свой вариант', value: 3 }
-      ]
+      ],
+      showModal: false
     }
   },
   computed: {
@@ -74,7 +77,8 @@ export default {
   },
   methods: {
     createAd() {
-      this.$store.dispatch('order/createOrder', this.adForm)
+      this.showModal = true
+      // this.$store.dispatch('order/createOrder', this.adForm)
     }
   }
 }

@@ -22,9 +22,9 @@ import InlineSvg from 'vue-inline-svg'
 export default {
   components: { InlineSvg },
   props: {
-    value: {
-      require: false
-    },
+    // value: {
+    //   require: false
+    // },
     type: {
       type: String,
       default: 'text'
@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       showPassword: false,
+      value: ''
     }
   },
   computed: {

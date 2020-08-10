@@ -33,13 +33,11 @@ export const actions = {
     return await this.$axios
       .post('/order/', adForm)
       .then(() => {
-        this.$toast.showMessage({
-          content: 'Ваше объявление успешно размещено!',
-          green: true
-        })
+        return true
       })
       .catch(error => {
         this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        return false
       })
   }
 }

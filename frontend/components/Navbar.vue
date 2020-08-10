@@ -14,7 +14,9 @@
             class="nav__item"
             >{{ link.title }}</nuxt-link
           >
-					<nuxt-link class="nav__item" to="/bid" v-if="$userIsLoggedIn()">Разместить объявление</nuxt-link>
+          <nuxt-link class="nav__item" to="/bid" v-if="$userIsLoggedIn()"
+            >Разместить объявление</nuxt-link
+          >
         </ul>
       </nav>
       <div class="header__actions">
@@ -25,9 +27,9 @@
           <nuxt-link class="header__action" to="/login">Вход</nuxt-link>
         </div>
         <div class="header__user" v-else>
-          <p class="header__balance">
-            <span class="grey-dark">Баланс:</span>{{ commaSplitting(user.balance_usdt) }} USDT
-          </p>
+          <nuxt-link to="/wallet" class="header__balance"
+            >{{ commaSplitting(user.balance_usdt) }} USDT</nuxt-link
+          >
           <nuxt-link class="header__action" to="/profile">{{
             user.username
           }}</nuxt-link>
@@ -44,7 +46,7 @@
 import LangSwitcher from '~/components/app/LangSwitcher'
 import formatCurrency from '~/mixins/formatCurrency'
 export default {
-	mixins: [formatCurrency],
+  mixins: [formatCurrency],
   components: {
     LangSwitcher
   },
@@ -63,11 +65,11 @@ export default {
   },
   methods: {
     forceReload(url) {
-      if(this.$route.path === url) {
-        window.location.reload();
+      if (this.$route.path === url) {
+        window.location.reload()
       }
     }
-  },
+  }
 }
 </script>
 

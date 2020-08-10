@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     routePath() {
-      if(this.firstTab && this.type === 1) {
+      if(this.type === 1 || this.firstTab) {
         return '/buy'
       } else {
         return '/sell'
@@ -79,7 +79,7 @@ export default {
       return `/?payment_method=${this.searchForm.payment_method}&currency=${this.searchForm.currency}&price_bot=${this.searchForm.bot_limit}&price_top=${this.searchForm.top_limit}`
     },
     adType() {
-      if(this.firstTab && this.type === 1) {
+      if(this.firstTab || this.type === 1) {
         return 1
       } else {
         return 2
@@ -95,6 +95,7 @@ export default {
         this.secondTab = false
         this.firstTab = true
       }
+      this.$emit('selectedTab', {buy: this.firstTab, sell: this.secondTab})
     },
     searchOrders() {
       this.$store.dispatch('order/searchOrders', {...this.searchForm, ad_type: this.adType})

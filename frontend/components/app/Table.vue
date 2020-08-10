@@ -101,7 +101,8 @@ export default {
   &__header {
     .table__row {
       color: #000;
-      opacity: 0.4;
+      opacity: 0.3;
+      font-weight: 500;
       text-transform: uppercase;
       text-align: center;
     }

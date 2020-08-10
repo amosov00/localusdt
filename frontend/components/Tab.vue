@@ -95,6 +95,7 @@ export default {
         this.secondTab = false
         this.firstTab = true
       }
+      this.$emit('selectedTab', {buy: this.firstTab, sell: this.secondTab})
     },
     searchOrders() {
       this.$store.dispatch('order/searchOrders', {...this.searchForm, ad_type: this.adType})

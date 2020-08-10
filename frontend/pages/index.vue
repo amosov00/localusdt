@@ -3,7 +3,7 @@
     NonAuthorizedHero(v-if="!$userIsLoggedIn()")
     Tab(:top="top" @selectedTab="selectedOrders($event)")
     div(v-if="buyTab")
-      section.table-section
+      section.table-section.mt-330
         h1.table-section__title Купить USDT
         Table(:tableData="buyOrders")
         nuxt-link(to="/buy")
@@ -14,7 +14,7 @@
         nuxt-link(to="/sell")
           p.table-section__subtitle.fz-20 Показать больше объявлений
     div(v-else)
-      section.table-section
+      section.table-section.mt-330
         h1.table-section__title Продать USDT
         Table(:tableData="sellOrders")
         nuxt-link(to="/sell")
@@ -63,14 +63,13 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('order/fetchOrders', {limit: 5})
+    this.$store.dispatch('order/fetchOrders', {limit: 1000})
   }
 }
 </script>
 
 <style lang="scss">
 .table-section {
-  margin-top: 320px;
   margin-bottom: 120px;
   &__subtitle {
     @include montserrat;

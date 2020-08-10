@@ -22,7 +22,7 @@
       Textarea.create-order__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
       Checkbox(label="Вставить условия сделки из профиля")
       Button.create-order__action(green @click.native="createAd") создать объявление
-      Modal(:show="showModal")
+      Modal(:show="showModal" @toggleModal="toggleModal($event)")
 </template>
 
 <script>
@@ -76,9 +76,14 @@ export default {
     }
   },
   methods: {
-    createAd() {
-      this.showModal = true
-      // this.$store.dispatch('order/createOrder', this.adForm)
+    async createAd() {
+      const res = await this.$store.dispatch('order/createOrder', this.adForm)
+      if(res) {
+        this.showModal = true
+      }
+    },
+    toggleModal(state) {
+      this.showModal = state
     }
   }
 }

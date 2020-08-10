@@ -19,22 +19,9 @@ export default {
   components: {
     Button
   },
-  data() {
-    return {
-      // showModalProp: this.show
-    }
-  },
-  computed: {
-    showModalProp() {
-      get: {
-        return this.show
-      }
-    }
-  },
   methods: {
     hideModal() {
-      // console.log('hode')
-      this.show = false
+      this.$emit('toggleModal', !this.show)
     }
   },
 }

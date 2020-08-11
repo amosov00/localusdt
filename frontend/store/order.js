@@ -7,14 +7,19 @@ export const getters = {
   orders: s => s.orders,
   orderById: s => s.orderById,
   buyOrders: s => s.orders.filter(order => order.type === 1),
-  sellOrders: s => s.orders.filter(order => order.type === 2).slice().reverse(),
+  sellOrders: s =>
+    s.orders
+      .filter(order => order.type === 2)
+      .sort((a, b) => b.price - a.price),
   buyOrdersWithLimit: s => limit => {
     return s.orders.filter(order => order.type === 1).slice(0, limit)
   },
   sellOrdersWithLimit: s => limit => {
-    return s.orders.filter(order => order.type === 2).slice(0, limit).slice().reverse()
+    return s.orders
+      .filter(order => order.type === 2)
+      .sort((a, b) => b.price - a.price)
+      .slice(0, limit)
   }
-
 }
 
 export const mutations = {
@@ -24,16 +29,25 @@ export const mutations = {
 
 export const actions = {
   async fetchOrders({ commit }, query) {
-    // console.log(query)
-    const { data } = await this.$axios.get(`/order/?limit=${query.limit}&${query.type ? `ad_type=${query.type}` : ''}&${query.currency ? `currency=${query.currency}` : ''}&${query.payment_method ? `payment_method=${query.payment_method}` : ''}&${query.price_bot ? `price_bot=${query.price_bot}` : ''}&${query.price_top ? `price_top=${query.price_top}` : ''}&${query.sort ? `sort=${query.sort}` : ''}`)
+    const { data } = await this.$axios.get(
+      `/order/?limit=${query.limit}&${
+        query.type ? `ad_type=${query.type}` : ''
+      }&${query.currency ? `currency=${query.currency}` : ''}&${
+        query.payment_method ? `payment_method=${query.payment_method}` : ''
+      }&${query.price_bot ? `price_bot=${query.price_bot}` : ''}&${
+        query.price_top ? `price_top=${query.price_top}` : ''
+      }&${query.sort ? `sort=${query.sort}` : ''}`
+    )
     commit('setOrders', data)
   },
   async fetchOrderById({ commit }, id) {
     const { data } = await this.$axios.get(`/order/${id}`)
     commit('setOrderById', data)
   },
-  async searchOrders({commit}, params) {
-    const { data } = await this.$axios.get(`/order/?ad_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`)
+  async searchOrders({ commit }, params) {
+    const { data } = await this.$axios.get(
+      `/order/?ad_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`
+    )
     commit('setOrders', data)
   },
   async createOrder({}, adForm) {
@@ -43,7 +57,10 @@ export const actions = {
         return true
       })
       .catch(error => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
         return false
       })
   }

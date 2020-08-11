@@ -7,12 +7,12 @@ export const getters = {
   orders: s => s.orders,
   orderById: s => s.orderById,
   buyOrders: s => s.orders.filter(order => order.type === 1),
-  sellOrders: s => s.orders.filter(order => order.type === 2).slice().reverse(),
+  sellOrders: s => s.orders.filter(order => order.type === 2).sort((a, b) => (b.price) - (a.price)),
   buyOrdersWithLimit: s => limit => {
     return s.orders.filter(order => order.type === 1).slice(0, limit)
   },
   sellOrdersWithLimit: s => limit => {
-    return s.orders.filter(order => order.type === 2).slice(0, limit).slice().reverse()
+    return s.orders.filter(order => order.type === 2).sort((a, b) => (b.price) - (a.price)).slice(0, limit)
   }
 
 }

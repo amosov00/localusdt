@@ -20,7 +20,7 @@
         Input(v-model="adForm.top_limit" :width="250" type="number" header="Максимальный лимит транзакции")
         //- Select.create-order__gap--select(:options="currencyOptions" v-model="adForm.currency" :width="80")
       Textarea.create-order__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
-      Checkbox(label="Вставить условия сделки из профиля")
+      Checkbox(v-model="checkbox" label="Вставить условия сделки из профиля")
       Button.create-order__action(green @click.native="createAd") создать объявление
       Modal(:show="showModal" @toggleModal="toggleModal($event)")
 </template>
@@ -32,6 +32,7 @@ import Button from '~/components/app/Button'
 import Checkbox from '~/components/app/Checkbox'
 import Select from '~/components/app/Select'
 import Modal from '~/components/app/Modal'
+import {mapGetters} from 'vuex'
 export default {
   components: { Input, Textarea, Button, Checkbox, Select, Modal },
   middleware: ['authRequired'],
@@ -45,7 +46,7 @@ export default {
         payment_method: 1,
         bank_title: '',
         currency: 1,
-        condition: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.  Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.',
+        condition: '',
         profit: 0
       },
       currencyOptions: [
@@ -58,10 +59,23 @@ export default {
         { name: 'Банковский перевод: Тиньков', value: 2 },
         { name: 'Свой вариант', value: 3 }
       ],
-      showModal: false
+      showModal: false,
+      checkbox: false
+    }
+  },
+  watch: {
+    checkbox: function () {
+      if(this.checkbox) {
+        this.adForm.condition = this.user.about_me
+      } else {
+        this.adForm.condition = ''
+      }
     }
   },
   computed: {
+    ...mapGetters({
+      user: 'user'
+    }),
     equation() {
       let currencyName = this.currencyOptions.find(currency => {
         return currency.value === this.adForm.currency

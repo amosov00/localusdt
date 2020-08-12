@@ -7,6 +7,7 @@
 <script>
 export default {
   props: {
+    value: String,
     placeholder: {
       type: String,
       default: '',
@@ -18,9 +19,7 @@ export default {
     }
   },
   data() {
-    return {
-      value: ''
-    }
+    return {}
   },
   methods: {
     updateValue(value) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="input" :class="{'input--disabled': disabled}" :style="{width: `${width}px`}">
+  <div class="input" :style="{width: `${width}px`}">
     <p class="input__header" v-if="header">{{ header }}</p>
     <div  class="input__body">
       <span class="input__icon" v-if="icon">

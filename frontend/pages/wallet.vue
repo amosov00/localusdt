@@ -5,10 +5,10 @@
         <h1 class="wallet__title">Кошелек</h1>
       </div>
       <div class="wallet__balance">
-        <p class="wallet__amount">231,21 USDT</p>
+        <p class="wallet__amount">{{commaSplitting(user.balance_usdt)}} USDT</p>
       <div class="wallet__avaible">
         <p><span class="opacity-50">Доступно:</span> 200 USDT</p>
-        <p><span class="opacity-50">В сделках:</span> 31,21 USDT</p>
+        <p><span class="opacity-50">В сделках:</span> {{commaSplitting(user.usdt_in_invoices)}} USDT</p>
       </div>
       </div>
     </div>
@@ -18,15 +18,23 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+import formatCurrency from '~/mixins/formatCurrency'
 import WalletInteraction from '~/components/wallet/WalletInteraction'
 import WalletTransactions from '~/components/wallet/WalletTransactions'
 export default {
   name: 'wallet',
   middleware: ['authRequired', 'fetchUser'],
   components: {WalletInteraction, WalletTransactions},
+  mixins: [formatCurrency],
   data() {
     return {}
-  }
+  },
+  computed: {
+    ...mapGetters({
+      user: 'user'
+    })
+  },
 }
 </script>
 

@@ -2,9 +2,9 @@
   <div class="interaction">
     <div class="withdraw">
       <div class="withdraw__header">
-        <h2 class="withdraw__title">Вывести USRT</h2>
+        <h2 class="withdraw__title">Вывести USDT</h2>
         <p class="withdraw__subtitle">
-          Минимальная мумма отправки <span class="orange">1 USDT</span>
+          Минимальная сумма отправки <span class="orange">1 USDT</span>
         </p>
       </div>
 

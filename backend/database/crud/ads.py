@@ -1,17 +1,13 @@
 from typing import Optional, Union, List
 from bson import ObjectId
-from datetime import datetime
 from fastapi import HTTPException
 from http import HTTPStatus
 
-
+from core.mechanics import AdsMechanics
 from database.crud.base import BaseMongoCRUD
 from database.crud import UserCRUD, CurrencyCRUD
-from core.utils import to_objectid
 from schemas.ads import (
-    Ads,
     AdsCreate,
-    AdsType,
     AdsFilters
 )
 from schemas.user import (
@@ -24,10 +20,6 @@ __all__ = ["AdsCRUD"]
 
 class AdsCRUD(BaseMongoCRUD):
     collection: str = "ads"
-
-    @classmethod
-    async def find_by_id(cls, _id: str) -> Optional[dict]:
-        return await super().find_one(query={"_id": to_objectid(_id)}) if _id else None
 
     @classmethod
     async def find_by_email(cls, email: str) -> Optional[dict]:
@@ -48,17 +40,9 @@ class AdsCRUD(BaseMongoCRUD):
 
     @classmethod
     async def create(cls, user: User, payload: AdsCreate):
-        if payload.amount_usdt > user.balance_usdt:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough usdt on your account.")
-        else:
-            user.balance_usdt -= payload.amount_usdt
-            await UserCRUD.update_one(query={"_id": user.id}, payload={"balance_usdt": user.balance_usdt})
-        # Money check and transfer to ads
-
-        ads = Ads(
-            **payload.dict(),
-            user_id=user.id,
-            created_at=datetime.now()
+        ads = await AdsMechanics().get_created_ads(
+            payload,
+            user
         )
         current_rate = (await CurrencyCRUD.find_last())["current_rate"]
         if not current_rate:
@@ -98,3 +82,4 @@ class AdsCRUD(BaseMongoCRUD):
         for ads in result:
             ads["username"] = users_kw[ads["user_id"]]
         return result
+

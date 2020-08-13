@@ -10,6 +10,7 @@ from database.crud.base import BaseMongoCRUD
 from database.crud.ads import AdsCRUD
 from database.crud.user import UserCRUD
 from core.utils import to_objectid
+from core.mechanics import InvoiceMechanics
 
 from schemas.user import User
 
@@ -22,10 +23,6 @@ __all__ = ["InvoiceCRUD"]
 
 class InvoiceCRUD(BaseMongoCRUD):
     collection: str = "invoice"
-
-    @classmethod
-    async def find_by_id(cls, _id: str) -> Optional[dict]:
-        return await super().find_one(query={"_id": to_objectid(_id)}) if _id else None
 
     @classmethod
     async def find_by_ads_id(cls, _id: str) -> Optional[list]:
@@ -64,6 +61,32 @@ class InvoiceCRUD(BaseMongoCRUD):
         return await super().find_many(query={"status": status})
 
     @classmethod
+    async def update_all(cls, invoice: dict = None, seller: dict = None, buyer: dict = None, ads: dict = None) -> None:
+        if invoice:
+            await cls.update_one(
+                query={"_id": invoice["id"]},
+                payload=invoice
+            )
+
+        if seller:
+            await UserCRUD.update_one(
+                query={"_id": seller["id"]},
+                payload=seller
+            )
+
+        if buyer:
+            await UserCRUD.update_one(
+                query={"_id": buyer["id"]},
+                payload=buyer
+            )
+
+        if ads:
+            await AdsCRUD.update_one(
+                query={"_id": ads["id"]},
+                payload=ads
+            )
+
+    @classmethod
     async def create_invoice(cls, user: User, payload: InvoiceCreate):
         ads = await AdsCRUD.find_by_id(payload.ads_id)
 
@@ -93,45 +116,17 @@ class InvoiceCRUD(BaseMongoCRUD):
             status_changed_at=datetime.utcnow(),
             amount_rub=ads["price"] * payload.amount_usdt,
         )
+        seller_db = await UserCRUD.find_by_id(seller_id)
+        buyer_db = await UserCRUD.find_by_id(buyer_id)
+        ads_db = await AdsCRUD.find_by_id(payload.ads_id)
+        seller, buyer, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).validate_creation()
 
-        if payload.amount_usdt > ads["amount_usdt"]:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough money on ads")
-        else:
-            ads["amount_usdt"] -= payload.amount_usdt
-            await AdsCRUD.update_one(
-                query={"_id": payload.ads_id},
-                payload={"amount_usdt": ads["amount_usdt"]},
-            )
-        # Check money is enough and transfer
+        await cls.update_all(seller, buyer, ads)
 
         inserted_id = (await cls.insert_one(payload={**invoice.dict()})).inserted_id
 
-        ads_in_db = await cls.find_one(query={"_id": inserted_id})
-        return ads_in_db
-
-    @classmethod
-    async def _cancel_invoice_db(cls, invoice: dict):
-        ads = await AdsCRUD.find_by_id(invoice.get("ads_id"))
-        if ads:
-            ads["amount_usdt"] += invoice.get("amount_usdt")
-            await AdsCRUD.update_one(
-                query={"_id": ads["_id"]},
-                payload={"amount_usdt": ads["amount_usdt"]},
-            )
-            await cls.update_one(
-                query={"_id": invoice["_id"]},
-                payload={
-                    "status": InvoiceStatus.CANCELLED,
-                    "finished_at": datetime.utcnow(),
-                },
-            )
-        else:
-            capture_message(
-                f"Error while cancelling invoice, invoice_id: {invoice['_id']}"
-            )
-            raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "Error while cancelling invoice"
-            )
+        invoice_in_db = await cls.find_one(query={"_id": inserted_id})
+        return invoice_in_db
 
     @classmethod
     async def cancel_invoice(cls, user: User, invoice_id: str):
@@ -148,9 +143,14 @@ class InvoiceCRUD(BaseMongoCRUD):
                 HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
             )
 
-        await cls._cancel_invoice_db(invoice)
+        seller_db = await UserCRUD.find_by_id(invoice["seller_id"])
+        buyer_db = await UserCRUD.find_by_id(invoice["buyer_id"])
+        ads_db = await AdsCRUD.find_by_id(invoice["ads_id"])
+        seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).cancel_invoice()
+        print(invoice)
+        await cls.update_all(invoice, seller, buyer, ads)
 
-        return await cls.find_by_id(invoice_id)
+        return True
 
     @classmethod
     async def approve_invoice(cls, user: User, invoice_id: str):
@@ -197,23 +197,13 @@ class InvoiceCRUD(BaseMongoCRUD):
             capture_message(f"invoice got corrupted, invoice id: {invoice_id}")
             raise HTTPException(HTTPStatus.BAD_REQUEST, "invoice got corrupted")
 
-        await cls.update_one(
-            query={"_id": invoice["_id"]},
-            payload={
-                "status": InvoiceStatus.COMPLETED,
-                "finished_at": datetime.utcnow(),
-                "status_changed_at": datetime.utcnow(),
-            },
-        )
+        seller_db = await UserCRUD.find_by_id(invoice["seller_id"])
+        buyer_db = await UserCRUD.find_by_id(invoice["buyer_id"])
+        ads_db = await AdsCRUD.find_by_id(invoice["ads_id"])
 
-        await UserCRUD.update_one(
-            query={"_id": invoice["buyer_id"]},
-            payload={
-                "balance_usdt": buyer.get("balance_usdt") + invoice["amount_usdt"]
-                if buyer.get("balance_usdt")
-                else invoice["amount_usdt"]
-            },
-        )
+        seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).transfer_tokens()
+
+        await cls.update_all(invoice, seller, buyer, ads)
 
         return True
 

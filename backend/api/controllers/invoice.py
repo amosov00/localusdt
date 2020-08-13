@@ -21,7 +21,7 @@ async def invoice_create(user: User = Depends(get_user), payload: InvoiceCreate 
     return await InvoiceCRUD.create_invoice(user, payload)
 
 
-@router.put("/{invoice_id}/cancel/", response_model=InvoiceInDB)
+@router.put("/{invoice_id}/cancel/")
 async def invoice_cancel(user: User = Depends(get_user), invoice_id: str = Path(...)):
     return await InvoiceCRUD.cancel_invoice(user, invoice_id)
 

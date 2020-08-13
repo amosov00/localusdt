@@ -1,6 +1,8 @@
 <template>
   <div class="chat">
-    <h2>Отправьте сообщение <span class="orange">USERuser1234</span></h2>
+    <h2>
+      Отправьте сообщение <span class="orange">{{ invoice.seller_username }}</span>
+    </h2>
     <Textarea
       class="w-100 mt-20"
       placeholder="Напишите трейдеру сообщение с контактной или другой информацией 
@@ -31,6 +33,9 @@
 import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 export default {
+  props: {
+    invoice: Object
+  },
   components: {
     Textarea,
     Button
@@ -40,7 +45,6 @@ export default {
 
 <style lang="scss">
 .chat {
-
   &__box {
     margin-top: 20px;
     border-top: 1px solid $grey;
@@ -64,9 +68,9 @@ export default {
     width: 100%;
 
     &:nth-child(odd) {
-       margin-left: auto;
-       background-color: $grey;
-       border-radius: 6px 6px 0px 6px;
+      margin-left: auto;
+      background-color: $grey;
+      border-radius: 6px 6px 0px 6px;
     }
   }
 }

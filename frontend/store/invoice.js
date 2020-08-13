@@ -18,7 +18,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async createInvoice({}, invoiceForm) {
+  async createInvoice({dispatch}, invoiceForm) {
     return await this.$axios
       .post('/invoice/create/', invoiceForm)
       .then(res => {
@@ -27,6 +27,7 @@ export const actions = {
           content: 'Заявка успешно создана!',
           green: true
         })
+        dispatch('fetchInvoices')
       })
       .catch(error => {
         this.$toast.showMessage({
@@ -61,10 +62,13 @@ export const actions = {
         })
       })
   },
-  async confirmInvoice({}, id) {
+  async confirmInvoice({dispatch}, id) {
     return await this.$axios.put(`/invoice/${id}/confirm/`).then(res => {
+      console.log(res)
+      dispatch('fetchInvoiceById', id)
       return true
     }).catch(error => {
+      console.log(error)
       return false
     })
   }

@@ -73,6 +73,10 @@ export const actions = {
     this.$cookies.remove('token')
     this.$router.push('/')
   },
+  async fetchUser({commit}) {
+    const {data} = await this.$axios.get('account/user/')
+    commit('setUser', data)
+  },
   async changeProfile({}, data) {
     return await this.$axios
       .put('/account/user/', data)
@@ -143,7 +147,7 @@ export const actions = {
         })
       })
   },
-  async changeCondition({}, condition) {
+  async changeCondition({dispatch}, condition) {
     await this.$axios
       .put('/account/user/', {
         about_me: condition
@@ -153,6 +157,7 @@ export const actions = {
           content: ' Информация успешно изменена!',
           green: true
         })
+        dispatch('fetchUser')
       })
       .catch(error => {
         this.$toast.showMessage({

@@ -1,5 +1,5 @@
 <template>
-  <div class="tab" :style="{'top': `${top}px`}">
+  <div class="tab" :style="{ top: `${top}px` }">
     <nav v-if="nav" class="tab-nav">
       <div
         class="tab-nav__item"
@@ -17,11 +17,26 @@
       </div>
     </nav>
     <div class="tab-body">
-      <Input v-model="searchForm.bot_limit" type="number" header="Цена за токен" placeholder="0,00" />
+      <Input
+        v-model="searchForm.bot_limit"
+        type="number"
+        header="Цена за токен"
+        placeholder="0,00"
+      />
       <Input v-model="searchForm.top_limit" type="number" placeholder="0,00" />
-      <Select v-model="searchForm.currency" :width="80" :options="currencyOptions" />
-      <Select v-model="searchForm.payment_method" :width="370" :options="paymentOptions" />
-      <Button green @click.native="searchOrders" >Найти</Button>
+      <Select
+        v-model="searchForm.currency"
+        :width="80"
+        :options="currencyOptions"
+        :selectedOptionProp="outsideParams ? outsideParams.currency : ''"
+      />
+      <Select
+        v-model="searchForm.payment_method"
+        :width="370"
+        :options="paymentOptions"
+        :selectedOptionProp="outsideParams ? outsideParams.payment_method : ''"
+      />
+      <Button green @click.native="searchOrders">Найти</Button>
     </div>
   </div>
 </template>
@@ -33,6 +48,7 @@ import Button from '~/components/app/Button'
 export default {
   props: {
     top: Number,
+    outsideParams: Object,
     nav: {
       type: Boolean,
       default: true
@@ -46,22 +62,16 @@ export default {
   },
   data() {
     return {
-      searchForm: {
-        payment_method: 1,
-        currency: 1,
-        bot_limit: 0,
-        top_limit: 0,
-      },
       firstTab: true,
       secondTab: false,
       currencyOptions: [
         { name: 'RUB', value: 1 },
-        { name: 'USD', value: 2 },
+        { name: 'USD', value: 2, selected: true },
         { name: 'EUR', value: 3 }
       ],
       paymentOptions: [
         { name: 'Банковский перевод: Сбербанк', value: 1 },
-        { name: 'Банковский перевод: Тинькофф', value: 2 },
+        { name: 'Банковский перевод: Тинькофф', value: 2, selected: true },
         { name: 'Банковский перевод: Альфа Банк', value: 3 },
         { name: 'Иной способ', value: 4 }
       ]
@@ -69,7 +79,7 @@ export default {
   },
   computed: {
     routePath() {
-      if(this.type === 1 || this.firstTab) {
+      if (this.type === 1 || this.firstTab) {
         return '/buy'
       } else {
         return '/sell'
@@ -79,26 +89,37 @@ export default {
       return `/?payment_method=${this.searchForm.payment_method}&currency=${this.searchForm.currency}&price_bot=${this.searchForm.bot_limit}&price_top=${this.searchForm.top_limit}`
     },
     adType() {
-      if(this.firstTab || this.type === 1) {
+      if (this.firstTab || this.type === 1) {
         return 1
       } else {
         return 2
+      }
+    },
+    searchForm() {
+      return {
+        payment_method: 1,
+        currency: 1,
+        bot_limit: 0,
+        top_limit: 0
       }
     }
   },
   methods: {
     selectTab() {
-      if(this.firstTab) {
+      if (this.firstTab) {
         this.secondTab = true
         this.firstTab = false
       } else {
         this.secondTab = false
         this.firstTab = true
       }
-      this.$emit('selectedTab', {buy: this.firstTab, sell: this.secondTab})
+      this.$emit('selectedTab', { buy: this.firstTab, sell: this.secondTab })
     },
     searchOrders() {
-      this.$store.dispatch('order/searchOrders', {...this.searchForm, ad_type: this.adType})
+      this.$store.dispatch('order/searchOrders', {
+        ...this.searchForm,
+        ad_type: this.adType
+      })
       this.$router.push(this.routePath + this.queries)
     }
   }

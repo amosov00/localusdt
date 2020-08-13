@@ -2,7 +2,7 @@
   <div class="profile-referral">
     <div class="profile-referral__header">
       <h2 class="profile-referral__title">Реферальная программа</h2>
-      <p class="profile-referral__conditions">Условия</p>
+      <p class="profile-referral__conditions" @click="showModal = true">Условия</p>
     </div>
     <div class="profile-referral__body">
       <Input
@@ -23,14 +23,27 @@
         </div>
       </div>
     </div>
+    <ReferralModal :show="showModal" @toggleModal="toggleModal($event)" />
   </div>
 </template>
 
 <script>
 import Input from '~/components/app/Input'
+import ReferralModal from '~/components/ReferralModal'
 export default {
   components: {
-    Input
+    Input,
+    ReferralModal
+  },
+  data() {
+    return {
+      showModal: false
+    }
+  },
+  methods: {
+    toggleModal(state) {
+      this.showModal = state
+    }
   }
 }
 </script>

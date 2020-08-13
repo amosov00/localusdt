@@ -32,6 +32,7 @@ export default {
         return []
       }
     },
+    selectedOptionProp: String,
     header: String,
     width: Number
   },
@@ -46,6 +47,14 @@ export default {
       return this.options.filter(option => {
         return option.name !== this.selected.name
       })
+    },
+    selectedOption() {
+      return this.options.find(el => el.value == this.selectedOptionProp) || this.options[0]
+      // get: function() {
+      // },
+      // set: function(value) {
+      //   this.selectedOption = value
+      // }
     }
   },
   methods: {

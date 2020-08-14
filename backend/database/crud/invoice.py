@@ -116,6 +116,10 @@ class InvoiceCRUD(BaseMongoCRUD):
             status_changed_at=datetime.utcnow(),
             amount_rub=ads["price"] * payload.amount_usdt,
         )
+
+        if invoice.amount_rub < ads.get("bot_limit"):
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Error while creating invoice")
+
         seller_db = await UserCRUD.find_by_id(seller_id)
         buyer_db = await UserCRUD.find_by_id(buyer_id)
         ads_db = await AdsCRUD.find_by_id(payload.ads_id)
@@ -147,7 +151,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         buyer_db = await UserCRUD.find_by_id(invoice["buyer_id"])
         ads_db = await AdsCRUD.find_by_id(invoice["ads_id"])
         seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).cancel_invoice()
-        print(invoice)
+
         await cls.update_all(invoice, seller, buyer, ads)
 
         return True
@@ -198,10 +202,9 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "invoice got corrupted")
 
         seller_db = await UserCRUD.find_by_id(invoice["seller_id"])
-        buyer_db = await UserCRUD.find_by_id(invoice["buyer_id"])
         ads_db = await AdsCRUD.find_by_id(invoice["ads_id"])
 
-        seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).transfer_tokens()
+        seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer, ads_db).transfer_tokens()
 
         await cls.update_all(invoice, seller, buyer, ads)
 

@@ -9,15 +9,15 @@ from fastapi.exceptions import HTTPException
 
 from .base import ObjectId
 from database.crud.base import BaseMongoCRUD
+from database.crud.ethereum_wallet import EthereumWalletCRUD
+from core.integrations.crypto import EthereumWrapper
 from core.utils.jwt import decode_jwt_token, encode_jwt_token
 from core.utils.email import MailGunEmail
-from core.utils import to_objectid
 from schemas.user import (
     User,
     UserCreationSafe,
     pwd_context,
     UserChangePassword,
-    UserVerify,
     UserRecover,
     UserRecoverLink,
     UserUpdate
@@ -104,6 +104,10 @@ class UserCRUD(BaseMongoCRUD):
                 HTTPStatus.BAD_REQUEST, "Пользователь с таким именем уже существует",
             )
 
+        eth_wallet, private_key, entropy = await EthereumWrapper().create_wallet()
+        await EthereumWalletCRUD.create_wallet(eth_wallet, private_key, entropy)
+        # create ethereum wallet for user
+
         verification_code = pwd.genword()
 
         inserted_id = (
@@ -113,6 +117,7 @@ class UserCRUD(BaseMongoCRUD):
                     "created_at": datetime.now(),
                     "verification_code": verification_code,
                     "is_active": False,
+                    "eth_address": eth_wallet
                 }
             )
         ).inserted_id

@@ -18,7 +18,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async createInvoice({dispatch}, invoiceForm) {
+  async createInvoice({ dispatch }, invoiceForm) {
     return await this.$axios
       .post('/invoice/create/', invoiceForm)
       .then(res => {
@@ -42,7 +42,6 @@ export const actions = {
   },
   async fetchInvoiceById({ commit }, id) {
     const { data } = await this.$axios.get(`/invoice/${id}/`)
-    // console.log(data)
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {
@@ -62,14 +61,32 @@ export const actions = {
         })
       })
   },
-  async confirmInvoice({dispatch}, id) {
-    return await this.$axios.put(`/invoice/${id}/confirm/`).then(res => {
-      console.log(res)
-      dispatch('fetchInvoiceById', id)
-      return true
-    }).catch(error => {
-      console.log(error)
-      return false
-    })
+  async confirmInvoice({ dispatch }, id) {
+    return await this.$axios
+      .put(`/invoice/${id}/confirm/`)
+      .then(res => {
+        console.log(res.data)
+        dispatch('fetchInvoiceById', id)
+        dispatch('fetchUser', null, { root: true })
+        return true
+      })
+      .catch(error => {
+        console.log(error.response.data[0].message)
+        return false
+      })
+  },
+  async transferInvoice({ dispatch }, id) {
+    return await this.$axios
+      .put(`/invoice/${id}/transfer/`)
+      .then(res => {
+        console.log(res.data)
+        dispatch('fetchInvoiceById', id)
+        dispatch('fetchUser', null, { root: true })
+        return true
+      })
+      .catch(error => {
+        console.log(error.response.data[0].message)
+        return false
+      })
   }
 }

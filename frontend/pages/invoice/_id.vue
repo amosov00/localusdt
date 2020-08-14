@@ -2,7 +2,6 @@
   <section class="order">
     <header class="order__header">
       <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
-      {{userRole}}
       <span class="opacity-50 fz-20" v-if="invoice.ads_type === 1"
         >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span

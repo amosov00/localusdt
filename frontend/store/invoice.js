@@ -62,31 +62,40 @@ export const actions = {
       })
   },
   async confirmInvoice({ dispatch }, id) {
-    return await this.$axios
+    await this.$axios
       .put(`/invoice/${id}/confirm/`)
       .then(res => {
-        console.log(res.data)
         dispatch('fetchInvoiceById', id)
         dispatch('fetchUser', null, { root: true })
-        return true
+        this.$toast.showMessage({
+          content: 'Ожидайте получения токенов',
+          green: true
+        })
       })
       .catch(error => {
-        console.log(error.response.data[0].message)
-        return false
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
       })
   },
   async transferInvoice({ dispatch }, id) {
-    return await this.$axios
+    await this.$axios
       .put(`/invoice/${id}/transfer/`)
       .then(res => {
         console.log(res.data)
         dispatch('fetchInvoiceById', id)
         dispatch('fetchUser', null, { root: true })
-        return true
+        this.$toast.showMessage({
+          content: 'Сделка завершена',
+          green: true
+        })
       })
       .catch(error => {
-        console.log(error.response.data[0].message)
-        return false
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
       })
   }
 }

@@ -17,7 +17,7 @@
           span.orders-count (10+)
         td.table__data {{commaSplitting(invoice.amount_usdt)}} USDT 
           span.opacity-50.fw-400 за {{commaSplitting(invoice.amount_rub)}} ₽
-        td.table__data.orange
+        td.table__data(:style="{ color: statusColor(invoice.status) }")
           nuxt-link.table__link( :to="`/invoice/${invoice._id}`")  {{invoiceStatusShort(invoice.status)}}
 </template>
 
@@ -44,9 +44,23 @@ export default {
       } else {
         return true
       }
-    }
+    },
   },
   methods: {
+    statusColor(status) {
+      console.log(this.invoiceStatusShort(status))
+      switch (this.invoiceStatusShort(status)) {
+        case 'Завершен':
+          return '#48B190'
+          break;
+        case 'В процессе':
+          return '#ED9F43'
+          break;
+        case 'Отменена':
+          return '#B31B11'
+          break;
+      }
+    }
   }
 }
 </script>

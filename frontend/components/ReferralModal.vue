@@ -39,7 +39,8 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+            backdrop-filter: blur(40px);
   z-index: 100000000000000;
 
   .referral {

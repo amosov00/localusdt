@@ -2,6 +2,7 @@
   <section class="order">
     <header class="order__header">
       <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
+      {{userRole}}
       <span class="opacity-50 fz-20" v-if="invoice.ads_type === 1"
         >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
@@ -29,9 +30,14 @@
     <OrderInfo :order="invoice" />
     <div class="order__footer">
       <Chat :invoice="invoice" />
-      <!-- <div class="steps" v-if="invoice.ads_type === 1"> -->
-      <BuySteps :invoice="invoice" v-if="invoice.ads_type === 1" />
-      <SellSteps :invoice="invoice" v-else-if="invoice.ads_type === 2" />
+      <div v-if="invoice.ads_type === 1">
+        <SendMoneySteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice"  />
+        <SendUSDTSteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice" />
+      </div>
+      <div v-else-if="invoice.ads_type === 2">
+        <SendMoneySteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice"  />
+        <SendUSDTSteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice" />
+      </div>
     </div>
     <InvoiceCancelModal :show="cancelModal" @toggleModal="cancelModal = $event" :invoice="invoice" />
   </section>
@@ -45,8 +51,8 @@ import Button from '~/components/app/Button'
 import OrderForm from '~/components/order/OrderForm'
 import OrderInfo from '~/components/order/OrderInfo'
 import Chat from '~/components/app/Chat'
-import SellSteps from '~/components/invoice/SellSteps'
-import BuySteps from '~/components/invoice/BuySteps'
+import SendUSDTSteps from '~/components/invoice/SendUSDTSteps'
+import SendMoneySteps from '~/components/invoice/SendMoneySteps'
 import InvoiceCancelModal from '~/components/InvoiceCancelModal'
 export default {
   name: 'invoice_by_id',
@@ -56,8 +62,8 @@ export default {
     OrderForm,
     OrderInfo,
     Chat,
-    SellSteps,
-    BuySteps,
+    SendUSDTSteps,
+    SendMoneySteps,
     InvoiceCancelModal
   },
   data() {
@@ -67,8 +73,22 @@ export default {
   },
   computed: {
     ...mapGetters({
-      invoice: 'invoice/invoiceById'
-    })
+      invoice: 'invoice/invoiceById',
+      user: 'user'
+    }),
+    userRole() {
+      if(this.invoice.ads_type === 1 && this.user.username === this.invoice.buyer_username) {
+        return 'owner_buy'
+      } else if (this.invoice.ads_type === 1 && this.user.username === this.invoice.seller_username) {
+        return 'customer_buy'
+      }
+
+      if(this.invoice.ads_type === 2 && this.user.username === this.invoice.buyer_username) {
+        return 'owner_sell'
+      } else if (this.invoice.ads_type === 2 && this.user.username === this.invoice.seller_username) {
+        return 'customer_sell'
+      }
+    }
   },
   asyncData({ route, store }) {
     return store.dispatch('invoice/fetchInvoiceById', route.params.id)

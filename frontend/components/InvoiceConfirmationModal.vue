@@ -35,7 +35,7 @@ export default {
       this.$emit('toggleModal', !this.show)
     },
     confirm() {
-      this.$store.dispatch('invoice/confirmInvoice', this.invoice._id)
+      this.$store.dispatch('invoice/transferInvoice', this.invoice._id)
       this.hideModal()
     }
   }
@@ -52,7 +52,8 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+            backdrop-filter: blur(40px);
   z-index: 100000000000000;
 
   .invoice-confirm {

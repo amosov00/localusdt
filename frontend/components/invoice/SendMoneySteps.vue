@@ -1,5 +1,5 @@
 <template>
-  <div class="steps" v-if="invoice.ads_type === 1">
+  <div class="steps">
     <div class="step-1">
       <p><span class="opacity-50">Шаг 1: </span> Заплатите продавцу</p>
       <p>

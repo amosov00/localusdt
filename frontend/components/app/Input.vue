@@ -5,7 +5,7 @@
       <span class="input__icon" v-if="icon">
         <InlineSvg :src="require(`~/assets/icons/${icon}.svg`)" />
       </span>
-      <input :class="{'input--disabled': disabled}" :disabled="disabled" class="input__field" :type="showPasswordField" @input="updateValue($event.target.value)" v-model="value" :value="value" :placeholder="placeholder" />
+      <input :class="{'input--disabled': disabled}" :disabled="disabled" class="input__field" :type="showPasswordField" :value="value" @input="$emit('input', $event.target.value)" :placeholder="placeholder" />
       <span class="input__icon" v-if="type === 'password'" @click="toggleShowPassword">
         <InlineSvg :src="require(`~/assets/icons/${passwordIcon}.svg`)" />
       </span>
@@ -56,7 +56,6 @@ export default {
   data() {
     return {
       showPassword: false,
-      // value: ''
     }
   },
   computed: {
@@ -78,9 +77,6 @@ export default {
   methods: {
     toggleShowPassword() {
       this.showPassword = !this.showPassword
-    },
-    updateValue(value) {
-      this.$emit('input', this.value)
     }
   }
 }

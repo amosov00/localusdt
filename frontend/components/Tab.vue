@@ -62,6 +62,12 @@ export default {
   },
   data() {
     return {
+      searchForm: {
+        payment_method: this.outsideParams ? (this.outsideParams.payment_method * 1) : 1,
+        currency: this.outsideParams ? (this.outsideParams.currency * 1) : 1,
+        bot_limit: this.outsideParams ? this.outsideParams.price_bot : 0,
+        top_limit: this.outsideParams ? this.outsideParams.price_top : 0,
+      },
       firstTab: true,
       secondTab: false,
       currencyOptions: [
@@ -93,14 +99,6 @@ export default {
         return 1
       } else {
         return 2
-      }
-    },
-    searchForm() {
-      return {
-        payment_method: 1,
-        currency: 1,
-        bot_limit: 0,
-        top_limit: 0
       }
     }
   },

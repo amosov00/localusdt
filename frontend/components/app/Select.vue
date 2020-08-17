@@ -27,19 +27,19 @@ import InlineSvg from 'vue-inline-svg'
 export default {
   components: { InlineSvg },
   props: {
+    value: Number,
     options: {
       default() {
         return []
       }
     },
-    selectedOptionProp: String,
     header: String,
     width: Number
   },
   data() {
     return {
       areOptionsVisible: false,
-      selected: this.options[0]
+      selected: this.options.find(option => option.value === this.value)
     }
   },
   computed: {
@@ -47,14 +47,6 @@ export default {
       return this.options.filter(option => {
         return option.name !== this.selected.name
       })
-    },
-    selectedOption() {
-      return this.options.find(el => el.value == this.selectedOptionProp) || this.options[0]
-      // get: function() {
-      // },
-      // set: function(value) {
-      //   this.selectedOption = value
-      // }
     }
   },
   methods: {
@@ -113,9 +105,6 @@ export default {
 
   &__icon {
     display: inline-block;
-  }
-
-  &__options {
   }
 
   &__option {

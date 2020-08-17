@@ -83,7 +83,6 @@ export const actions = {
     await this.$axios
       .put(`/invoice/${id}/transfer/`)
       .then(res => {
-        console.log(res.data)
         dispatch('fetchInvoiceById', id)
         dispatch('fetchUser', null, { root: true })
         this.$toast.showMessage({

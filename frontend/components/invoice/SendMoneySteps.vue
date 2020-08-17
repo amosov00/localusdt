@@ -53,7 +53,6 @@ export default {
   },
   methods: {
     paid() {
-      console.log('paid')
       this.$store.dispatch('invoice/confirmInvoice', this.invoice._id)
     }
   }

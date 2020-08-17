@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     paid() {
-      console.log('paid')
       this.$emit('showConfirmationModal', true)
     },
     showModal(state) {

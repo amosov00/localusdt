@@ -48,7 +48,6 @@ export default {
   },
   methods: {
     statusColor(status) {
-      console.log(this.invoiceStatusShort(status))
       switch (this.invoiceStatusShort(status)) {
         case 'Завершен':
           return '#48B190'

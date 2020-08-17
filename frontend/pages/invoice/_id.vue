@@ -10,6 +10,7 @@
         >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
       >
+      {{userRole}}
       <div class="ad__subtitle">
         <p>
           <span class="green">Статус сделки: </span>
@@ -26,7 +27,7 @@
         </p>
       </div>
     </header>
-    <OrderInfo :order="invoice" />
+    <OrderInfo :order="invoice" :role="userRole" />
     <div class="order__footer">
       <Chat :invoice="invoice" />
       <div v-if="invoice.ads_type === 1">

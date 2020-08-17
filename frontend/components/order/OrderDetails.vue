@@ -3,14 +3,12 @@
     <div class="order-details__row fz-20">
       <p class="order-details__cell opacity-50">Цена</p>
       <p class="order-details__cell">
-        {{
-          commaSplitting(orderDetails.price || orderDetails.amount_rub)
-        }}
+        {{ commaSplitting(orderDetails.price || orderDetails.amount_rub) }}
         ₽/USDT
       </p>
     </div>
     <div class="order-details__row">
-      <p
+      <!-- <p
         class="order-details__cell opacity-50"
         v-if="orderDetails.type || orderDetails.ads_type === 1"
       >
@@ -21,9 +19,12 @@
         v-else-if="orderDetails.type || orderDetails.ads_type === 2"
       >
         Покупатель:
+      </p> -->
+      <p class="order-details__cell opacity-50">
+        {{ owner.type }}
       </p>
       <p class="order-details__cell">
-        {{ orderDetails.username || orderDetails.buyer_username }}
+        {{ owner.name }}
       </p>
     </div>
     <div class="order-details__row">
@@ -57,6 +58,18 @@ import formatCurreny from '~/mixins/formatCurrency'
 export default {
   props: {
     orderDetails: Object
+  },
+  computed: {
+    owner() {
+      switch (this.orderDetails.ads_type) {
+        case 1:
+          return { name: this.orderDetails.seller_username, type: 'Продавец:' }
+          break
+        case 2:
+          return { name: this.orderDetails.buyer_username, type: 'Покупатель:' }
+          break
+      }
+    }
   },
   mixins: [formatCurreny]
 }

@@ -7,9 +7,7 @@ from database.crud import UserCRUD, USDTTransactionCRUD
 from config import LAST_BLOCKS_TO_PARSE
 
 
-__all__ = [
-    "check_deposits"
-]
+__all__ = ["check_deposits"]
 
 
 @app.task(name="check_deposits", bind=True, soft_time_limit=46, time_limit=300)
@@ -27,15 +25,12 @@ async def check_deposits(self, *args, **kwargs):
             user: dict = user_kw.get(transaction.get("to_adr").lower())
             if transaction.get("to_adr").lower() == user.get("eth_address").lower():
                 new_balance = float(
-                            user.get("balance_usdt")
-                            if user.get("balance_usdt")
-                            else 0.0 + float(transaction.get("usdt_amount")) * 0.000001
-                        )
+                    (user.get("balance_usdt") if user.get("balance_usdt") else 0.0)
+                    + float(transaction.get("usdt_amount")) * 0.000001
+                )
                 await UserCRUD.update_one(
                     query={"_id": user.get("_id")},
-                    payload={
-                        "balance_usdt": new_balance
-                    },
+                    payload={"balance_usdt": new_balance},
                 )
                 transaction["usdt_amount"] = Decimal128(transaction.get("usdt_amount"))
                 transactions_to_insert.append(transaction)

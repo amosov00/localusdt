@@ -1,12 +1,6 @@
-from typing import List, Optional, Literal
-from os import environ
-from fastapi import APIRouter, HTTPException, Query, Depends, Body, Request
-from celery_app.tasks.crypto import update_usdt_rate
-from database.crud import InvoiceCRUD, InvoiceCRUD
-from schemas.invoice import InvoiceStatus
-from datetime import datetime
-from http import HTTPStatus
+from fastapi import APIRouter, Request
 
+from celery_app.tasks.crypto.deposits import check_deposits
 
 __all__ = ["router"]
 
@@ -17,7 +11,7 @@ router = APIRouter()
 async def debug_get(
     request: Request,
 ):
-    pass
+    await check_deposits()
 
 
 @router.post("/")

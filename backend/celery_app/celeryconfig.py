@@ -33,7 +33,12 @@ app.conf.beat_schedule = {
     },
     "update_invoice_status": {
         "task": "update_invoice_status",
+        "schedule": crontab(minute="*/4"),
+        "args": (),
+    },
+    "check_deposits": {
+        "task": "check_deposits",
         "schedule": crontab(minute="*/1"),
         "args": (),
-    }
+    },
 }

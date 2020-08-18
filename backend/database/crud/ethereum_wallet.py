@@ -1,6 +1,11 @@
 from database.crud.base import BaseMongoCRUD
 
 
+__all__ = [
+    "EthereumWalletCRUD"
+]
+
+
 class EthereumWalletCRUD(BaseMongoCRUD):
     collection = "ethwallet"
 

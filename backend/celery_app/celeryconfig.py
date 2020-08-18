@@ -14,7 +14,7 @@ celery_decorator_taskcls.patch_celery()
 
 CELERY_MONGO_DATABASE_URL = f"{MONGO_DATABASE_URL}{CELERY_DATABASE_NAME}"
 
-app = Celery(main="celery_main", broker=CELERY_BROKER_URL, backend=CELERY_MONGO_DATABASE_URL,)
+app = Celery(main="celery_main", broker=CELERY_BROKER_URL)
 
 app.conf.update(
     task_serializer="json",

@@ -18,7 +18,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async createInvoice({}, invoiceForm) {
+  async createInvoice({ dispatch }, invoiceForm) {
     return await this.$axios
       .post('/invoice/create/', invoiceForm)
       .then(res => {
@@ -27,6 +27,7 @@ export const actions = {
           content: 'Заявка успешно создана!',
           green: true
         })
+        dispatch('fetchInvoices')
       })
       .catch(error => {
         this.$toast.showMessage({
@@ -41,7 +42,6 @@ export const actions = {
   },
   async fetchInvoiceById({ commit }, id) {
     const { data } = await this.$axios.get(`/invoice/${id}/`)
-    // console.log(data)
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {
@@ -61,11 +61,40 @@ export const actions = {
         })
       })
   },
-  async confirmInvoice({}, id) {
-    return await this.$axios.put(`/invoice/${id}/confirm/`).then(res => {
-      return true
-    }).catch(error => {
-      return false
-    })
+  async confirmInvoice({ dispatch }, id) {
+    await this.$axios
+      .put(`/invoice/${id}/confirm/`)
+      .then(res => {
+        dispatch('fetchInvoiceById', id)
+        dispatch('fetchUser', null, { root: true })
+        this.$toast.showMessage({
+          content: 'Ожидайте получения токенов',
+          green: true
+        })
+      })
+      .catch(error => {
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
+      })
+  },
+  async transferInvoice({ dispatch }, id) {
+    await this.$axios
+      .put(`/invoice/${id}/transfer/`)
+      .then(res => {
+        dispatch('fetchInvoiceById', id)
+        dispatch('fetchUser', null, { root: true })
+        this.$toast.showMessage({
+          content: 'Сделка завершена',
+          green: true
+        })
+      })
+      .catch(error => {
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
+      })
   }
 }

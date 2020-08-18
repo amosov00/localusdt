@@ -13,33 +13,58 @@
       </div>
     </div>
     <div class="bio">
-      <invoicesTable :tableData="invoices" />
+      <div class="bio__container">
+        <h2 class="bio__title">О себе</h2>
+        <Textarea v-model="condition" />
+        <Button @click.native="setCondition" class="mt-20" green
+          >Сохранить</Button
+        >
+      </div>
+      <ProfileReferral />
     </div>
+    <invoicesTable :tableData="invoices" />
   </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import invoicesTable from '~/components/app/invoicesTable'
+import ProfileReferral from '~/components/ProfileReferral'
+import Textarea from '~/components/app/Textarea'
+import Button from '~/components/app/Button'
 export default {
   middleware: ['authRequired', 'fetchUser'],
   components: {
-    invoicesTable
+    invoicesTable,
+    ProfileReferral,
+    Textarea,
+    Button
   },
   data() {
     return {}
   },
   computed: {
     user() {
-      return this.$store.getters.user
+      return { ...this.$store.getters.user }
     },
     invoices() {
       return this.$store.getters['invoice/invoices']
+    },
+    condition: {
+      get: function() {
+        return this.user.about_me
+      },
+      set: function(value) {
+        this.user.about_me = value
+      }
     }
   },
   methods: {
     logout() {
       this.$store.dispatch('logOut')
+    },
+    setCondition() {
+      this.$store.dispatch('changeCondition', this.user.about_me)
     }
   },
   asyncData({ store }) {
@@ -77,6 +102,17 @@ export default {
     display: flex;
     flex-direction: column;
     text-align: right;
+  }
+
+  .bio {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+
+    &__title {
+      margin-bottom: 35px;
+      font-weight: 500;
+    }
   }
 }
 </style>

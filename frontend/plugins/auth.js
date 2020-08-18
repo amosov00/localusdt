@@ -6,7 +6,6 @@ export default ({ app, redirect }, inject) => {
 				password,
 			}
 		).then(resp => {
-			console.log(resp)
 			app.store.commit('setUser', resp.data.user);
 			app.$axios.setToken(resp.data.token, 'Bearer');
 			app.$cookies.set('token', resp.data.token, {

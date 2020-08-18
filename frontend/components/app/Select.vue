@@ -27,6 +27,7 @@ import InlineSvg from 'vue-inline-svg'
 export default {
   components: { InlineSvg },
   props: {
+    value: Number,
     options: {
       default() {
         return []
@@ -38,7 +39,7 @@ export default {
   data() {
     return {
       areOptionsVisible: false,
-      selected: this.options[0]
+      selected: this.options.find(option => option.value === this.value)
     }
   },
   computed: {
@@ -104,9 +105,6 @@ export default {
 
   &__icon {
     display: inline-block;
-  }
-
-  &__options {
   }
 
   &__option {

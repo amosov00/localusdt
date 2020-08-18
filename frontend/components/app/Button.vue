@@ -1,5 +1,5 @@
 <template lang="pug">
-  button(type="button" :class="{'button--lg': lg, 'button--outlined': outlined, 'button--rounded': rounded, 'button--disabled': disabled, 'orange--bg': orange, 'green--bg': green, 'red--bg': red}" class="button" :disabled="disabled")
+  button(type="button" :class="{'button--lg': lg, 'button--outlined': outlined, 'button--rounded': rounded, 'button--disabled': disabled, 'orange--bg': orange, 'green--bg': green, 'red--bg': red, 'button--white': white}" class="button" :disabled="disabled")
     slot
 </template>
 
@@ -28,6 +28,10 @@ export default {
       default: false
     },
     red: {
+      type: Boolean,
+      default: false
+    },
+    white: {
       type: Boolean,
       default: false
     }
@@ -89,6 +93,11 @@ export default {
   &--lg {
     height: 50px;
     padding: 15px 50px;
+  }
+  &--white {
+    border: 1px solid $grey;
+    color: $black;
+    background-color: $white;
   }
 }
 </style>

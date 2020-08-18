@@ -1,5 +1,9 @@
-from database import mongo_db
+from fastapi import HTTPException
+from typing import Union
+from http import HTTPStatus
 from bson import ObjectId
+
+from database import mongo_db
 
 
 __all__ = [
@@ -14,6 +18,14 @@ class BaseMongoCRUD(object):
     @classmethod
     async def find_one(cls, query: dict):
         return await cls.db[cls.collection].find_one(filter=query,)
+
+    @classmethod
+    async def find_by_id(cls, _id: Union[str, ObjectId], raise_404: bool = False, **kwargs):
+        obj = await cls.db[cls.collection].find_one({"_id": ObjectId(_id)}, **kwargs)
+        if not obj and raise_404:
+            raise HTTPException(HTTPStatus.NOT_FOUND, "object is not found")
+        else:
+            return obj
 
     @classmethod
     async def find_many(cls, query: dict, **kwargs):

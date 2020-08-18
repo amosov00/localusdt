@@ -10,6 +10,7 @@
         >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
       >
+      {{userRole}}
       <div class="ad__subtitle">
         <p>
           <span class="green">Статус сделки: </span>
@@ -20,82 +21,25 @@
           v-if="
             invoice.status === 'waiting_for_payment' && invoice.ads_type === 1
           "
-          @click="cancel"
+          @click="cancelModal = true"
         >
           Отменить сделку
         </p>
       </div>
     </header>
-    <OrderInfo :order="invoice" />
+    <OrderInfo :order="invoice" :role="userRole" />
     <div class="order__footer">
-      <Chat />
-      <div class="steps" v-if="invoice.ads_type === 1">
-        <div class="step-1">
-          <p><span class="opacity-50">Шаг 1: </span> Заплатите продавцу</p>
-          <p>
-            Отправьте сообщение (имя продавца), чтобы обратиться за помощью в
-            совершении платежа.
-          </p>
-          <div class="mt-20 pa-20">
-            <p><span class="opacity-50">Сумма: </span><span>7044,00 ₽</span></p>
-            <p>
-              <span class="opacity-50">Способ оплаты: </span>
-              <span>Банковский перевод: Сбербанк</span>
-            </p>
-          </div>
-        </div>
-        <div class="step-2">
-          <p><span class="opacity-50">Шаг 2: </span> Подтвердите платеж</p>
-          <p>
-            Токены удерживаются на счете в течение
-            <span class="orange">90 минут</span>, за это время необходимо
-            осуществить оплату. После оплаты Вам необходимо
-            <span class="orange"> отметить платеж как завершенный</span>, нажав
-            на кнопку “я заплатил”, в противном случае сделка будет
-            автоматически отменена.
-          </p>
-          <Button
-            class="w-100 mt-20"
-            green
-            @click.native="paid"
-            :disabled="invoice.status !== 'waiting_for_payment'"
-            >Я заплатил</Button
-          >
-        </div>
-        <div class="step-3" v-if="invoice.status === 'waiting_for_tokens'">
-          <p><span class="opacity-50">Шаг 3: </span> Ожидайте токены</p>
-          <p>
-            В течении <span class="orange">30 минут</span> продавец отпрвит
-            токены на ваш адрес.
-          </p>
-        </div>
+      <Chat :invoice="invoice" />
+      <div v-if="invoice.ads_type === 1">
+        <SendMoneySteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice"  />
+        <SendUSDTSteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice" />
       </div>
-      <div class="steps" v-else-if="invoice.ads_type === 2">
-        <p class="fz-20">Отправить токены</p>
-        <p>
-          Покупатель еще не отметил платеж как завершенный, и остается
-          <span class="green">89 минут</span> для проведения оплаты. Если оплата
-          не будет осуществлена, сделка автоматически отменится. Когда Вы
-          получите платеж, <span class="orange">отправьте токены</span> из
-          депонирования.
-        </p>
-        <div class="ma-0 pa-20">
-          <p>
-            <span class="opacity-50"
-              >Не забудьте дать покупателю указания об оплате</span
-            >
-          </p>
-        </div>
-        <Button
-          class="w-100 mt-20"
-          green
-          @click.native="paid"
-          :disabled="invoice.status !== 'waiting_for_payment'"
-          >отправить токены</Button
-        >
+      <div v-else-if="invoice.ads_type === 2">
+        <SendMoneySteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice"  />
+        <SendUSDTSteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice" />
       </div>
     </div>
-    <!-- <Modal /> -->
+    <InvoiceCancelModal :show="cancelModal" @toggleModal="cancelModal = $event" :invoice="invoice" />
   </section>
 </template>
 
@@ -104,51 +48,46 @@ import { mapGetters } from 'vuex'
 import formatCurrency from '~/mixins/formatCurrency'
 import invoiceStatuses from '~/mixins/invoiceStatuses'
 import Button from '~/components/app/Button'
-import Modal from '~/components/app/Modal'
 import OrderForm from '~/components/order/OrderForm'
 import OrderInfo from '~/components/order/OrderInfo'
 import Chat from '~/components/app/Chat'
+import SendUSDTSteps from '~/components/invoice/SendUSDTSteps'
+import SendMoneySteps from '~/components/invoice/SendMoneySteps'
+import InvoiceCancelModal from '~/components/InvoiceCancelModal'
 export default {
   name: 'invoice_by_id',
   mixins: [formatCurrency, invoiceStatuses],
   components: {
     Button,
-    Modal,
     OrderForm,
     OrderInfo,
-    Chat
+    Chat,
+    SendUSDTSteps,
+    SendMoneySteps,
+    InvoiceCancelModal
   },
   data() {
-    return {}
+    return {
+      cancelModal: false
+    }
   },
   computed: {
     ...mapGetters({
-      invoice: 'invoice/invoiceById'
-    })
-  },
-  methods: {
-    cancel() {
-      this.$store.dispatch('invoice/cancelInvoice', this.invoice._id)
-    },
-    paid() {
-      // const res = this.$store.dispatch(
-      //   'invoice/confirmInvoice',
-      //   this.invoice._id
-      // )
-      // console.log(res)
-      // if (res) {
-      //   this.$store.dispatch('invoice/fetchInvoiceById', this.invoice._id)
-      //   this.$toast.showMessage({
-      //     content: 'В течении 30 минут продавец отпрвит токены на ваш адрес.',
-      //     green: true
-      //   })
-      // } else {
-      //   this.$toast.showMessage({
-      //     content: 'Что-то пошло не так...',
-      //     red: true
-      //   })
-      //   console.log(res.error)
-      // }
+      invoice: 'invoice/invoiceById',
+      user: 'user'
+    }),
+    userRole() {
+      if(this.invoice.ads_type === 1 && this.user.username === this.invoice.buyer_username) {
+        return 'owner_buy'
+      } else if (this.invoice.ads_type === 1 && this.user.username === this.invoice.seller_username) {
+        return 'customer_buy'
+      }
+
+      if(this.invoice.ads_type === 2 && this.user.username === this.invoice.buyer_username) {
+        return 'owner_sell'
+      } else if (this.invoice.ads_type === 2 && this.user.username === this.invoice.seller_username) {
+        return 'customer_sell'
+      }
     }
   },
   asyncData({ route, store }) {
@@ -179,17 +118,6 @@ export default {
     margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
-
-    .steps {
-      max-width: 550px;
-      min-height: 300px;
-      width: 100%;
-      height: 100%;
-
-      & > * {
-        margin-bottom: 40px;
-      }
-    }
   }
 
   .body {

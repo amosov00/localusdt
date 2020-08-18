@@ -1,7 +1,7 @@
 <template>
   <div class="checkbox">
     <label class="check option">
-      <input class="check__input" type="checkbox" />
+      <input class="check__input" :checked="value" :value="value" @input="updateValue($event.target.checked)" type="checkbox" />
       <svg class="check__box" viewBox="0 0 25 25">
         <rect class="check__focus" width="20" height="20" rx="4" />
         <rect class="check__square" x="3" y="3" width="14" height="14" rx="2" />
@@ -15,8 +15,14 @@
 <script>
 export default {
   props: {
-    label: String
-  }
+    value: Boolean,
+    label: String,
+  },
+  methods: {
+    updateValue(value) {
+      this.$emit('input', value)
+    },
+  },
 }
 </script>
 

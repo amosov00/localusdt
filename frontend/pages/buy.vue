@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1 class="table-section__title mt-330">Купить USDT</h1>
-    <Tab :nav="false" :type="1" />
+    <Tab :nav="false" :outsideParams="$route.query" :type="1" />
     <Table :tableData="orders" />
   </section>
 </template>

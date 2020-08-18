@@ -25,11 +25,18 @@ export const actions = {
           maxAge: 60 * 60 * 24 * 7
         })
         commit('setUser', resp.data.user)
-        this.$toast.showMessage({ content: 'Вы успешно зарегистрировались, проверьте почту для активации аккаунта', green: true })
+        this.$toast.showMessage({
+          content:
+            'Вы успешно зарегистрировались, проверьте почту для активации аккаунта',
+          green: true
+        })
         return this.$router.push('/')
       })
-      .catch((error) => {
-        this.$toast.showMessage({ content: error.response.data.detail[0].msg, red: true })
+      .catch(error => {
+        this.$toast.showMessage({
+          content: error.response.data.detail[0].msg,
+          red: true
+        })
       })
   },
   async logIn({ commit }, data) {
@@ -47,11 +54,17 @@ export const actions = {
           maxAge: 60 * 60 * 24 * 7
         })
         commit('setUser', resp.data.user)
-        this.$toast.showMessage({ content: 'Успешный вход в систему!', green: true })
+        this.$toast.showMessage({
+          content: 'Успешный вход в систему!',
+          green: true
+        })
         this.$router.push({ path: '/' })
       })
       .catch(error => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
       })
   },
   logOut({ commit }) {
@@ -59,6 +72,10 @@ export const actions = {
     this.$axios.setToken(null)
     this.$cookies.remove('token')
     this.$router.push('/')
+  },
+  async fetchUser({commit}) {
+    const {data} = await this.$axios.get('account/user/')
+    commit('setUser', data)
   },
   async changeProfile({}, data) {
     return await this.$axios
@@ -78,14 +95,17 @@ export const actions = {
         this.$router.push('/profile')
       })
       .catch(error => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
       })
   },
   async activateAccount({}, data) {
     return await this.$axios
       .post('/account/verify/', data)
       .then(resp => {
-        return resp.data;
+        return resp.data
       })
       .catch(() => {
         return false
@@ -95,24 +115,55 @@ export const actions = {
     return await this.$axios
       .post('/account/recover/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: ' Проверьте свою почту!', green: true })
+        this.$toast.showMessage({
+          content: ' Проверьте свою почту!',
+          green: true
+        })
         this.$router.push('/')
         return true
       })
       .catch(error => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
       })
   },
   async finishRecover({}, data) {
     return await this.$axios
       .put('/account/recover/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: ' Пароль успешно восстановлен!', green: true })
+        this.$toast.showMessage({
+          content: ' Пароль успешно восстановлен!',
+          green: true
+        })
         this.$router.push('/login')
         return true
       })
       .catch(error => {
-        this.$toast.showMessage({ content: error.response.data[0].message, red: true })
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
+      })
+  },
+  async changeCondition({dispatch}, condition) {
+    await this.$axios
+      .put('/account/user/', {
+        about_me: condition
+      })
+      .then(() => {
+        this.$toast.showMessage({
+          content: ' Информация успешно изменена!',
+          green: true
+        })
+        dispatch('fetchUser')
+      })
+      .catch(error => {
+        this.$toast.showMessage({
+          content: error.response.data[0].message,
+          red: true
+        })
       })
   }
 }

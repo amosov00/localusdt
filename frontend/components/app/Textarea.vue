@@ -1,12 +1,13 @@
 <template lang="pug">
   div.textarea-box
     p.textarea-box__header {{header}}
-    textarea.textarea(@input="updateValue($event.target.value)" :value="value" :placeholder="placeholder")
+    textarea.textarea(:value="value" @input="$emit('input', $event.target.value)"  :placeholder="placeholder")
 </template>
 
 <script>
 export default {
   props: {
+    value: String,
     placeholder: {
       type: String,
       default: '',
@@ -15,16 +16,6 @@ export default {
     header: {
       type: String,
       default: ''
-    }
-  },
-  data() {
-    return {
-      value: ''
-    }
-  },
-  methods: {
-    updateValue(value) {
-      this.$emit('input', value)
     }
   }
 }

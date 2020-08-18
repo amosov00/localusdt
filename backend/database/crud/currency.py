@@ -23,10 +23,6 @@ class CurrencyCRUD(BaseMongoCRUD):
     collection: str = "currency"
 
     @classmethod
-    async def find_by_id(cls, _id: str) -> Optional[dict]:
-        return await super().find_one(query={"_id": to_objectid(_id)}) if _id else None
-
-    @classmethod
     async def find_last(cls) -> Optional[dict]:
         return await super().find_one(query={})
 

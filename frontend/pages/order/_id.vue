@@ -3,12 +3,9 @@
     <header class="order__header">
       <h1 class="order__title" v-if="order.type === 1">Покупка USDT</h1>
       <h1 class="order__title" v-else>Продажа USDT</h1>
-      <p class="order__payment-method">
-        <span class="opacity-50">Банковский перевод: </span>{{ order.bank_title }}
-      </p>
     </header>
     <OrderInfo :order="order" />
-    <div class="order__footer">
+    <div class="order__footer" v-if="user.username !== order.username">
       <OrderForm :order="order" />
     </div>
   </section>
@@ -26,7 +23,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      order: 'order/orderById'
+      order: 'order/orderById',
+      user: 'user'
     })
   },
   asyncData({ store, params }) {

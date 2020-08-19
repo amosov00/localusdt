@@ -11,12 +11,6 @@
       <form class="withdraw__form">
         <div class="row">
           <Input type="number" header="Сумма перевода" :width="150" />
-          <Select
-            class="ml-15"
-            v-model="withdrawForm.currency"
-            :width="80"
-            :options="currencyOptions"
-          />
         </div>
         <div class="row mt-40">
           <Input type="text" header="Принимающий адрес" :width="400" />
@@ -30,7 +24,7 @@
         class="mt-50"
         type="text"
         header="Используйте этот адрес чтобы пополнить баланс"
-        placeholder="183bt9Us8JdjDNNJh3YaTjQpXi7y93n8R1"
+        :value="user.eth_address"
         disabled
         endIcon="copy"
         :width="400"
@@ -43,6 +37,7 @@
 import Button from '~/components/app/Button'
 import Input from '~/components/app/Input'
 import Select from '~/components/app/Select'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     Button,
@@ -50,16 +45,12 @@ export default {
     Select
   },
   data() {
-    return {
-      withdrawForm: {
-        currency: 1
-      },
-      currencyOptions: [
-        { name: 'RUB', value: 1 },
-        { name: 'USD', value: 2 },
-        { name: 'EUR', value: 3 }
-      ]
-    }
+    return {}
+  },
+  computed: {
+    ...mapGetters({
+      user: 'user'
+    })
   }
 }
 </script>
@@ -69,11 +60,6 @@ export default {
   margin-top: 50px;
   display: flex;
   justify-content: space-between;
-  // display: grid;
-  // grid-template-columns: repeat(2, 1fr);
-  // grid-template-rows: 1fr;
-  // grid-column-gap: 140px;
-  // grid-row-gap: 0px;
 
   padding-bottom: 45px;
   border-bottom: 1px solid #e7e8e8;

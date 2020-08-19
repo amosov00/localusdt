@@ -84,7 +84,8 @@ export default {
   data() {
     return {
       cancelModal: false,
-      invoiceId: this.$route.params.id
+      invoiceId: this.$route.params.id,
+      interval: null
     }
   },
   computed: {
@@ -118,24 +119,16 @@ export default {
       }
     }
   },
-  methods: {
-    updateInvoice() {
-      setInterval(async () => {
-        await this.$store.dispatch(
-          'invoice/fetchInvoiceById',
-          this.invoiceId
-        )
-        if (this.invoice === 'waiting_for_tokens') {
-          clearInterval(this.updateInvoice())
-        }
-      }, 3000)
-    }
-  },
-  mounted() {
-    this.updateInvoice()
+  created() {
+    this.interval = setInterval(async () => {
+      await this.$store.dispatch('invoice/fetchInvoiceById', this.invoiceId)
+      if (this.invoice === 'waiting_for_tokens') {
+        clearInterval(this.interval)
+      }
+    }, 3000)
   },
   beforeDestroy() {
-    clearInterval(this.updateInvoice())
+    clearInterval(this.interval)
   },
   asyncData({ route, store }) {
     return store.dispatch('invoice/fetchInvoiceById', route.params.id)

@@ -11,7 +11,7 @@
         Select(:options="paymentOptions" v-model="adForm.payment_method" :width="350" header="Способ оплаты")
         Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты")
       Input.create-order__input( v-if="yourVersion" v-model="adForm.bank_title" header="" placeholder="Свой вариант")
-      Input.create-order__input.mb-110(v-model="adForm.amount_usdt" type="number" header="Сколько Вы хотите купить" placeholder="0" endIcon="usdt")
+      Input.create-order__input.mb-110(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
       Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text")
       div.create-order__gap
@@ -31,7 +31,7 @@ import Button from '~/components/app/Button'
 import Checkbox from '~/components/app/Checkbox'
 import Select from '~/components/app/Select'
 import Modal from '~/components/app/Modal'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   components: { Input, Textarea, Button, Checkbox, Select, Modal },
   middleware: ['authRequired'],
@@ -63,8 +63,8 @@ export default {
     }
   },
   watch: {
-    checkbox: function () {
-      if(this.checkbox) {
+    checkbox: function() {
+      if (this.checkbox) {
         this.adForm.condition = this.user.about_me
       } else {
         this.adForm.condition = ''
@@ -82,16 +82,23 @@ export default {
       return `usdt_in_${currencyName.name.toLowerCase()}*${this.adForm.profit}`
     },
     yourVersion() {
-      if(this.adForm.payment_method === 3) {
+      if (this.adForm.payment_method === 3) {
         return true
       }
       return false
     },
+    inputHeader() {
+      if (this.adForm.type === 2) {
+        return 'Сколько вы хотите продать'
+      } else {
+        return 'Сколько вы хотите купить'
+      }
+    }
   },
   methods: {
     async createAd() {
       const res = await this.$store.dispatch('order/createOrder', this.adForm)
-      if(res) {
+      if (res) {
         this.showModal = true
       }
     },
@@ -102,6 +109,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

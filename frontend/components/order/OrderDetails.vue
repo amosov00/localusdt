@@ -8,18 +8,6 @@
       </p>
     </div>
     <div class="order-details__row">
-      <!-- <p
-        class="order-details__cell opacity-50"
-        v-if="orderDetails.type || orderDetails.ads_type === 1"
-      >
-        Продавец:
-      </p>
-      <p
-        class="order-details__cell opacity-50"
-        v-else-if="orderDetails.type || orderDetails.ads_type === 2"
-      >
-        Покупатель:
-      </p> -->
       <p class="order-details__cell opacity-50">
         {{ owner.type }}
       </p>
@@ -61,12 +49,12 @@ export default {
   },
   computed: {
     owner() {
-      switch (this.orderDetails.ads_type) {
+      switch (this.orderDetails.type) {
         case 1:
-          return { name: this.orderDetails.seller_username, type: 'Продавец:' }
+          return { name: this.orderDetails.username, type: 'Продавец:' }
           break
         case 2:
-          return { name: this.orderDetails.buyer_username, type: 'Покупатель:' }
+          return { name: this.orderDetails.username, type: 'Покупатель:' }
           break
       }
     }

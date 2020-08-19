@@ -26,7 +26,7 @@
         </p>
       </div>
     </header>
-    <OrderInfo :order="invoice" :role="userRole" />
+    <OrderInfo :order="invoice" />
     <div class="order__footer">
       <Chat :invoice="invoice" />
       <div v-if="invoice.ads_type === 1">

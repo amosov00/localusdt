@@ -4,7 +4,7 @@
     <div class="select__body">
       <div class="select__selected">
         <p class="select__title">{{ selected.name }}</p>
-        <span class="select__icon">
+        <span class="select__icon" v-if="!hideArrow">
           <img src="~/assets/icons/arrow-down.svg" alt="" />
         </span>
       </div>
@@ -37,7 +37,8 @@ export default {
       }
     },
     header: String,
-    width: Number
+    width: Number,
+    hideArrow: Boolean
   },
   data() {
     return {

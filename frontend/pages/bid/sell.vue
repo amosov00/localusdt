@@ -9,7 +9,7 @@
     div.create-order__form
       div.create-order__options
         Select(:options="paymentOptions" v-model="adForm.payment_method" :width="350" header="Способ оплаты")
-        Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты")
+        Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты" hideArrow)
       Input.create-order__input( v-if="yourVersion" v-model="adForm.bank_title" header="" placeholder="Свой вариант")
       Input.create-order__input.mb-110(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)

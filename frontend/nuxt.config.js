@@ -31,7 +31,8 @@ export default {
     '~/plugins/auth.js',
     '~/plugins/axios.js',
     '~/plugins/toast.js',
-    '~/plugins/vee-validate.js'
+    '~/plugins/vee-validate.js',
+    '~/plugins/vue-clipboard.js'
   ],
   modules: [
     '@nuxtjs/axios',

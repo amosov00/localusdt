@@ -9,7 +9,7 @@
     </div>
     <div class="order-details__row">
       <p class="order-details__cell opacity-50">
-        {{ owner.type }}
+        {{ owner.role }}
       </p>
       <p class="order-details__cell">
         {{ owner.name }}
@@ -49,12 +49,12 @@ export default {
   },
   computed: {
     owner() {
-      switch (this.orderDetails.ads_type) {
+      switch (this.orderDetails.type || this.orderDetails.ads_type) {
         case 1:
-          return { name: this.orderDetails.seller_username, type: 'Продавец:' }
+          return { name: this.orderDetails.username || this.orderDetails.buyer_username, role: 'Продавец:' }
           break
         case 2:
-          return { name: this.orderDetails.buyer_username, type: 'Покупатель:' }
+          return { name: this.orderDetails.username || this.orderDetails.seller_username, role: 'Покупатель:' }
           break
       }
     }

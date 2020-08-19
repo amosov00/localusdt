@@ -49,12 +49,12 @@ export default {
   },
   computed: {
     owner() {
-      switch (this.orderDetails.type) {
+      switch (this.orderDetails.ads_type) {
         case 1:
-          return { name: this.orderDetails.username, type: 'Продавец:' }
+          return { name: this.orderDetails.seller_username, type: 'Продавец:' }
           break
         case 2:
-          return { name: this.orderDetails.username, type: 'Покупатель:' }
+          return { name: this.orderDetails.buyer_username, type: 'Покупатель:' }
           break
       }
     }

@@ -28,7 +28,7 @@ export default {
   components: { InlineSvg },
   props: {
     selectedOptionProp: {
-      type: String,
+      type: [String, Number],
       default: 1
     },
     options: {

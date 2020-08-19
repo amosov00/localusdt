@@ -9,7 +9,7 @@
       <span class="input__icon" v-if="type === 'password'" @click="toggleShowPassword">
         <InlineSvg :src="require(`~/assets/icons/${passwordIcon}.svg`)" />
       </span>
-      <span class="input__icon" v-else-if="endIcon">
+      <span class="input__icon" v-else-if="endIcon" :style="{'cursor': endIcon === 'copy' ? 'pointer' : 'default'}" @click="copy">
         <InlineSvg :src="require(`~/assets/icons/${endIcon}.svg`)" />
       </span>
     </div>
@@ -77,6 +77,9 @@ export default {
   methods: {
     toggleShowPassword() {
       this.showPassword = !this.showPassword
+    },
+    copy() {
+      console.log(this.value)
     }
   }
 }

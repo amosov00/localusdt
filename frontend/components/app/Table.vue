@@ -8,7 +8,7 @@
           th.table__head Лимит
           th.table__head Цена за токен
       tbody.table__body
-        tr.table__row(v-for="order in tableData" :key="order._id")
+        tr.table__row(v-for="order in paginatedTableData" :key="order._id")
           td.table__data {{order.username}}
             span.status.green--bg
             span.orders-count (10+)
@@ -25,7 +25,6 @@
       div.pagination__controller
         span.pagination__arrow-button(@click="prevPage")
           InlineSvg(:src="require('~/assets/icons/arrow-left.svg')")
-        span {{paginatedTableData}}
         span.pagination__arrow-button(@click="nextPage")
           InlineSvg(:src="require('~/assets/icons/arrow-right.svg')")
       div.pagination__quantity
@@ -52,26 +51,22 @@ export default {
   data() {
     return {
       currentPage: 1,
-      contentPerPage: 25,
-      tableContent: [],
-      paginatedTableData: []
+      contentPerPage: 3,
+      tableContent: []
     }
   },
   watch: {
     currentPage: function(val) {
-      let quantity = this.tableContent.slice(
+      this.tableContent.slice(
         val * this.contentPerPage,
         this.contentPerPage
       )
     }
   },
   computed: {
-    // paginatedTableData() {
-    //   return this.tableContent.slice(
-    //     this.currentPage * this.contentPerPage,
-    //     this.contentPerPage
-    //   )
-    // }
+    paginatedTableData() {
+      return this.tableData.slice(this.currentPage + this.contentPerPage,(this.contentPerPage + this.contentPerPage))
+    }
   },
   methods: {
     prevPage() {
@@ -83,11 +78,11 @@ export default {
       console.log(this.currentPage, this.currentPage * this.contentPerPage)
     }
   },
-  created() {
-    for (let i = 0; i < 300; i++) {
-      this.tableContent.push(i)
-    }
-  }
+  // created() {
+  //   for (let i = 0; i < 300; i++) {
+  //     this.tableContent.push(i)
+  //   }
+  // }
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template lang="pug">
   div.create-order
     p.create-order__token-price Текущий курс токена 
-      span.green 77,44 
+      span.green {{commaSplitting(currencyPrice)}} 
       span ₽/USDT
     header.create-order__navigation
       h1 Купить USDT
@@ -32,9 +32,11 @@ import Checkbox from '~/components/app/Checkbox'
 import Select from '~/components/app/Select'
 import Modal from '~/components/app/Modal'
 import { mapGetters } from 'vuex'
+import formatCurrency from '~/mixins/formatCurrency'
 export default {
   components: { Input, Textarea, Button, Checkbox, Select, Modal },
   middleware: ['authRequired'],
+  mixins: [formatCurrency],
   data() {
     return {
       adForm: {
@@ -49,7 +51,7 @@ export default {
         profit: 0
       },
       currencyOptions: [
-        { name: 'RUB', value: 1 },
+        { name: 'RUB', value: 1 }
         // { name: 'USD', value: 2 },
         // { name: 'EUR', value: 3 }
       ],
@@ -73,7 +75,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: 'user'
+      user: 'user',
+      currencyPrice: 'currencyPrice'
     }),
     equation() {
       let currencyName = this.currencyOptions.find(currency => {
@@ -105,6 +108,9 @@ export default {
     toggleModal(state) {
       this.showModal = state
     }
+  },
+  asyncData({ store }) {
+    return store.dispatch('fetchCurrencyPrice')
   }
 }
 </script>

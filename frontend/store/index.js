@@ -1,16 +1,20 @@
 import _ from 'lodash'
 
 export const state = () => ({
-  user: null
+  user: null,
+  currencyPrice: null
 })
 
 export const getters = {
-  user: s => s.user
+  user: s => s.user,
+  currencyPrice: s => s.currencyPrice
 }
 
 export const mutations = {
   setUser: (state, user) => (state.user = user),
-  deleteUser: state => (state.user = false)
+  deleteUser: state => (state.user = false),
+  setCurrencyPrice: (state, payload) =>
+    (state.currencyPrice = payload.current_rate)
 }
 
 export const actions = {
@@ -73,8 +77,8 @@ export const actions = {
     this.$cookies.remove('token')
     this.$router.push('/')
   },
-  async fetchUser({commit}) {
-    const {data} = await this.$axios.get('account/user/')
+  async fetchUser({ commit }) {
+    const { data } = await this.$axios.get('account/user/')
     commit('setUser', data)
   },
   async changeProfile({}, data) {
@@ -147,7 +151,7 @@ export const actions = {
         })
       })
   },
-  async changeCondition({dispatch}, condition) {
+  async changeCondition({ dispatch }, condition) {
     await this.$axios
       .put('/account/user/', {
         about_me: condition
@@ -165,5 +169,9 @@ export const actions = {
           red: true
         })
       })
+  },
+  async fetchCurrencyPrice({ commit }) {
+    const { data } = await this.$axios.get('/currency/')
+    commit('setCurrencyPrice', data)
   }
 }

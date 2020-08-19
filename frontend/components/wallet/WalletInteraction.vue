@@ -14,7 +14,7 @@
         </div>
         <div class="row mt-40">
           <Input type="text" header="Принимающий адрес" :width="400" />
-          <Button class="ml-30" green>Вывести</Button>
+          <Button class="ml-30" @click.native="show = true" green>Вывести</Button>
         </div>
       </form>
     </div>
@@ -30,6 +30,7 @@
         :width="400"
       />
     </div>
+    <WalletTxModal :show="show" @toggleModal="show = $event" />
   </div>
 </template>
 
@@ -37,15 +38,19 @@
 import Button from '~/components/app/Button'
 import Input from '~/components/app/Input'
 import Select from '~/components/app/Select'
+import WalletTxModal from '~/components/WalletTxModal'
 import { mapGetters } from 'vuex'
 export default {
   components: {
     Button,
     Input,
-    Select
+    Select,
+    WalletTxModal
   },
   data() {
-    return {}
+    return {
+      show: false
+    }
   },
   computed: {
     ...mapGetters({

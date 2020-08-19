@@ -6,7 +6,8 @@
     </div>
     <div class="profile-referral__body">
       <Input
-        placeholder="https://localerc/1231213lsfd1221134dv"
+        value="https://localerc/1231213lsfd1221134dv"
+        disabled
         header="Поделитесь этой ссылкой с друзьями"
         endIcon="copy"
       />

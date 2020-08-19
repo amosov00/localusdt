@@ -10,7 +10,7 @@ export const getters = {
 
 export const mutations = {
   setInvoices: (state, payload) => {
-    state.invoices = payload.sort((a, b) => b.created_at - a.created_at)
+    state.invoices = payload.reverse()
   },
   setInvoiceById: (state, payload) => {
     state.invoiceById = payload

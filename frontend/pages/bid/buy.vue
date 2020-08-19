@@ -50,8 +50,8 @@ export default {
       },
       currencyOptions: [
         { name: 'RUB', value: 1 },
-        { name: 'USD', value: 2 },
-        { name: 'EUR', value: 3 }
+        // { name: 'USD', value: 2 },
+        // { name: 'EUR', value: 3 }
       ],
       paymentOptions: [
         { name: 'Банковский перевод: Сбербанк', value: 1 },

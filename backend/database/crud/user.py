@@ -117,7 +117,9 @@ class UserCRUD(BaseMongoCRUD):
                     "created_at": datetime.now(),
                     "verification_code": verification_code,
                     "is_active": False,
-                    "eth_address": eth_wallet
+                    "eth_address": eth_wallet,
+                    "balance_usdt": 0.0,
+                    "usdt_in_invoices": 0.0
                 }
             )
         ).inserted_id

@@ -79,7 +79,8 @@ export default {
       this.showPassword = !this.showPassword
     },
     copy() {
-      console.log(this.value)
+      this.$clipboard(this.value)
+      this.$toast.showMessage({content: 'Адрес скопирован', green: true})
     }
   }
 }

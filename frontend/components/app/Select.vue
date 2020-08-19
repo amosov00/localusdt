@@ -27,7 +27,10 @@ import InlineSvg from 'vue-inline-svg'
 export default {
   components: { InlineSvg },
   props: {
-    value: Number,
+    selectedOptionProp: {
+      type: String,
+      default: 1
+    },
     options: {
       default() {
         return []
@@ -39,7 +42,8 @@ export default {
   data() {
     return {
       areOptionsVisible: false,
-      selected: this.options.find(option => option.value === this.value)
+      selected: this.options.find(option => option.value === (this.selectedOptionProp * 1))
+      // selected: this.options[0]
     }
   },
   computed: {

@@ -8,18 +8,6 @@
       </p>
     </div>
     <div class="order-details__row">
-      <!-- <p
-        class="order-details__cell opacity-50"
-        v-if="orderDetails.type || orderDetails.ads_type === 1"
-      >
-        Продавец:
-      </p>
-      <p
-        class="order-details__cell opacity-50"
-        v-else-if="orderDetails.type || orderDetails.ads_type === 2"
-      >
-        Покупатель:
-      </p> -->
       <p class="order-details__cell opacity-50">
         {{ owner.type }}
       </p>

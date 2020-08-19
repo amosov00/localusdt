@@ -1,15 +1,21 @@
 <template>
   <transition name="fade">
-  <div class="modal-wrapper" v-show="show">
-    <div class="referral">
-      <h1 class="referral__title">Отправить USDT</h1>
-      <p class="referral__condition">{{userName}}</p>
-      <p class="fz-20">{{invoice.amount_usdt}} за {{commaSplitting(invoice.amount_rub)}}₽</p>
-      <div class="invoice-confirm__actions"></div>
-      <Button @click.native="confirm" class="referral__button" green lg>отправить</Button>
-      <Button @click.native="hideModal" class="referral__button" white lg>отмена</Button>
+    <div class="modal-wrapper" v-show="show">
+      <div class="referral">
+        <h1 class="referral__title">Отправить USDT</h1>
+        <p>{{ userName }}</p>
+        <p class="fz-20">
+          {{ invoice.amount_usdt }} за {{ commaSplitting(invoice.amount_rub) }}₽
+        </p>
+        <div class="invoice-confirm__actions"></div>
+        <Button @click.native="confirm" class="referral__button" green lg
+          >отправить</Button
+        >
+        <Button @click.native="hideModal" class="referral__button" white lg
+          >отмена</Button
+        >
+      </div>
     </div>
-  </div>
   </transition>
 </template>
 
@@ -27,7 +33,9 @@ export default {
   },
   computed: {
     userName() {
-      return this.invoice.ads_type === 2 ? this.invoice.seller_username : this.invoice.seller_username
+      return this.invoice.ads_type === 2
+        ? this.invoice.seller_username
+        : this.invoice.seller_username
     }
   },
   methods: {
@@ -53,7 +61,7 @@ export default {
   top: 0;
   left: 0;
   -webkit-backdrop-filter: blur(40px);
-            backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
   z-index: 100000000000000;
 
   .invoice-confirm {
@@ -67,12 +75,12 @@ export default {
     }
 
     &__condition {
-    text-align: center;
+      text-align: center;
       @include montserrat;
       overflow: scroll;
       font-size: 12px;
     }
-    
+
     &__button {
       margin-top: 80px;
     }

@@ -14,7 +14,7 @@
         >
       </p>
     </div>
-    <Button class="w-100 mt-20" green :disabled="invoice.status === 'completed'" @click.native="confirmationModal = true"
+    <Button class="w-100 mt-20" green :disabled="invoice.status === 'completed' || invoice.status === 'waiting_for_payment'" @click.native="confirmationModal = true"
       >отправить токены</Button
     >
     <InvoiceConfirmationModal

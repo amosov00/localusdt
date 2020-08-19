@@ -10,7 +10,6 @@
         >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
       >
-      {{userRole}}
       <div class="ad__subtitle">
         <p>
           <span class="green">Статус сделки: </span>
@@ -31,15 +30,31 @@
     <div class="order__footer">
       <Chat :invoice="invoice" />
       <div v-if="invoice.ads_type === 1">
-        <SendMoneySteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice"  />
-        <SendUSDTSteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice" />
+        <SendMoneySteps
+          v-if="userRole === 'owner_buy' || userRole === 'customer_sell'"
+          :invoice="invoice"
+        />
+        <SendUSDTSteps
+          v-if="userRole === 'owner_sell' || userRole === 'customer_buy'"
+          :invoice="invoice"
+        />
       </div>
       <div v-else-if="invoice.ads_type === 2">
-        <SendMoneySteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice"  />
-        <SendUSDTSteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice" />
+        <SendMoneySteps
+          v-if="userRole === 'owner_sell' || userRole === 'customer_buy'"
+          :invoice="invoice"
+        />
+        <SendUSDTSteps
+          v-if="userRole === 'owner_buy' || userRole === 'customer_sell'"
+          :invoice="invoice"
+        />
       </div>
     </div>
-    <InvoiceCancelModal :show="cancelModal" @toggleModal="cancelModal = $event" :invoice="invoice" />
+    <InvoiceCancelModal
+      :show="cancelModal"
+      @toggleModal="cancelModal = $event"
+      :invoice="invoice"
+    />
   </section>
 </template>
 
@@ -68,7 +83,8 @@ export default {
   },
   data() {
     return {
-      cancelModal: false
+      cancelModal: false,
+      invoiceId: this.$route.params.id
     }
   },
   computed: {
@@ -77,18 +93,49 @@ export default {
       user: 'user'
     }),
     userRole() {
-      if(this.invoice.ads_type === 1 && this.user.username === this.invoice.buyer_username) {
+      if (
+        this.invoice.ads_type === 1 &&
+        this.user.username === this.invoice.buyer_username
+      ) {
         return 'owner_buy'
-      } else if (this.invoice.ads_type === 1 && this.user.username === this.invoice.seller_username) {
+      } else if (
+        this.invoice.ads_type === 1 &&
+        this.user.username === this.invoice.seller_username
+      ) {
         return 'customer_buy'
       }
 
-      if(this.invoice.ads_type === 2 && this.user.username === this.invoice.buyer_username) {
+      if (
+        this.invoice.ads_type === 2 &&
+        this.user.username === this.invoice.buyer_username
+      ) {
         return 'owner_sell'
-      } else if (this.invoice.ads_type === 2 && this.user.username === this.invoice.seller_username) {
+      } else if (
+        this.invoice.ads_type === 2 &&
+        this.user.username === this.invoice.seller_username
+      ) {
         return 'customer_sell'
       }
     }
+  },
+  methods: {
+    updateInvoice() {
+      setInterval(async () => {
+        await this.$store.dispatch(
+          'invoice/fetchInvoiceById',
+          this.invoiceId
+        )
+        if (this.invoice === 'waiting_for_tokens') {
+          clearInterval(this.updateInvoice())
+        }
+      }, 3000)
+    }
+  },
+  mounted() {
+    this.updateInvoice()
+  },
+  beforeDestroy() {
+    clearInterval(this.updateInvoice())
   },
   asyncData({ route, store }) {
     return store.dispatch('invoice/fetchInvoiceById', route.params.id)

@@ -5,7 +5,6 @@
       span ₽/USDT
     header.create-order__navigation
       h1 Купить USDT
-      nuxt-link(class="create-order__link" to="/bid/sell/") Продать USDT
     hr
     div.create-order__form
       div.create-order__options

@@ -54,7 +54,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             invoice["seller_username"] = users_kw.get(invoice["seller_id"])
             invoice["buyer_username"] = users_kw.get(invoice["buyer_id"])
             invoice["ads_type"] = adses_kw.get(invoice["ads_id"])
-        return result
+        return sorted(result, key=lambda i: i["created_at"], reverse=True)
 
     @classmethod
     async def find_by_status(cls, status: InvoiceStatus) -> Optional[list]:
@@ -125,7 +125,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         ads_db = await AdsCRUD.find_by_id(payload.ads_id)
         seller, buyer, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).validate_creation()
 
-        await cls.update_all(seller, buyer, ads)
+        await cls.update_all(seller=seller, buyer=buyer, ads=ads)
 
         inserted_id = (await cls.insert_one(payload={**invoice.dict()})).inserted_id
 

@@ -1,12 +1,16 @@
 <template>
   <transition name="fade">
-  <div class="modal-wrapper" v-show="show">
-    <div class="modal">
-      <h1 class="modal__title">Ваше объявление успешно размещено!</h1>
-      <p class="modal__subtitle">Вы можете управлять им на странице покупки/продажи</p>
-      <Button @click.native="hideModal" class="modal__button" green lg>Ок</Button>
+    <div class="modal-wrapper" v-show="show">
+      <div class="modal">
+        <h1 class="modal__title">Ваше объявление успешно размещено!</h1>
+        <p class="modal__subtitle">
+          Вы можете управлять им на странице покупки/продажи
+        </p>
+        <Button @click.native="hideModal" class="modal__button" green lg
+          >Ок</Button
+        >
+      </div>
     </div>
-  </div>
   </transition>
 </template>
 
@@ -14,16 +18,32 @@
 import Button from '~/components/app/Button'
 export default {
   props: {
-    show: Boolean
+    show: Boolean,
+    type: {
+      type: [String, Number]
+    }
   },
   components: {
     Button
   },
+  computed: {
+    redirectPath() {
+      switch (this.type) {
+        case 1:
+          return '/buy/'
+          break
+        case 2:
+          return '/sell/'
+          break
+      }
+    }
+  },
   methods: {
     hideModal() {
       this.$emit('toggleModal', !this.show)
+      this.$router.push(this.redirectPath)
     }
-  },
+  }
 }
 </script>
 
@@ -38,12 +58,12 @@ export default {
   top: 0;
   left: 0;
   -webkit-backdrop-filter: blur(40px);
-            backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
   z-index: 100000000000000;
 
   .modal {
     text-align: center;
-    
+
     &__subtitle {
       margin-top: 15px;
     }

@@ -39,7 +39,7 @@ async def ads_fetch_users(user: User = Depends(get_user)):
 
 @router.get("/", response_model=List[AdsInSearch])
 async def ads_fetch_all(
-        ad_type: Optional[AdsType] = None,
+        order_type: Optional[AdsType] = None,
         price_bot: Optional[float] = None,
         price_top: Optional[float] = None,
         currency: Optional[Currency] = Currency.RUB,
@@ -49,7 +49,7 @@ async def ads_fetch_all(
 ):
 
     filters = AdsFilters(
-        type=ad_type,
+        type=order_type,
         price_bot=price_bot,
         price_top=price_top,
         currency=currency,

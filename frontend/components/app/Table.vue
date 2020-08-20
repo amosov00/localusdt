@@ -8,7 +8,7 @@
           th.table__head Лимит
           th.table__head Цена за токен
       tbody.table__body
-        tr.table__row(v-for="order in paginatedTableData" :key="order._id")
+        tr.table__row(v-for="order in tableData" :key="order._id")
           td.table__data {{order.username}}
             span.status.green--bg
             span.orders-count (10+)

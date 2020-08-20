@@ -23,9 +23,7 @@
     <div class="order-details__row mt-10">
       <p class="order-details__cell opacity-50">Ограничения по сделке:</p>
       <p
-        class="order-details__cell"
-        v-if="orderDetails.bot_limit && orderDetails.top_limit"
-      >
+        class="order-details__cell">
         <span>{{ spaceSplitting(orderDetails.bot_limit) }}</span> —
         <span>{{ spaceSplitting(orderDetails.top_limit) }} ₽</span>
       </p>

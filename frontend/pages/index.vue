@@ -5,23 +5,23 @@
     div(v-if="buyTab")
       section.table-section.mt-330
         h1.table-section__title Купить USDT
-        Table(:tableData="buyOrdersWithLimit")
+        Table(:tableData="buyOrdersWithLimit" buttonName="Купить")
         nuxt-link(to="/buy")
           p.table-section__subtitle.fz-20 Показать больше объявлений
       section.table-section
         h1.table-section__title Продать USDT
-        Table(:tableData="sellOrdersWithLimit")
+        Table(:tableData="sellOrdersWithLimit" buttonName="Продать")
         nuxt-link(to="/sell")
           p.table-section__subtitle.fz-20 Показать больше объявлений
     div(v-else)
       section.table-section.mt-330
         h1.table-section__title Продать USDT
-        Table(:tableData="sellOrdersWithLimit")
+        Table(:tableData="sellOrdersWithLimit" buttonName="Продать")
         nuxt-link(to="/sell")
           p.table-section__subtitle.fz-20 Показать больше объявлений
       section.table-section
         h1.table-section__title Купить USDT
-        Table(:tableData="buyOrdersWithLimit")
+        Table(:tableData="buyOrdersWithLimit" buttonName="Купить")
         nuxt-link(to="/buy")
           p.table-section__subtitle.fz-20 Показать больше объявлений
 </template>

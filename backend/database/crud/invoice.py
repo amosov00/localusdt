@@ -118,7 +118,9 @@ class InvoiceCRUD(BaseMongoCRUD):
         )
 
         if invoice.amount_rub < ads.get("bot_limit"):
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Error while creating invoice")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "You have exceeded the lower limit")
+        if invoice.amount_rub > ads.get("top_limit"):
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "You have exceeded the upper limit")
 
         seller_db = await UserCRUD.find_by_id(seller_id)
         buyer_db = await UserCRUD.find_by_id(buyer_id)

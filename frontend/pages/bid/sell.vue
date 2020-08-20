@@ -21,7 +21,7 @@
       Textarea.create-order__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
       Checkbox(v-model="checkbox" label="Вставить условия сделки из профиля")
       Button.create-order__action(green @click.native="createAd") создать объявление
-      Modal(:show="showModal" @toggleModal="toggleModal($event)")
+      Modal(:show="showModal" @toggleModal="toggleModal($event)" :type="2")
 </template>
 
 <script>

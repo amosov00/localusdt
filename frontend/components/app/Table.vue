@@ -18,9 +18,9 @@
           td.table__data {{commaSplitting(order.price)}} ₽
           td.table__data
             nuxt-link(:to="`/order/${order._id}`" v-if="order.type === 1")
-              Button(rounded outlined green) Купить
+              Button(rounded outlined green) {{buttonName}}
             nuxt-link(:to="`/order/${order._id}`" v-else)
-              Button(rounded outlined green) Продать
+              Button(rounded outlined green) {{buttonName}}
     div.pagination(v-if="pagination")
       div.pagination__controller
         span.pagination__arrow-button(@click="prevPage")
@@ -41,7 +41,8 @@ export default {
     pagination: {
       type: Boolean,
       default: false
-    }
+    },
+    buttonName: String
   },
   mixins: [formatCurreny, paymentMethod],
   components: {

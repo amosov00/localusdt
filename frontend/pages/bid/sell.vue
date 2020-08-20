@@ -110,6 +110,11 @@ export default {
           content: 'Введите лимиты объявления',
           red: true
         })
+      } else if (!this.adForm.condition) {
+        this.$toast.showMessage({
+          content: 'Введите условие',
+          red: true
+        })
       } else {
         const res = await this.$store.dispatch('order/createOrder', this.adForm)
         if (res) {

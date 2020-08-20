@@ -41,9 +41,9 @@ export default {
     return {
       adForm: {
         type: 1,
-        bot_limit: 0,
-        top_limit: 0,
-        amount_usdt: 0,
+        bot_limit: null,
+        top_limit: null,
+        amount_usdt: null,
         payment_method: 1,
         bank_title: '',
         currency: 1,
@@ -100,9 +100,21 @@ export default {
   },
   methods: {
     async createAd() {
-      const res = await this.$store.dispatch('order/createOrder', this.adForm)
-      if (res) {
-        this.showModal = true
+      if (!this.adForm.amount_usdt || this.adForm.amount_usdt <= 0) {
+        this.$toast.showMessage({
+          content: 'Введите количество USDT',
+          red: true
+        })
+      } else if (!this.adForm.bot_limit || !this.adForm.top_limit) {
+        this.$toast.showMessage({
+          content: 'Введите лимиты объявления',
+          red: true
+        })
+      } else {
+        const res = await this.$store.dispatch('order/createOrder', this.adForm)
+        if (res) {
+          this.showModal = true
+        }
       }
     },
     toggleModal(state) {

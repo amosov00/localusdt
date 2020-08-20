@@ -10,11 +10,23 @@
 
       <form class="withdraw__form">
         <div class="row">
-          <Input type="number" header="Сумма перевода" :width="150" />
+          <Input
+            v-model="withdrawForm.amount"
+            type="number"
+            header="Сумма перевода"
+            :width="150"
+          />
         </div>
         <div class="row mt-40">
-          <Input type="text" header="Принимающий адрес" :width="400" />
-          <Button class="ml-30" @click.native="show = true" green>Вывести</Button>
+          <Input
+            v-model="withdrawForm.address"
+            type="text"
+            header="Принимающий адрес"
+            :width="400"
+          />
+          <Button class="ml-30" @click.native="withdrawFunds" green
+            >Вывести</Button
+          >
         </div>
       </form>
     </div>
@@ -49,13 +61,28 @@ export default {
   },
   data() {
     return {
-      show: false
+      show: false,
+      withdrawForm: {
+        amount: 0,
+        address: ''
+      }
     }
   },
   computed: {
     ...mapGetters({
       user: 'user'
     })
+  },
+  methods: {
+    withdrawFunds() {
+      if (this.withdrawForm.amount <= 0) {
+        this.$toast.showMessage({ content: 'Введите сумму', red: true })
+      } else if (!this.withdrawForm.address) {
+        this.$toast.showMessage({ content: 'Введите адрес', red: true })
+      } else {
+        this.show = true
+      }
+    }
   }
 }
 </script>

@@ -31,7 +31,7 @@ export const actions = {
   async fetchOrders({ commit }, query) {
     const { data } = await this.$axios.get(
       `/order/?limit=${query.limit}&${
-        query.type ? `ad_type=${query.type}` : ''
+        query.type ? `order_type=${query.type}` : ''
       }&${query.currency ? `currency=${query.currency}` : ''}&${
         query.payment_method ? `payment_method=${query.payment_method}` : ''
       }&${query.price_bot ? `price_bot=${query.price_bot}` : ''}&${
@@ -46,7 +46,7 @@ export const actions = {
   },
   async searchOrders({ commit }, params) {
     const { data } = await this.$axios.get(
-      `/order/?ad_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`
+      `/order/?order_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`
     )
     commit('setOrders', data)
   },

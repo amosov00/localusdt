@@ -2,7 +2,7 @@
   <section>
     <h1 class="table-section__title mt-330">Продать USDT</h1>
     <Tab :nav="false" :outsideParams="$route.query" :type="2" />
-    <Table :tableData="orders" />
+    <Table :tableData="orders" buttonName="Продать" />
   </section>
 </template>
 
@@ -25,12 +25,12 @@ export default {
     if (isQuery) {
       return store.dispatch('order/fetchOrders', {
         limit: 1000,
-        type: 2,
+        type: 1,
         sort: -1,
         ...query
       })
     }
-    return store.dispatch('order/fetchOrders', { limit: 1000, type: 2, sort: -1, })
+    return store.dispatch('order/fetchOrders', { limit: 1000, type: 1, sort: -1, })
   }
 }
 </script>

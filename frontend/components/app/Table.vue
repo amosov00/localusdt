@@ -8,7 +8,7 @@
           th.table__head Лимит
           th.table__head Цена за токен
       tbody.table__body
-        tr.table__row(v-for="order in tableData" :key="order._id")
+        tr.table__row(v-for="order in paginatedTableData" :key="order._id")
           td.table__data {{order.username}}
             span.status.green--bg
             span.orders-count (10+)
@@ -24,10 +24,15 @@
     div.pagination(v-if="pagination")
       div.pagination__controller
         span.pagination__arrow-button(@click="prevPage")
-          InlineSvg(:src="require('~/assets/icons/arrow-left.svg')")
+          InlineSvg.pagination__arrow-icon(:src="require('~/assets/icons/arrow-left.svg')")
         span.pagination__arrow-button(@click="nextPage")
-          InlineSvg(:src="require('~/assets/icons/arrow-right.svg')")
+          InlineSvg.pagination__arrow-icon(:src="require('~/assets/icons/arrow-right.svg')")
       div.pagination__quantity
+        span(:class="{'orange': contentPerPage === 15}" @click="contentPerPage = 15" ) 15
+        span(:class="{'orange': contentPerPage === 25}" @click="contentPerPage = 25" ) 25
+        span(:class="{'orange': contentPerPage === 50}" @click="contentPerPage = 50" ) 50
+        span(:class="{'orange': contentPerPage === 100}" @click="contentPerPage = 100" ) 100
+        span(:class="{'orange': contentPerPage === 200}" @click="contentPerPage = 200" ) 200
 </template>
 
 <script>
@@ -52,38 +57,42 @@ export default {
   data() {
     return {
       currentPage: 1,
-      contentPerPage: 3,
+      contentPerPage: 15,
       tableContent: []
     }
   },
-  watch: {
-    currentPage: function(val) {
-      this.tableContent.slice(
-        val * this.contentPerPage,
-        this.contentPerPage
-      )
-    }
-  },
   computed: {
+    whichTable() {
+      switch (this.pagination) {
+        case true:
+          return 'paginatedTableData'
+          break;
+        case false:
+          return 'tableData'
+          break;
+      
+        default:
+          break;
+      }
+    },
     paginatedTableData() {
-      return this.tableData.slice(this.currentPage + this.contentPerPage,(this.contentPerPage + this.contentPerPage))
+      return this.tableData.slice(((this.currentPage * this.contentPerPage) - this.contentPerPage), (this.currentPage * this.contentPerPage))
     }
   },
   methods: {
     prevPage() {
+      if(this.currentPage <= 1) {
+        return
+      }
       this.currentPage -= 1
-      console.log(this.currentPage, this.currentPage * this.contentPerPage)
     },
     nextPage() {
+      if((this.paginatedTableData.length / this.contentPerPage) < 1) {
+        return
+      }
       this.currentPage += 1
-      console.log(this.currentPage, this.currentPage * this.contentPerPage)
     }
   },
-  // created() {
-  //   for (let i = 0; i < 300; i++) {
-  //     this.tableContent.push(i)
-  //   }
-  // }
 }
 </script>
 
@@ -170,10 +179,15 @@ export default {
   }
 
   &__quantity {
-    justify-self: end;
     display: inline-block;
     width: 100px;
     height: 20px;
+    span {
+      cursor: pointer;
+      &:not(:last-child) {
+        margin-right: 5px;
+      }
+    }
   }
 }
 </style>

@@ -28,6 +28,12 @@
       </p>
     </div>
     <div class="order-details__row mt-10">
+      <p class="order-details__cell opacity-50">Количество:</p>
+      <p class="order-details__cell">
+        <span>{{ spaceSplitting(orderDetails.amount_usdt)}} USDT</span>
+      </p>
+    </div>
+    <div class="order-details__row mt-10">
       <p class="order-details__cell opacity-50">Местоположение:</p>
       <p class="order-details__cell">Российская Федерация</p>
     </div>

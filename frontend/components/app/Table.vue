@@ -177,6 +177,7 @@ export default {
   height: 20px;
   display: flex;
   justify-content: center;
+  position: relative;
 
   &__controller {
     display: inline-block;
@@ -201,6 +202,9 @@ export default {
   }
 
   &__quantity {
+    position: absolute;
+    top: 0;
+    right: 0;
     display: inline-block;
     width: 115px;
     height: 20px;

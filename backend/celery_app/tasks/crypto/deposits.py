@@ -33,6 +33,8 @@ async def check_deposits(self, *args, **kwargs):
                     payload={"balance_usdt": new_balance},
                 )
                 transaction["usdt_amount"] = Decimal128(transaction.get("usdt_amount"))
+                transaction["date"] = datetime.utcnow()
+                transaction["event"] = 1
                 transactions_to_insert.append(transaction)
     if transactions_to_insert:
         await USDTTransactionCRUD.insert_many(payload=transactions_to_insert)

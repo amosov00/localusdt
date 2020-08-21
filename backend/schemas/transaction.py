@@ -14,9 +14,11 @@ __all__ = [
 
 
 class USDTTransaction(BaseModel):
+    date: datetime = Field(...)
     to_adr: str = Field(...)
     from_adr: str = Field(...)
     tx_hash: str = Field(...)
+    event: int = Field(...)
     usdt_amount: Decimal = Field(...)
 
 

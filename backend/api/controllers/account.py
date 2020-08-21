@@ -15,7 +15,8 @@ from schemas.user import (
     UserVerify,
     UserRecover,
     UserRecoverLink,
-    UserUpdate
+    UserUpdate,
+    UserTransaction
 )
 
 __all__ = ["router"]
@@ -62,3 +63,8 @@ async def account_recover(data: UserRecoverLink = Body(...)):
 @router.put("/user/", response_model=User, response_model_exclude={"_id"})
 async def account_update_user(user: User = Depends(get_user), payload: UserUpdate = Body(...)):
     return await UserCRUD.update(user, payload)
+
+
+@router.get("/transactions/", response_model=List[UserTransaction])
+async def get_transactions(user: User = Depends(get_user)):
+    return await UserCRUD.get_transactions(user)

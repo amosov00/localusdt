@@ -1,6 +1,7 @@
 import re
 from typing import Optional
 from datetime import datetime
+from enum import IntEnum
 
 from pydantic import Field, validator
 from passlib.context import CryptContext
@@ -21,6 +22,9 @@ __all__ = [
     "UserRecover",
     "UserRecoverLink",
     "UserUpdate",
+    "UserTransactionStatus",
+    "UserTransactionEvents",
+    "UserTransaction"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -138,3 +142,23 @@ class UserRecoverLink(BaseModel):
 
 class UserUpdate(BaseModel):
     about_me: str = Field(..., description="'About me' field")
+
+
+class UserTransactionEvents(IntEnum):
+    DEPOSIT = 1
+    WITHDRAW = 2
+
+
+class UserTransactionStatus(IntEnum):
+    IN_PROGRESS = 1
+    CANCELLED = 2
+    DONE = 3
+
+
+class UserTransaction(BaseModel):
+    date: datetime = Field(default=None)
+    event: UserTransactionEvents = Field(default=None, description="1 -- DEPOSIT, 2 -- WITHDRAW")
+    address: str = Field(default=None)
+    amount_usdt: float = Field(default=None)
+    status: UserTransactionStatus = Field(default=None, description="1 -- IN_PROGRESS, 2 -- CANCELLED, 3 -- DONE")
+

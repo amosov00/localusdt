@@ -7,7 +7,8 @@ from schemas.invoice import (
     InvoiceCreate,
     InvoiceInDB,
     InvoiceStatus,
-    InvoiceInSearch
+    InvoiceInSearch,
+    InvoiceWithAds
 )
 from schemas.user import User
 
@@ -41,6 +42,6 @@ async def invoice_search(user: User = Depends(get_user)):
     return await InvoiceCRUD.find_by_user_id(user.id)
 
 
-@router.get("/{invoice_id}/", response_model=InvoiceInSearch)
+@router.get("/{invoice_id}/", response_model=InvoiceWithAds)
 async def invoice_get(user: User = Depends(get_user), invoice_id: str = Path(...)):
     return await InvoiceCRUD.get_invoice(user, invoice_id)

@@ -2,14 +2,16 @@ import asyncio
 from datetime import datetime
 from http import HTTPStatus
 from passlib import pwd
-from typing import Optional, Union
+from typing import Optional, List
 from datetime import timedelta
+from bson import Decimal128
 
 from fastapi.exceptions import HTTPException
 
 from .base import ObjectId
 from database.crud.base import BaseMongoCRUD
 from database.crud.ethereum_wallet import EthereumWalletCRUD
+from database.crud.transaction import USDTTransactionCRUD
 from core.integrations.crypto import USDTWrapper
 from core.utils.jwt import decode_jwt_token, encode_jwt_token
 from core.utils.email import MailGunEmail
@@ -20,7 +22,10 @@ from schemas.user import (
     UserChangePassword,
     UserRecover,
     UserRecoverLink,
-    UserUpdate
+    UserUpdate,
+    UserTransaction,
+    UserTransactionEvents,
+    UserTransactionStatus
 )
 
 __all__ = ["UserCRUD"]
@@ -188,3 +193,21 @@ class UserCRUD(BaseMongoCRUD):
         )
         updated_user = await cls.find_by_id(user.id)
         return updated_user
+
+    @classmethod
+    async def get_transactions(cls, user: User) -> List[dict]:
+        if not user.eth_address:
+            return []
+        result = []
+        transactions = await USDTTransactionCRUD.get_transactions_by_address(user.eth_address)
+        for transaction in transactions:
+            parsed_trans = {
+                "date": transaction.get("date"),
+                "event": transaction.get("event"),
+                "address": transaction.get("to_adr") if user.eth_address != transaction.get(
+                    "to_adr") else transaction.get("from_adr"),
+                "amount_usdt": float(transaction.get("usdt_amount").to_decimal()) * 0.000001,
+                "status": UserTransactionStatus.DONE  # TODO change when doing withdraw
+            }
+            result.append(parsed_trans)
+        return result

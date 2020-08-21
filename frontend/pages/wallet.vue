@@ -35,6 +35,9 @@ export default {
       user: 'user'
     })
   },
+  asyncData({store}) {
+    return store.dispatch('wallet/fetchTransactions')
+  },
 }
 </script>
 

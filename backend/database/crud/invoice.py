@@ -226,4 +226,6 @@ class InvoiceCRUD(BaseMongoCRUD):
         invoice["ads_type"] = ads_type
         invoice["bot_limit"] = ads["bot_limit"]
         invoice["top_limit"] = ads["top_limit"]
+        invoice["condition"] = ads["condition"]
+
         return invoice

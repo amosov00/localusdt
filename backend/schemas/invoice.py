@@ -66,6 +66,7 @@ class InvoiceWithAds(InvoiceInDB):
     ads_type: AdsType = Field(default=None)
     top_limit: int = Field(default=None)
     bot_limit: int = Field(default=None)
+    condition: str = Field(default=None)
 
 
 class InvoiceCreate(BaseModel):

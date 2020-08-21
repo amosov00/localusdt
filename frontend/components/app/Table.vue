@@ -33,10 +33,10 @@
         button.pagination__arrow-button(@click="nextPage")
           InlineSvg.pagination__arrow-icon(:src="require('~/assets/icons/arrow-right.svg')")
       div.pagination__quantity
-        button.pagination__quantity-button(:class="{'black': contentPerPage === 15}" @click="contentPerPage = 15" ) 15
-        button.pagination__quantity-button(:class="{'black': contentPerPage === 25}" @click="contentPerPage = 25" ) 25
-        button.pagination__quantity-button(:class="{'black': contentPerPage === 50}" @click="contentPerPage = 50" ) 50
-        button.pagination__quantity-button(:class="{'black': contentPerPage === 100}" @click="contentPerPage = 100" ) 100
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 15}" @click="setContentPerPage(15)" ) 15
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 25}" @click="setContentPerPage(25)" ) 25
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 50}" @click="setContentPerPage(50)" ) 50
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 100}" @click="setContentPerPage(100)" ) 100
 </template>
 
 <script>
@@ -100,6 +100,10 @@ export default {
         return
       }
       this.currentPage += 1
+    },
+    setContentPerPage(value) {
+      this.contentPerPage = value
+      this.currentPage = 1
     },
     goToPage(page) {
       this.currentPage = page

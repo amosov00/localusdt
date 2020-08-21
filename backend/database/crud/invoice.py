@@ -217,10 +217,13 @@ class InvoiceCRUD(BaseMongoCRUD):
         invoice = await InvoiceCRUD.find_by_id(invoice_id)
         if not (invoice.get("seller_id") == user.id or invoice.get("buyer_id") == user.id):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
+        ads = await AdsCRUD.find_by_id(invoice["ads_id"])
         buyer_username = (await UserCRUD.find_by_id(invoice.get("buyer_id"))).get("username")
         seller_username = (await UserCRUD.find_by_id(invoice.get("seller_id"))).get("username")
         ads_type = (await AdsCRUD.find_by_id(invoice.get("ads_id"))).get("type")
         invoice["buyer_username"] = buyer_username
         invoice["seller_username"] = seller_username
         invoice["ads_type"] = ads_type
+        invoice["bot_limit"] = ads["bot_limit"]
+        invoice["top_limit"] = ads["top_limit"]
         return invoice

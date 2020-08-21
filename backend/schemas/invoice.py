@@ -12,7 +12,8 @@ __all__ = [
     "InvoiceInDB",
     "InvoiceStatus",
     "InvoiceCreate",
-    "InvoiceInSearch"
+    "InvoiceInSearch",
+    "InvoiceWithAds"
 ]
 
 
@@ -57,6 +58,14 @@ class InvoiceInSearch(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
     ads_type: AdsType = Field(default=None)
+
+
+class InvoiceWithAds(InvoiceInDB):
+    seller_username: str = Field(default=None)
+    buyer_username: str = Field(default=None)
+    ads_type: AdsType = Field(default=None)
+    top_limit: int = Field(default=None)
+    bot_limit: int = Field(default=None)
 
 
 class InvoiceCreate(BaseModel):

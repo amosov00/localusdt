@@ -20,7 +20,8 @@
       <p class="order-details__cell">Банковский перевод: Сбербанк</p>
     </div>
     <hr />
-    <div class="order-details__row mt-10">
+    <!-- temp fix -->
+    <div class="order-details__row mt-10" v-if="orderDetails.bot_limit || orderDetails.top_limit">
       <p class="order-details__cell opacity-50">Ограничения по сделке:</p>
       <p
         class="order-details__cell">

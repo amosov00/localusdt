@@ -2,7 +2,7 @@
   <section>
     <h1 class="table-section__title mt-330">Продать USDT</h1>
     <Tab :nav="false" :outsideParams="$route.query" :type="2" />
-    <Table class="mb-15" :tableData="orders" buttonName="Продать" pagination />
+    <Table class="mb-80" :tableData="orders" buttonName="Продать" pagination />
   </section>
 </template>
 

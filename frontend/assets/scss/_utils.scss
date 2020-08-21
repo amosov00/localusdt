@@ -1,11 +1,11 @@
 .black {
-  color: $black;
+  color: $black !important;
   &--bg {
     background-color: $black;
   }
 }
 .orange {
-  color: $orange;
+  color: $orange !important;
   &--bg {
     background-color: $orange;
   }

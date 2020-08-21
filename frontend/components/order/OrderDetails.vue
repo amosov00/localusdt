@@ -12,7 +12,7 @@
         {{ role }}
       </p>
       <p class="order-details__cell">
-        {{ this.orderDetails.seller_username }}
+        {{ orderDetails.username || orderDetails.seller_username }}
       </p>
     </div>
     <div class="order-details__row">
@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     role() {
-      switch (this.orderDetails.ads_type) {
+      switch (this.orderDetails.ads_type || this.orderDetails.type) {
         case 1:
           return 'Покупатель:'
           break

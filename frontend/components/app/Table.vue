@@ -6,6 +6,7 @@
           th.table__head Продавец
           th.table__head Способ оплаты
           th.table__head Лимит
+          th.table__head Количество
           th.table__head Цена за токен
       tbody.table__body
         tr.table__row(v-for="order in paginatedTableData" :key="order._id")
@@ -16,6 +17,8 @@
             span {{paymentMethod(order.payment_method)}}
           td.table__data {{spaceSplitting(order.bot_limit)}} - {{spaceSplitting(order.top_limit)}} ₽
           td.table__data {{commaSplitting(order.price)}} ₽
+          td.table__data
+            span {{spaceSplitting(order.amount_usdt)}} USDT
           td.table__data
             nuxt-link(:to="`/order/${order._id}`" v-if="order.type === 1")
               Button(rounded outlined green) {{buttonName}}

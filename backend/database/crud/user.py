@@ -210,4 +210,4 @@ class UserCRUD(BaseMongoCRUD):
                 "status": UserTransactionStatus.DONE  # TODO change when doing withdraw
             }
             result.append(parsed_trans)
-        return result
+        return sorted(result, key=lambda i: i["date"], reverse=True)

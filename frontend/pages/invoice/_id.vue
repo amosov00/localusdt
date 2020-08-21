@@ -3,11 +3,11 @@
     <header class="order__header">
       <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
       <span class="opacity-50 fz-20" v-if="invoice.ads_type === 1"
-        >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
+        >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
       >
       <span class="opacity-50 fz-20" v-else-if="invoice.ads_type === 2"
-        >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
+        >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
         {{ commaSplitting(invoice.amount_rub) }} ₽</span
       >
       <div class="ad__subtitle">
@@ -29,7 +29,7 @@
     <OrderInfo :order="invoice" />
     <div class="order__footer">
       <Chat :invoice="invoice" />
-      <div v-if="invoice.ads_type === 1">
+      <div v-if="invoice.ads_type === 2">
         <SendMoneySteps
           v-if="userRole === 'owner_buy' || userRole === 'customer_sell'"
           :invoice="invoice"
@@ -39,7 +39,7 @@
           :invoice="invoice"
         />
       </div>
-      <div v-else-if="invoice.ads_type === 2">
+      <div v-else-if="invoice.ads_type === 1">
         <SendMoneySteps
           v-if="userRole === 'owner_sell' || userRole === 'customer_buy'"
           :invoice="invoice"

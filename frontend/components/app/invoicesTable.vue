@@ -10,8 +10,8 @@
     tbody.table__body
       tr.table__row(v-for="invoice in tableData" :key="invoice._id")
         td.table__data {{timestampToUtc(invoice.created_at)}}
-        td.table__data(v-if="invoice.ads_type === 1") Покупка USDT
-        td.table__data(v-else-if="invoice.ads_type === 2") Продажа USDT
+        td.table__data(v-if="invoice.ads_type === 1") Продажа USDT
+        td.table__data(v-else-if="invoice.ads_type === 2") Покупка USDT
         td.table__data {{invoice.seller_username}}
           span.status.green--bg
           span.orders-count (10+)
@@ -44,23 +44,22 @@ export default {
       } else {
         return true
       }
-    },
+    }
   },
   methods: {
     statusColor(status) {
       switch (this.invoiceStatusShort(status)) {
         case 'Завершен':
           return '#48B190'
-          break;
+          break
         case 'В процессе':
           return '#ED9F43'
-          break;
+          break
         case 'Отменена':
           return '#B31B11'
-          break;
+          break
       }
     }
   }
 }
 </script>
-

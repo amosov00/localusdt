@@ -21,7 +21,7 @@
               <InlineSvg :src="require('~/assets/icons/redirect.svg')" />
             </a>
           </td>
-          <td class="table__data">
+          <td class="table__data fw-500">
             {{ commaSplitting(row.amount_usdt) }} USDT
           </td>
           <td

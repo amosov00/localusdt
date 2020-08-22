@@ -147,6 +147,7 @@ export default {
   &__data {
     text-align: left;
     padding-left: 30px;
+    font-weight: normal;
 
     .status {
       display: inline-block;

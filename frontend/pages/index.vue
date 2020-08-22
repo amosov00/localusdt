@@ -1,47 +1,178 @@
-<template lang="pug">
-  div
-    NonAuthorizedHero(v-if="!$userIsLoggedIn()")
-    Tab(:top="top" @selectedTab="selectedOrders($event)")
-    div(v-if="buyTab")
-      section.table-section.mt-330
-        h1.table-section__title Купить USDT
-        Table(:tableData="buyOrdersWithLimit" buttonName="Купить")
-        nuxt-link(to="/buy")
-          p.table-section__subtitle.fz-20 Показать больше объявлений
-      section.table-section
-        h1.table-section__title Продать USDT
-        Table(:tableData="sellOrdersWithLimit" buttonName="Продать")
-        nuxt-link(to="/sell")
-          p.table-section__subtitle.fz-20 Показать больше объявлений
-    div(v-else)
-      section.table-section.mt-330
-        h1.table-section__title Продать USDT
-        Table(:tableData="sellOrdersWithLimit" buttonName="Продать")
-        nuxt-link(to="/sell")
-          p.table-section__subtitle.fz-20 Показать больше объявлений
-      section.table-section
-        h1.table-section__title Купить USDT
-        Table(:tableData="buyOrdersWithLimit" buttonName="Купить")
-        nuxt-link(to="/buy")
-          p.table-section__subtitle.fz-20 Показать больше объявлений
+<template>
+  <div>
+    <NonAuthorizedHero v-if="!$userIsLoggedIn()" />
+    <Tab :top="top" @selectedTab="selectedOrders($event)" />
+    <div v-if="buyTab">
+      <section class="table-section mt-330">
+        <h1 class="table-section__title">Купить USDT</h1>
+        <AppTable :data="sellOrdersWithLimit" :headers="headers">
+          <template slot-scope="header"></template>
+          <template slot-scope="{ row }">
+            <td class="table__data">
+              {{ row.username }}
+              <span class="status green--bg" />
+              <span class="orders-count">(10+)</span>
+            </td>
+            <td class="table__data">
+              {{ paymentMethod(row.payment_method) }}
+            </td>
+            <td class="table__data">
+              {{ spaceSplitting(row.bot_limit) }} -
+              {{ spaceSplitting(row.top_limit) }} ₽
+            </td>
+            <td class="table__data">
+              {{ commaSplitting(row.amount_usdt) }} USDT
+            </td>
+            <td class="table__data">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data">
+              <nuxt-link :to="`/order/${row._id}`">
+                <Button rounded outlined green>Купить</Button>
+              </nuxt-link>
+            </td>
+          </template>
+        </AppTable>
+        <nuxt-link to="buy/">
+          <p class="table-section__subtitle fz-20 ">
+            Показать больше объявлений
+          </p>
+        </nuxt-link>
+      </section>
+      <section class="table-section">
+        <h1 class="table-section__title">Продать USDT</h1>
+        <AppTable :data="buyOrdersWithLimit" :headers="headers">
+          <template slot-scope="header"></template>
+          <template slot-scope="{ row }">
+            <td class="table__data">
+              {{ row.username }}
+              <span class="status green--bg" />
+              <span class="orders-count">(10+)</span>
+            </td>
+            <td class="table__data">
+              {{ paymentMethod(row.payment_method) }}
+            </td>
+            <td class="table__data">
+              {{ spaceSplitting(row.bot_limit) }} -
+              {{ spaceSplitting(row.top_limit) }} ₽
+            </td>
+            <td class="table__data">
+              {{ commaSplitting(row.amount_usdt) }} USDT
+            </td>
+            <td class="table__data">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data">
+              <nuxt-link :to="`/order/${row._id}`">
+                <Button rounded outlined green>Купить</Button>
+              </nuxt-link>
+            </td>
+          </template>
+        </AppTable>
+        <nuxt-link to="buy/">
+          <p class="table-section__subtitle fz-20 ">
+            Показать больше объявлений
+          </p>
+        </nuxt-link>
+      </section>
+    </div>
+    <div v-else>
+      <section class="table-section mt-330">
+        <h1 class="table-section__title">Продать USDT</h1>
+        <AppTable :data="buyOrdersWithLimit" :headers="headers">
+          <template slot-scope="header"></template>
+          <template slot-scope="{ row }">
+            <td class="table__data">
+              {{ row.username }}
+              <span class="status green--bg" />
+              <span class="orders-count">(10+)</span>
+            </td>
+            <td class="table__data">
+              {{ paymentMethod(row.payment_method) }}
+            </td>
+            <td class="table__data">
+              {{ spaceSplitting(row.bot_limit) }} -
+              {{ spaceSplitting(row.top_limit) }} ₽
+            </td>
+            <td class="table__data">
+              {{ commaSplitting(row.amount_usdt) }} USDT
+            </td>
+            <td class="table__data">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data">
+              <nuxt-link :to="`/order/${row._id}`">
+                <Button rounded outlined green>Купить</Button>
+              </nuxt-link>
+            </td>
+          </template>
+        </AppTable>
+        <nuxt-link to="buy/">
+          <p class="table-section__subtitle fz-20 ">
+            Показать больше объявлений
+          </p>
+        </nuxt-link>
+      </section>
+      <section class="table-section">
+        <h1 class="table-section__title">Купить USDT</h1>
+        <AppTable :data="sellOrdersWithLimit" :headers="headers">
+          <template slot-scope="header"></template>
+          <template slot-scope="{ row }">
+            <td class="table__data">
+              {{ row.username }}
+              <span class="status green--bg" />
+              <span class="orders-count">(10+)</span>
+            </td>
+            <td class="table__data">
+              {{ paymentMethod(row.payment_method) }}
+            </td>
+            <td class="table__data">
+              {{ spaceSplitting(row.bot_limit) }} -
+              {{ spaceSplitting(row.top_limit) }} ₽
+            </td>
+            <td class="table__data">
+              {{ commaSplitting(row.amount_usdt) }} USDT
+            </td>
+            <td class="table__data">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data">
+              <nuxt-link :to="`/order/${row._id}`">
+                <Button rounded outlined green>Купить</Button>
+              </nuxt-link>
+            </td>
+          </template>
+        </AppTable>
+        <nuxt-link to="buy/">
+          <p class="table-section__subtitle fz-20 ">
+            Показать больше объявлений
+          </p>
+        </nuxt-link>
+      </section>
+    </div>
+  </div>
 </template>
 
 <script>
 import NonAuthorizedHero from '~/components/NonAuthorizedHero'
 import Table from '~/components/app/Table'
 import Tab from '~/components/Tab'
+import AppTable from '~/components/app/AppTable'
+import paymentMethod from '~/mixins/paymentMethod'
+import formatCurrency from '~/mixins/formatCurrency'
+import Button from '~/components/app/Button'
 export default {
-  components: { NonAuthorizedHero, Table, Tab },
+  mixins: [paymentMethod, formatCurrency],
+  components: { NonAuthorizedHero, Table, Tab, AppTable, Button },
   name: 'index',
   data() {
     return {
       buyTab: true,
       sellTab: false,
+      headers: [
+        'Продавец',
+        'Способ оплаты',
+        'Лимит',
+        'Количество',
+        'Цена за токен'
+      ]
     }
   },
   computed: {
     top() {
-      if(!this.$userIsLoggedIn()) {
+      if (!this.$userIsLoggedIn()) {
         return 300
       } else {
         return 100
@@ -64,7 +195,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('order/fetchOrders', {limit: 1000})
+    this.$store.dispatch('order/fetchOrders', { limit: 1000 })
   }
 }
 </script>

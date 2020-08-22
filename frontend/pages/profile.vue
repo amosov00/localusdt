@@ -22,7 +22,23 @@
       </div>
       <ProfileReferral />
     </div>
-    <invoicesTable :tableData="invoices" />
+    <AppTable :data="invoices" :headers="headers" pagination>
+      <template slot-scope="header"></template>
+      <template slot-scope="{ row }">
+        <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
+        <td class="table__data" v-if="row.ads_type === 1">Продажа USDT</td>
+        <td class="table__data" v-else-if="row.ads_type === 2"> Покупка USDT</td>
+        <td class="table__data">
+          {{row.seller_username}}
+          <span class="status green--bg" />
+          <span class="orders-count">(10+)</span>
+        </td>
+        <td class="table__data">{{commaSplitting(row.amount_usdt)}} <span class="grey-dark fw-400">за {{commaSplitting(row.amount_rub)}} ₽</span> </td>
+        <td class="table__data" :style="{ color: statusColor(row.status) }">
+          <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
+        </td>
+      </template>
+    </AppTable>
   </section>
 </template>
 
@@ -32,16 +48,25 @@ import invoicesTable from '~/components/app/invoicesTable'
 import ProfileReferral from '~/components/ProfileReferral'
 import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
+import AppTable from '~/components/app/AppTable'
+import formatCurreny from '~/mixins/formatCurrency'
+import formatDate from '~/mixins/formatDate'
+import invoiceStatuses from '~/mixins/invoiceStatuses'
 export default {
+  name: 'profile',
   middleware: ['authRequired', 'fetchUser'],
+  mixins: [formatCurreny, formatDate, invoiceStatuses],
   components: {
     invoicesTable,
     ProfileReferral,
     Textarea,
-    Button
+    Button,
+    AppTable
   },
   data() {
-    return {}
+    return {
+      headers: ['Дата, время', 'Вид сделки', 'Покупатель/продавец', 'Сумма', 'Статус']
+    }
   },
   computed: {
     user() {

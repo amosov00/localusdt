@@ -44,7 +44,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import invoicesTable from '~/components/app/invoicesTable'
 import ProfileReferral from '~/components/ProfileReferral'
 import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
@@ -57,7 +56,6 @@ export default {
   middleware: ['authRequired', 'fetchUser'],
   mixins: [formatCurreny, formatDate, invoiceStatuses],
   components: {
-    invoicesTable,
     ProfileReferral,
     Textarea,
     Button,

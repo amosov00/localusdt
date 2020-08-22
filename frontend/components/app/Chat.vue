@@ -1,7 +1,7 @@
 <template>
   <div class="chat">
     <h2>
-      Отправьте сообщение <span class="orange">{{ invoice.seller_username }}</span>
+      Отправьте сообщение <span class="orange">{{ name }}</span>
     </h2>
     <Textarea
       class="w-100 mt-20"
@@ -34,7 +34,7 @@ import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 export default {
   props: {
-    invoice: Object
+    name: String
   },
   components: {
     Textarea,

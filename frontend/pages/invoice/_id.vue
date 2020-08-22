@@ -2,14 +2,11 @@
   <section class="order">
     <header class="order__header">
       <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
-      <span class="opacity-50 fz-20" v-if="invoice.ads_type === 1"
-        >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
-        {{ commaSplitting(invoice.amount_rub) }} ₽</span
-      >
-      <span class="opacity-50 fz-20" v-else-if="invoice.ads_type === 2"
-        >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
-        {{ commaSplitting(invoice.amount_rub) }} ₽</span
-      >
+      <span class="opacity-50 fz-20">
+        <span>{{ roleAction }}</span>
+        <span>{{ commaSplitting(invoice.amount_usdt) }} USDT на</span>
+        <span>{{ commaSplitting(invoice.amount_rub) }} ₽</span>
+      </span>
       <div class="ad__subtitle">
         <p>
           <span class="green">Статус сделки: </span>
@@ -28,26 +25,14 @@
     </header>
     <OrderInfo :order="invoice" />
     <div class="order__footer">
-      <Chat :invoice="invoice" />
+      <Chat :invoice="invoice" :name="roleUser" />
       <div v-if="invoice.ads_type === 1">
-        <SendMoneySteps
-          v-if="userRole === 'owner_buy' || userRole === 'customer_sell'"
-          :invoice="invoice"
-        />
-        <SendUSDTSteps
-          v-if="userRole === 'owner_sell' || userRole === 'customer_buy'"
-          :invoice="invoice"
-        />
+        <SendMoneySteps v-if="role === 'Покупатель'" :invoice="invoice" />
+        <SendUSDTSteps v-if="role === 'Продавец'" :invoice="invoice" />
       </div>
       <div v-else-if="invoice.ads_type === 2">
-        <SendMoneySteps
-          v-if="userRole === 'owner_sell' || userRole === 'customer_buy'"
-          :invoice="invoice"
-        />
-        <SendUSDTSteps
-          v-if="userRole === 'owner_buy' || userRole === 'customer_sell'"
-          :invoice="invoice"
-        />
+        <SendMoneySteps v-if="role === 'Продавец'" :invoice="invoice" />
+        <SendUSDTSteps v-if="role === 'Покупатель'" :invoice="invoice" />
       </div>
     </div>
     <InvoiceCancelModal
@@ -79,45 +64,58 @@ export default {
     Chat,
     SendUSDTSteps,
     SendMoneySteps,
-    InvoiceCancelModal
+    InvoiceCancelModal,
   },
   data() {
     return {
       cancelModal: false,
       invoiceId: this.$route.params.id,
-      interval: null
+      interval: null,
     }
   },
   computed: {
     ...mapGetters({
       invoice: 'invoice/invoiceById',
-      user: 'user'
+      user: 'user',
     }),
-    userRole() {
+    roleAction() {
       if (
-        this.invoice.ads_type === 1 &&
-        this.user.username === this.invoice.buyer_username
+        (this.invoice.ads_type || this.invoice.type === 1) &&
+        this.invoice.seller_username === this.user.username
       ) {
-        return 'owner_buy'
+        return 'Продажа'
       } else if (
-        this.invoice.ads_type === 1 &&
-        this.user.username === this.invoice.seller_username
+        (this.invoice.ads_type || this.invoice.type === 2) &&
+        this.invoice.buyer_username === this.user.username
       ) {
-        return 'customer_buy'
+        return 'Покупка'
       }
-
+    },
+    role() {
       if (
-        this.invoice.ads_type === 2 &&
-        this.user.username === this.invoice.buyer_username
+        (this.invoice.ads_type || this.invoice.type === 1) &&
+        this.invoice.seller_username === this.user.username
       ) {
-        return 'owner_sell'
+        return 'Покупатель'
       } else if (
-        this.invoice.ads_type === 2 &&
-        this.user.username === this.invoice.seller_username
+        (this.invoice.ads_type || this.invoice.type === 2) &&
+        this.invoice.buyer_username === this.user.username
       ) {
-        return 'customer_sell'
+        return 'Продавец'
       }
-    }
+    },
+    roleUser() {
+      switch (this.role) {
+        case 'Покупатель':
+          return this.invoice.buyer_username
+          break
+        case 'Продавец':
+          return this.invoice.username || this.invoice.seller_username
+          break
+        default:
+          break
+      }
+    },
   },
   created() {
     this.interval = setInterval(async () => {
@@ -132,7 +130,7 @@ export default {
   },
   asyncData({ route, store }) {
     return store.dispatch('invoice/fetchInvoiceById', route.params.id)
-  }
+  },
 }
 </script>
 

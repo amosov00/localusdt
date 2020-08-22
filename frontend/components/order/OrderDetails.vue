@@ -1,44 +1,44 @@
 <template>
   <div class="ad-details">
     <div class="order-details__row fz-20">
-      <p class="order-details__cell opacity-50">Цена</p>
+      <p class="order-details__cell grey-dark">Цена</p>
       <p class="order-details__cell">
         {{ commaSplitting(orderDetails.price || orderDetails.amount_rub) }}
         ₽/USDT
       </p>
     </div>
     <div class="order-details__row">
-      <p class="order-details__cell opacity-50">
-        {{ role }}
+      <p class="order-details__cell grey-dark">
+        {{ role }}:
       </p>
       <p class="order-details__cell">
-        {{ orderDetails.username || orderDetails.seller_username }}
+        {{ roleUser }}
       </p>
     </div>
     <div class="order-details__row">
-      <p class="order-details__cell opacity-50">Способ оплаты:</p>
+      <p class="order-details__cell grey-dark">Способ оплаты:</p>
       <p class="order-details__cell">Банковский перевод: Сбербанк</p>
     </div>
     <hr />
     <div class="order-details__row mt-10">
-      <p class="order-details__cell opacity-50">Ограничения по сделке:</p>
+      <p class="order-details__cell grey-dark">Ограничения по сделке:</p>
       <p class="order-details__cell">
         <span>{{ spaceSplitting(orderDetails.bot_limit) }}</span> —
         <span>{{ spaceSplitting(orderDetails.top_limit) }} ₽</span>
       </p>
     </div>
     <div class="order-details__row mt-10">
-      <p class="order-details__cell opacity-50">Количество:</p>
+      <p class="order-details__cell grey-dark">Количество:</p>
       <p class="order-details__cell">
-        <span>{{ spaceSplitting(orderDetails.amount_usdt)}} USDT</span>
+        <span>{{ spaceSplitting(orderDetails.amount_usdt) }} USDT</span>
       </p>
     </div>
     <div class="order-details__row mt-10">
-      <p class="order-details__cell opacity-50">Местоположение:</p>
+      <p class="order-details__cell grey-dark">Местоположение:</p>
       <p class="order-details__cell">Российская Федерация</p>
     </div>
     <div class="order-details__row mt-10">
-      <p class="order-details__cell opacity-50">Окно оплаты:</p>
+      <p class="order-details__cell grey-dark">Окно оплаты:</p>
       <p class="order-details__cell">1 час 30 минут</p>
     </div>
   </div>
@@ -46,23 +46,42 @@
 
 <script>
 import formatCurreny from '~/mixins/formatCurrency'
+import { mapGetters } from 'vuex'
 export default {
   props: {
-    orderDetails: Object
+    orderDetails: Object,
   },
   computed: {
+    ...mapGetters({
+      user: 'user',
+    }),
     role() {
-      switch (this.orderDetails.ads_type || this.orderDetails.type) {
-        case 1:
-          return 'Покупатель:'
-          break
-        case 2:
-          return 'Продавец:'
-          break
+      if (
+        (this.orderDetails.ads_type || this.orderDetails.type === 1) &&
+        this.orderDetails.seller_username === this.user.username
+      ) {
+        return 'Покупатель'
+      } else if (
+        (this.orderDetails.ads_type || this.orderDetails.type === 2) &&
+        this.orderDetails.buyer_username === this.user.username
+      ) {
+        return 'Продавец'
+      }
+    },
+    roleUser() {
+      switch (this.role) {
+        case 'Покупатель':
+          return this.orderDetails.buyer_username
+          break;
+        case 'Продавец':
+          return this.orderDetails.username || this.orderDetails.seller_username
+          break;
+        default:
+          break;
       }
     }
   },
-  mixins: [formatCurreny]
+  mixins: [formatCurreny],
 }
 </script>
 

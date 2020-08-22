@@ -12,7 +12,7 @@
           <span class="opacity-50">Сумма:</span>
         </p>
         <p class="steps-list--left">
-          <span>{{ invoice.amount_rub }} ₽</span>
+          <span>{{ commaSplitting(invoice.amount_rub) }} ₽</span>
         </p>
         </div>
         <div class="steps-list__row">
@@ -55,7 +55,9 @@
 
 <script>
 import Button from '~/components/app/Button'
+import formatCurrency from '~/mixins/formatCurrency'
 export default {
+  mixins: [formatCurrency],
   props: {
     invoice: Object
   },

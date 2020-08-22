@@ -7,7 +7,7 @@
         </tr>
       </thead>
       <tbody class="table__body">
-        <template v-for="item in paginatedTableData">
+        <template v-for="item in whichTable">
           <tr class="table__row">
             <slot :row="item" />
           </tr>
@@ -41,7 +41,6 @@ import InlineSvg from 'vue-inline-svg'
 import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
 import paymentMethod from '~/mixins/paymentMethod'
-import AppTableColumn from '~/components/app/AppTableColumn'
 export default {
   props: {
     data: Array,
@@ -55,7 +54,6 @@ export default {
   components: {
     Button,
     InlineSvg,
-    AppTableColumn,
   },
   data() {
     return {
@@ -64,6 +62,18 @@ export default {
     }
   },
   computed: {
+    whichTable() {
+      switch (this.pagination) {
+        case true:
+          return this.paginatedTableData
+          break
+        case false:
+          return this.data
+          break
+        default:
+          break
+      }
+    },
     paginatedTableData() {
       return this.data.slice(
         this.currentPage * this.contentPerPage - this.contentPerPage,
@@ -117,7 +127,6 @@ export default {
 
   &__header {
     padding: 20px;
-    padding-left: 30px;
     font-weight: 500;
     font-size: 16px;
   }

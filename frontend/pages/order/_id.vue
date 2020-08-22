@@ -1,8 +1,8 @@
 <template>
   <section class="order">
     <header class="order__header">
-      <h1 class="order__title" v-if="order.type === 1">Покупка USDT</h1>
-      <h1 class="order__title" v-else>Продажа USDT</h1>
+      <h1 class="order__title" v-if="order.type === 1">Продажа USDT</h1>
+      <h1 class="order__title" v-else>Покупка USDT</h1>
     </header>
     <OrderInfo :order="order" />
     <div class="order__footer" v-if="user.username !== order.username">

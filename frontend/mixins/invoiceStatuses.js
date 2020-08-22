@@ -37,6 +37,19 @@ export default {
           return 'Отменена'
           break
       }
+    },
+    statusColor(status) {
+      switch (this.invoiceStatusShort(status)) {
+        case 'Завершен':
+          return '#48B190'
+          break
+        case 'В процессе':
+          return '#ED9F43'
+          break
+        case 'Отменена':
+          return '#B31B11'
+          break
+      }
     }
-  },
+  }
 }

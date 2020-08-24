@@ -26,11 +26,11 @@
     <OrderInfo :order="invoice" />
     <div class="order__footer">
       <Chat :invoice="invoice" :name="roleUser" />
-      <div v-if="invoice.ads_type === 1">
+      <div v-if="invoice.ads_type === 2">
         <SendMoneySteps v-if="role === 'Покупатель'" :invoice="invoice" />
         <SendUSDTSteps v-if="role === 'Продавец'" :invoice="invoice" />
       </div>
-      <div v-else-if="invoice.ads_type === 2">
+      <div v-else-if="invoice.ads_type === 1">
         <SendMoneySteps v-if="role === 'Продавец'" :invoice="invoice" />
         <SendUSDTSteps v-if="role === 'Покупатель'" :invoice="invoice" />
       </div>

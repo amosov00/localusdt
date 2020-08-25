@@ -15,7 +15,9 @@ from schemas.ads import (
     AdsType,
     Currency,
     PaymentMethod,
-    AdsSort
+    AdsSort,
+    AdsStatuses,
+    AdsUpdate
 )
 from schemas.user import User
 
@@ -68,3 +70,26 @@ async def ads_by_id(ads_id: str = Path(...)):
         raise HTTPException(HTTPStatus.BAD_REQUEST, "No user")
     ads["username"] = user.get("username")
     return ads
+
+
+@router.put("/{ads_id}/off/")
+async def off_order(user: User = Depends(get_user), ads_id: str = Path(...)):
+    return await AdsCRUD.set_status_safe(user, ads_id, AdsStatuses.NOT_ACTIVE)
+
+
+@router.put("/{ads_id}/on/")
+async def on_order(user: User = Depends(get_user), ads_id: str = Path(...)):
+    return await AdsCRUD.set_status_safe(user, ads_id, AdsStatuses.ACTIVE)
+
+
+@router.put("/{ads_id}/delete/")
+async def delete_order(user: User = Depends(get_user), ads_id: str = Path(...)):
+    return await AdsCRUD.set_status_safe(user, ads_id, AdsStatuses.DELETED)
+
+
+@router.put("/{ads_id}/update/", response_model=AdsInSearch)
+async def update_order(
+        user: User = Depends(get_user),
+        ads_id: str = Path(...),
+        payload: AdsUpdate = Body(...)):
+    return await AdsCRUD.update_ads(user, ads_id, payload)

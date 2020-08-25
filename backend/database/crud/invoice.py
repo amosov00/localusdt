@@ -95,6 +95,9 @@ class InvoiceCRUD(BaseMongoCRUD):
 
         ads_type = ads.get("type")
 
+        if ads["user_id"] == user.id:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't connect to your order")
+
         if ads_type:
             buyer_id = (
                 ads["user_id"] if ads_type == AdsType.BUY else user.id

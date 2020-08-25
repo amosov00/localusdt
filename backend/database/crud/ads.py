@@ -8,7 +8,10 @@ from database.crud.base import BaseMongoCRUD
 from database.crud import UserCRUD, CurrencyCRUD
 from schemas.ads import (
     AdsCreate,
-    AdsFilters
+    AdsFilters,
+    AdsStatuses,
+    AdsType,
+    AdsUpdate
 )
 from schemas.user import (
     User,
@@ -33,7 +36,18 @@ class AdsCRUD(BaseMongoCRUD):
 
     @classmethod
     async def find_by_user_obj(cls, user: User) -> Optional[List[dict]]:
-        result = await cls.find_many(query={"user_id": user.id})
+        result = await cls.find_many(query={
+            "$or": [
+                {
+                    "status": AdsStatuses.ACTIVE,
+                    "user_id": user.id,
+                },
+                {
+                    "status": AdsStatuses.NOT_ACTIVE,
+                    "user_id": user.id
+                },
+            ]
+        })
         for ads in result:
             ads["username"] = user.username
         return result
@@ -61,6 +75,7 @@ class AdsCRUD(BaseMongoCRUD):
     async def find_with_filters(cls, filters: AdsFilters):
         query = {
             "currency": filters.currency,
+            "status": AdsStatuses.ACTIVE
         }
         if filters.payment_method:
             query["payment_method"]: filters.payment_method
@@ -83,3 +98,81 @@ class AdsCRUD(BaseMongoCRUD):
             ads["username"] = users_kw[ads["user_id"]]
         return result
 
+    @classmethod
+    async def get_ads(cls, user: User, ads_id: str):
+        ads = await cls.find_by_id(ads_id)
+        if ads["user_id"] != user.id:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Cannot get order")
+
+        return ads
+
+    @classmethod
+    async def set_status_safe(cls, user: User, ads_id: str, status: AdsStatuses):
+        ads = await cls.find_by_id(ads_id)
+        if ads["user_id"] != user.id:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Cannot get order")
+        if ads["status"] == status:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Order already has that status")
+
+        if status == AdsStatuses.DELETED and ads["type"] == AdsType.SELL:
+            await UserCRUD.update_one(
+                query={"_id": user.id},
+                payload={
+                    "balance_usdt": user.balance_usdt + ads["amount_usdt"],
+                    "usdt_in_invoices": user.usdt_in_invoices - ads["amount_usdt"]
+                }
+            )
+
+        await cls.update_one(
+            query={"_id": ads["_id"]},
+            payload={"status": status}
+        )
+        return True
+
+    @classmethod
+    async def set_status_not_safe(cls, ads_id: str, status: AdsStatuses):
+        ads = await cls.find_by_id(ads_id)
+        if status == AdsStatuses.DELETED and ads["type"] == AdsType.SELL:
+            user = await UserCRUD.find_by_id(ads["user_id"])
+            await UserCRUD.update_one(
+                query={"_id": ads["user_id"]},
+                payload={
+                    "balance_usdt": user["balance_usdt"] + ads["amount_usdt"],
+                    "usdt_in_invoices": user["usdt_in_invoices"] - ads["amount_usdt"]
+                }
+            )
+        await cls.update_one(
+            query={"_id": ads["_id"]},
+            payload={"status": status}
+        )
+        return True
+
+    @classmethod
+    async def update_ads(cls, user: User, ads_id: str, payload: AdsUpdate):
+        ads = await cls.find_by_id(ads_id)
+
+        ads_bot_limit = payload.bot_limit if payload.bot_limit else ads.get("bot_limit")
+        ads_top_limit = payload.top_limit if payload.top_limit else ads.get("top_limit")
+
+        if ads_bot_limit > ads_top_limit:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Incorrect limits")
+
+        if user.id != ads["user_id"] or \
+                (ads["status"] != AdsStatuses.ACTIVE and ads["status"] != AdsStatuses.NOT_ACTIVE):
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Cannot get order")
+
+        current_rate = (await CurrencyCRUD.find_last())["current_rate"]
+        if not current_rate:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate.")
+        ads_price = current_rate * (float(payload.profit) / 100. + 1.) if payload.profit else ads["price"]
+
+        await cls.update_one(
+            query={"_id": ads["_id"]},
+            payload={
+                **payload.dict(exclude_unset=True),
+                "price": ads_price
+            }
+        )
+        ads = await cls.find_by_id(ads_id)
+        ads["username"] = user.username
+        return ads

@@ -5,7 +5,7 @@ from typing import Union
 
 from database.crud.user import UserCRUD
 
-from schemas.ads import AdsCreate, AdsInDB, AdsType, Ads
+from schemas.ads import AdsCreate, AdsInDB, AdsType, Ads, AdsStatuses
 from schemas.user import User
 
 
@@ -41,7 +41,8 @@ class AdsMechanics:
         ads = Ads(
             **payload.dict(),
             user_id=user.id,
-            created_at=datetime.now()
+            created_at=datetime.now(),
+            status=AdsStatuses.ACTIVE
         )
 
         return ads

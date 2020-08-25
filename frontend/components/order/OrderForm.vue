@@ -1,7 +1,7 @@
 <template>
   <form class="order-form">
-    <h2 v-if="order.type === 2">Сколько Вы хотите продать?</h2>
-    <h2 v-else>Сколько Вы хотите купить?</h2>
+    <h2 v-if="order.type === 2">Сколько Вы хотите купить?</h2>
+    <h2 v-else>Сколько Вы хотите продать?</h2>
     <div v-if="$userIsLoggedIn()">
       <Input
         v-model="invoiceForm.amount_usdt"
@@ -11,7 +11,7 @@
       />
       <Textarea
         class="mt-20"
-        placeholder="Напишите трейдеру сообщение с контактной или другой информацией 
+        placeholder="Напишите трейдеру сообщение с контактной или другой информацией
 (необязательно)"
       />
       <Button class="mt-20" green @click.native="createInvoice"

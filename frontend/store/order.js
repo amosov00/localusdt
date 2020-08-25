@@ -50,6 +50,8 @@ export const actions = {
     )
     commit('setOrders', data)
   },
+
+
   async createOrder({}, adForm) {
     return await this.$axios
       .post('/order/', adForm)
@@ -57,10 +59,25 @@ export const actions = {
         return true
       })
       .catch(error => {
-        this.$toast.showMessage({
-          content: error.response.data[0].message,
-          red: true
-        })
+        switch (error.response.data[0].message) {
+          case 'Can\'t get currency rate.':
+            this.$toast.showMessage({
+              content: 'Невозможно получить актуальный курс USDT/RUB',
+              red: true
+            })
+            break;
+          case 'Not enough USDT':
+            this.$toast.showMessage({
+              content: 'Недостаточно USDT на аккаунте',
+              red: true
+            })
+            break;
+          default:
+            this.$toast.showMessage({
+              content: error.response.data[0].message,
+              red: true
+            })
+        }
         return false
       })
   }

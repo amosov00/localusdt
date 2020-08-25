@@ -60,7 +60,7 @@
             <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
-                <Button rounded outlined green>Купить</Button>
+                <Button rounded outlined green>Продать</Button>
               </nuxt-link>
             </td>
           </template>
@@ -96,7 +96,7 @@
             <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
-                <Button rounded outlined green>Купить</Button>
+                <Button rounded outlined green>Продать</Button>
               </nuxt-link>
             </td>
           </template>

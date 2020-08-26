@@ -59,6 +59,7 @@ class Ads(BaseModel):
     status: AdsStatuses = Field(default=None, description="1 - ACTIVE, 2 - NOT_ACTIVE, 3 - DELETED")
 
     # Prices
+    fixed_price: bool = Field(default=None, description="If true - show price_field, else - show profit field")
     price: float = Field(default=None, description="Price for 1 usdt token")
     bot_limit: int = Field(default=None)
     top_limit: int = Field(default=None)
@@ -93,6 +94,9 @@ class AdsCreate(BaseModel):
 
     amount_usdt: float = Field(...)
 
+    fixed_price: bool = Field(default=False, description="If true - show price_field, else - show profit field")
+    price: float = Field(default=None)
+
     payment_method: PaymentMethod = Field(
         default=PaymentMethod.SBERBANK,
         description="Payment method, 1 = Sberbank, 2 = Tinkoff, 3 = Alfa-bank, 4 = Other"
@@ -119,6 +123,9 @@ class AdsUpdate(BaseModel):
     condition: str = Field(default=None, description="Condition of the Ads")
 
     profit: int = Field(default=None)
+
+    fixed_price: bool = Field(default=None, description="If true - show price_field, else - show profit field")
+    price: float = Field(default=None)
 
     _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
 

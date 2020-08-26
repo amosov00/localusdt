@@ -1,15 +1,14 @@
+import asyncio
 from typing import Optional, Union
-from bson import ObjectId
 from datetime import datetime
 from fastapi import HTTPException
 from http import HTTPStatus
-import logging
 from sentry_sdk import capture_message
 
 from database.crud.base import BaseMongoCRUD
 from database.crud.ads import AdsCRUD
 from database.crud.user import UserCRUD
-from core.utils import to_objectid
+from core.utils import to_objectid, MailGunEmail
 from core.mechanics import InvoiceMechanics
 
 from schemas.user import User
@@ -133,7 +132,10 @@ class InvoiceCRUD(BaseMongoCRUD):
         await cls.update_all(seller=seller, buyer=buyer, ads=ads)
 
         inserted_id = (await cls.insert_one(payload={**invoice.dict()})).inserted_id
-
+        owner_email = (await UserCRUD.find_by_id(ads["user_id"])).get("email")
+        asyncio.create_task(
+            MailGunEmail().send_invoice_notification(to=owner_email, invoice_id=inserted_id)
+        )
         invoice_in_db = await cls.find_one(query={"_id": inserted_id})
         return invoice_in_db
 

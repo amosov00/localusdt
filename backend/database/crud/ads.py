@@ -61,7 +61,12 @@ class AdsCRUD(BaseMongoCRUD):
         current_rate = (await CurrencyCRUD.find_last())["current_rate"]
         if not current_rate:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate.")
-        ads.price = current_rate * (float(ads.profit) / 100. + 1.)
+
+        if ads.fixed_price is True and ads.price is None:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Enter price")
+        elif ads.fixed_price is False:
+            ads.price = current_rate * (float(ads.profit) / 100. + 1.)
+
         inserted_id = (
             await cls.insert_one(payload={
                 **ads.dict(),
@@ -164,7 +169,15 @@ class AdsCRUD(BaseMongoCRUD):
         current_rate = (await CurrencyCRUD.find_last())["current_rate"]
         if not current_rate:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate.")
-        ads_price = current_rate * (float(payload.profit) / 100. + 1.) if payload.profit else ads["price"]
+
+        if payload.fixed_price is True and payload.price is None:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Enter price")
+        elif payload.fixed_price is False:
+            ads_price = current_rate * (float(payload.profit if payload.profit else 0) / 100. + 1.)
+        elif payload.fixed_price is True and payload.price is not None:
+            ads_price = payload.price
+        elif payload.fixed_price is None:
+            ads_price = ads["price"]
 
         await cls.update_one(
             query={"_id": ads["_id"]},

@@ -15,7 +15,9 @@ async def update_usdt_rate(self, *args, **kwargs):
     await CurrencyCRUD.update(current_rate)
     if current_rate:
         await AdsCRUD.db[AdsCRUD.collection].update_many(
-            {},
+            {
+                "fixed_price": False
+            },
             [  # noqa
                 {
                     "$set": {

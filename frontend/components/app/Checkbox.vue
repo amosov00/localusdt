@@ -4,8 +4,8 @@
       <input class="check__input" :checked="value" :value="value" @input="updateValue($event.target.checked)" type="checkbox" />
       <svg class="check__box" viewBox="0 0 25 25">
         <rect class="check__focus" width="20" height="20" rx="4" />
-        <rect class="check__square" x="3" y="3" width="14" height="14" rx="2" />
-        <polyline class="check__mark" points="5 9 9 13 15 6" />
+        <rect class="check__square" x="3" y="3" width="20" height="20" rx="2" />
+        <polyline class="check__mark" points="5 9 9 18 20 6" />
       </svg>
       {{label}}
     </label>
@@ -48,7 +48,7 @@ export default {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  
+
 }
 
 .check__box {

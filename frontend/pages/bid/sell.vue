@@ -1,7 +1,7 @@
 <template lang="pug">
   div.create-order
-    p.create-order__token-price Текущий курс токена 
-      span.green {{commaSplitting(currencyPrice)}} 
+    p.create-order__token-price Текущий курс токена
+      span.green {{commaSplitting(currencyPrice)}}
       span ₽/USDT
     header.create-order__navigation
       h1 Продать USDT
@@ -11,7 +11,14 @@
         Select(:options="paymentOptions" v-model="adForm.payment_method" :width="350" header="Способ оплаты")
         Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты" hideArrow)
       Input.create-order__input( v-if="yourVersion" v-model="adForm.bank_title" header="" placeholder="Свой вариант")
-      Input.create-order__input.mb-110(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
+      Input.create-order__input.mt-40.mb-80(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
+      div.radio-group
+        label(for="profit-is-formula")
+          input(id="profit-is-formula" type="radio" value="formula" name="profit-mode" v-model="profitMode")
+          span Формула
+        label(for="profit-is-fixed")
+          input(id="profit-is-fixed" type="radio" value="fixed" name="profit-mode" v-model="profitMode")
+          span Фиксированная
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
       Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text")
       div.create-order__gap
@@ -39,6 +46,7 @@ export default {
   mixins: [formatCurrency],
   data() {
     return {
+      profitMode: 'formula',
       adForm: {
         type: 2,
         bot_limit: null,
@@ -65,6 +73,12 @@ export default {
     }
   },
   watch: {
+    /*profitMode() {
+      if(this.profitMode === 'fixed') {
+        console.log('fixed')
+      }
+    },*/
+
     checkbox: function() {
       if (this.checkbox) {
         this.adForm.condition = this.user.about_me
@@ -82,6 +96,11 @@ export default {
       let currencyName = this.currencyOptions.find(currency => {
         return currency.value === this.adForm.currency
       })
+
+      if(this.profitMode === 'fixed') {
+        return `${this.currencyPrice.toFixed(2)}*${this.adForm.profit}`
+      }
+
       return `usdt_in_${currencyName.name.toLowerCase()}*${this.adForm.profit}`
     },
     yourVersion() {
@@ -132,4 +151,27 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+  .radio-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+
+    label {
+      margin-right: 20px;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    span {
+      margin-left: 5px;
+    }
+  }
+</style>

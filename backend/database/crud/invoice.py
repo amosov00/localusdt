@@ -5,11 +5,13 @@ from fastapi import HTTPException
 from http import HTTPStatus
 from sentry_sdk import capture_message
 
+from core.integrations.chat import ChatWrapper
 from database.crud.base import BaseMongoCRUD
 from database.crud.ads import AdsCRUD
 from database.crud.user import UserCRUD
 from core.utils import to_objectid, MailGunEmail
 from core.mechanics import InvoiceMechanics
+from schemas.base import ObjectId
 
 from schemas.user import User
 
@@ -111,6 +113,7 @@ class InvoiceCRUD(BaseMongoCRUD):
 
         invoice = Invoice(
             **payload.dict(),
+            chat_id=await ChatWrapper.create_chat([ObjectId(seller_id), ObjectId(buyer_id)]),
             buyer_id=buyer_id,
             seller_id=seller_id,
             status=InvoiceStatus.WAITING_FOR_PAYMENT,

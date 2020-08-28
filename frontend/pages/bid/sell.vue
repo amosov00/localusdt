@@ -19,6 +19,7 @@
         label(for="profit-is-fixed")
           input(id="profit-is-fixed" type="radio" value="fixed" name="profit-mode" v-model="profitMode")
           span Фиксированная
+      Input.create-order__input(v-model="adForm.price" header="Цена" placeholder="Цена" v-if="adForm.fixed_price")
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
       Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text")
       div.create-order__gap
@@ -56,7 +57,9 @@ export default {
         bank_title: '',
         currency: 1,
         condition: '',
-        profit: 0
+        profit: 0,
+        fixed_price: false,
+        price: 0
       },
       currencyOptions: [
         { name: 'RUB', value: 1 }
@@ -73,11 +76,15 @@ export default {
     }
   },
   watch: {
-    /*profitMode() {
+    profitMode() {
       if(this.profitMode === 'fixed') {
-        console.log('fixed')
+        this.adForm.fixed_price = true
+        this.adForm.price = this.currencyPrice.toFixed(2)
+      } else {
+        this.adForm.fixed_price = false
+        this.adForm.price = 0
       }
-    },*/
+    },
 
     checkbox: function() {
       if (this.checkbox) {
@@ -119,6 +126,16 @@ export default {
   },
   methods: {
     async createAd() {
+      if(this.adForm.fixed_price) {
+        if(isNaN(Number(this.adForm.price)) || Number(this.adForm.price) <= 0) {
+          this.$toast.showMessage({
+            content: 'Введите корректную цену',
+            red: true
+          })
+          return
+        }
+      }
+
       if (!this.adForm.amount_usdt || this.adForm.amount_usdt <= 0) {
         this.$toast.showMessage({
           content: 'Введите количество USDT',

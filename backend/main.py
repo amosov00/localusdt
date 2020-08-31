@@ -1,6 +1,4 @@
-from fastapi import FastAPI, exceptions, Request, responses
-from pydantic import ValidationError
-from starlette import status
+from fastapi import FastAPI
 from starlette.middleware import cors, authentication
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
@@ -56,3 +54,4 @@ app.add_middleware(authentication.AuthenticationMiddleware, backend=JWTAuthBacke
 ##########
 
 SentryAsgiMiddleware(app)
+

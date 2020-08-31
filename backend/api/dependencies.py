@@ -1,12 +1,35 @@
+from typing import Optional
+from fastapi import WebSocket, Query, status
 from fastapi.exceptions import HTTPException
 from starlette.requests import Request
 from starlette.authentication import UnauthenticatedUser
+from datetime import datetime
+
+from schemas.user import User
+from database.crud import UserCRUD
+from core.utils.jwt import decode_jwt_token
 
 __all__ = ["get_db", "get_user", "user_is_superuser"]
 
 
 def get_db(request: Request):
     return request.app.mongo_db
+
+
+async def get_user_chat(
+    websocket: WebSocket, token: Optional[str] = Query(None),
+) -> Optional[User]:
+    user_id = (
+        decode_jwt_token(token).get("id")
+        if decode_jwt_token(token) is not None and decode_jwt_token(token).get("exp") > int(datetime.utcnow().timestamp())
+        else None
+    )
+    if token is None or not user_id:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return None
+
+    user = await UserCRUD.find_by_id(user_id)
+    return User(**user)
 
 
 def get_user(request: Request):

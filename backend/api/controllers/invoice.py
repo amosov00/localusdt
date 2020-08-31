@@ -1,8 +1,15 @@
-from typing import List
-from fastapi import APIRouter, Depends, Body, Path
+from datetime import datetime
+from typing import List, Optional
+from fastapi import APIRouter, Depends, Body, Path, WebSocket, status
+from collections import defaultdict
+from starlette.websockets import WebSocketDisconnect
 
+from core.mechanics.chat_manager import chat_manager
+from core.integrations.chat import ChatWrapper
+from core.mechanics.chat_manager import ChatManager
 from database.crud.invoice import InvoiceCRUD
-from api.dependencies import get_user
+from database.crud.chat import ChatRoomCRUD, ChatMessageCRUD
+from api.dependencies import get_user, get_user_chat
 from schemas.invoice import (
     InvoiceCreate,
     InvoiceInDB,
@@ -10,6 +17,7 @@ from schemas.invoice import (
     InvoiceInSearch,
     InvoiceWithAds
 )
+from schemas.chat import ChatRoomResponse
 from schemas.user import User
 
 __all__ = ["router"]
@@ -45,3 +53,36 @@ async def invoice_search(user: User = Depends(get_user)):
 @router.get("/{invoice_id}/", response_model=InvoiceWithAds)
 async def invoice_get(user: User = Depends(get_user), invoice_id: str = Path(...)):
     return await InvoiceCRUD.get_invoice(user, invoice_id)
+
+
+@router.websocket("/ws/{chatroom_id}")
+async def websocket_endpoint(
+    websocket: WebSocket,
+    chatroom_id: str = Path(...),
+    user: User = Depends(get_user_chat)
+):
+    if user is None:
+        return
+    chatroom = await ChatRoomCRUD.find_by_id(chatroom_id)
+    if not chatroom or user.id not in chatroom.get("participants"):
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+    await chat_manager.connect(websocket, chatroom_id)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            message = f"{data}" + " " + user.username + " " + str(datetime.utcnow())
+            await ChatMessageCRUD.insert_one(payload={
+                "sender": user.username,
+                "message_body": message,
+                "is_service": False,
+                "created_at": datetime.utcnow()
+            })
+            await chat_manager.push(message, chatroom_id, user.username)
+    except WebSocketDisconnect:
+        chat_manager.remove(websocket, chatroom_id)
+
+
+@router.get("/{chatroom_id}/", response_model=ChatRoomResponse)
+async def get_chatroom(chatroom_id: str = Path(...), user: User = Depends(get_user)):
+    return await ChatWrapper.get_chatroom_with_messages(str(user.id), chatroom_id)

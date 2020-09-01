@@ -71,14 +71,14 @@ async def websocket_endpoint(
     try:
         while True:
             data = await websocket.receive_text()
-            message = f"{data}" + " " + user.username + " " + str(datetime.utcnow())
-            await ChatMessageCRUD.insert_one(payload={
+            message = {
                 "sender": user.username,
-                "message_body": message,
+                "message_body": f"{data}",
                 "is_service": False,
                 "created_at": datetime.utcnow()
-            })
-            await chat_manager.push(message, chatroom_id, user.username)
+            }
+            await ChatMessageCRUD.insert_one(message)
+            await chat_manager.push(message, chatroom_id)
     except WebSocketDisconnect:
         chat_manager.remove(websocket, chatroom_id)
 

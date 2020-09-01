@@ -48,7 +48,5 @@ class ChatManager:
 
 chat_manager = ChatManager()
 
-asyncio.create_task(chat_manager.init_manager())
-
 
 

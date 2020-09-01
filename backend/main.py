@@ -6,6 +6,7 @@ from starlette.middleware import cors, authentication
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from api.routes import api_router
+from core.mechanics.chat_manager import chat_manager
 from core.utils import CustomJSONResponse, exception_handlers
 from core.middleware import JWTAuthBackend
 from database.init import mongo_client, mongo_db
@@ -57,4 +58,9 @@ app.add_middleware(authentication.AuthenticationMiddleware, backend=JWTAuthBacke
 ##########
 
 SentryAsgiMiddleware(app)
+
+
+@app.on_event("startup")
+async def on_startup():
+    await chat_manager.init_manager()
 

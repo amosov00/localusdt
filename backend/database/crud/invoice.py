@@ -223,6 +223,8 @@ class InvoiceCRUD(BaseMongoCRUD):
     @classmethod
     async def get_invoice(cls, user: User, invoice_id: str):
         invoice = await InvoiceCRUD.find_by_id(invoice_id)
+        if not invoice:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
         if not (invoice.get("seller_id") == user.id or invoice.get("buyer_id") == user.id):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
         ads = await AdsCRUD.find_by_id(invoice["ads_id"])

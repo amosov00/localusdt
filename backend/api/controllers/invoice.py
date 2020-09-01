@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Body, Path, WebSocket, status
 from collections import defaultdict
 from starlette.websockets import WebSocketDisconnect
 
+from schemas.base import ObjectId
 from core.mechanics.chat_manager import chat_manager
 from core.integrations.chat import ChatWrapper
 from core.mechanics.chat_manager import ChatManager
@@ -77,12 +78,16 @@ async def websocket_endpoint(
                 "is_service": False,
                 "created_at": datetime.utcnow()
             }
-            await ChatMessageCRUD.insert_one(message)
+            await ChatMessageCRUD.insert_one({
+                **message,
+                "chatroom_id": ObjectId(chatroom_id)
+            })
             await chat_manager.push(message, chatroom_id)
+
     except WebSocketDisconnect:
         chat_manager.remove(websocket, chatroom_id)
 
 
-@router.get("/{chatroom_id}/", response_model=ChatRoomResponse)
+@router.get("/chatroom/{chatroom_id}/", response_model=ChatRoomResponse)
 async def get_chatroom(chatroom_id: str = Path(...), user: User = Depends(get_user)):
     return await ChatWrapper.get_chatroom_with_messages(str(user.id), chatroom_id)

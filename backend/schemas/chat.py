@@ -20,7 +20,7 @@ class ChatRoom(BaseModel):
 
 class ChatRoomInDB(ChatRoom):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
-    created_at: datetime = Field(default=datetime.now)
+    created_at: datetime = Field(default=None)
 
 
 class ChatMessage(BaseModel):
@@ -28,7 +28,7 @@ class ChatMessage(BaseModel):
     sender: str = Field(...)
     message_body: str = Field(default="")
     is_service: bool = Field(default=False)
-    created_at: datetime = Field(default=datetime.now)
+    created_at: datetime = Field(default=None)
 
 
 class ChatMessageInDB(ChatMessage):

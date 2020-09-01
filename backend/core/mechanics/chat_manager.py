@@ -1,4 +1,5 @@
 import asyncio
+import json
 from datetime import datetime
 from fastapi import WebSocket
 from collections import defaultdict
@@ -9,7 +10,7 @@ __all__ = ["ChatManager", "chat_manager"]
 
 class ChatManager:
     def __init__(self):
-        self.connections: dict = defaultdict(dict)
+        self.connections: dict = {}
         self.generator = self.get_notification_generator()
 
     async def init_manager(self):
@@ -22,17 +23,18 @@ class ChatManager:
             chatroom_id = message["chatroom_id"]
             await self._notify(msg, chatroom_id)
 
-    async def push(self, msg: str, chatroom_id: str, sender: str):
+    async def push(self, msg: dict, chatroom_id: str):
+        msg["created_at"] = str(msg["created_at"])
+        msg["_id"] = None
         message_body = {
-            "message": msg,
-            "chatroom_id": chatroom_id,
-            "sender": sender
+            "message": json.dumps(msg, ensure_ascii=False),
+            "chatroom_id": chatroom_id
         }
         await self.generator.asend(message_body)
 
     async def connect(self, websocket: WebSocket, chatroom: str):
         await websocket.accept()
-        if self.connections[chatroom] == {} or len(self.connections[chatroom]) == 0:
+        if chatroom not in self.connections:
             self.connections[chatroom] = []
         self.connections[chatroom].append(websocket)
 
@@ -40,14 +42,8 @@ class ChatManager:
         self.connections[room_name].remove(websocket)
 
     async def _notify(self, message: str, chatroom_id: str):
-        living_connections = []
-        while len(self.connections[chatroom_id]) > 0:
-            # Looping like this is necessary in case a disconnection is handled
-            # during await websocket.send_text(message)
-            websocket = self.connections[chatroom_id].pop()
+        for websocket in self.connections[chatroom_id]:
             await websocket.send_text(message)
-            living_connections.append(websocket)
-        self.connections[chatroom_id] = living_connections
 
 
 chat_manager = ChatManager()

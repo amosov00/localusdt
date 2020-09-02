@@ -18,6 +18,18 @@ export const mutations = {
 }
 
 export const actions = {
+  async getChatroomMessages({}, chat_id) {
+    return this.$axios.get(`/invoice/chatroom/${chat_id}/`)
+      .then(res => res.data.messages)
+      .catch((e) => {
+        console.log(e)
+        this.$toast.showMessage({
+          content: 'Ошибка загрузки чата!',
+          red: true
+        })
+      })
+  },
+
   async createInvoice({ dispatch }, invoiceForm) {
     return await this.$axios
       .post('/invoice/create/', invoiceForm)

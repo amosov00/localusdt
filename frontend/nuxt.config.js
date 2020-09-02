@@ -28,6 +28,7 @@ export default {
   css: ['~/assets/scss/global.scss'],
 
   plugins: [
+    '~/plugins/perfect-scrollbar',
     '~/plugins/auth.js',
     '~/plugins/axios.js',
     '~/plugins/toast.js',
@@ -57,6 +58,14 @@ export default {
     }
   },
   build: {
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      config.module.rules.push({
+        test: /\.(ogg|mp3|wav|mpe?g)$/i,
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]'
+        }
+      })
+    }
   }
 }

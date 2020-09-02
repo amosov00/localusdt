@@ -121,6 +121,16 @@ export default {
   },
   methods: {
     async createAd() {
+      if(this.adForm.fixed_price) {
+        if(isNaN(Number(this.adForm.price)) || Number(this.adForm.price) <= 0) {
+          this.$toast.showMessage({
+            content: 'Введите корректную цену',
+            red: true
+          })
+          return
+        }
+      }
+
       if (!this.adForm.amount_usdt || this.adForm.amount_usdt <= 0) {
         this.$toast.showMessage({
           content: 'Введите количество USDT',

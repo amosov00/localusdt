@@ -35,19 +35,21 @@ export default {
     font-style: normal;
     font-weight: 500;
     font-size: 12px;
-    background-color: #f6f6f6;
+    background-color: #f8f8f8;
     opacity: 0.8;
-    background-color: $grey-light;
     border: 1px solid transparent;
     outline: none;
     border-radius: $border-radius;
     padding: 20px;
-    // transition: $interaction-transition;
     width: 475px;
+    max-width: 475px;
+    min-width: 100%;
+    min-height: 175px;
+    max-height: 500px;
     height: 175px;
 
     &:focus {
-      box-shadow: $box-shadow;
+      //box-shadow: $box-shadow;
       border: 1px solid #c8c8c8;
       caret-color: $orange;
     }

@@ -7,7 +7,7 @@
         ₽/USDT
       </p>
     </div>
-    <div class="order-details__row">
+    <div class="order-details__row" v-if="role && roleUser">
       <p class="order-details__cell grey-dark">
         {{ role }}:
       </p>

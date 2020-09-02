@@ -1,8 +1,14 @@
 <template>
   <section class="order">
     <header class="order__header">
-      <h1 class="order__title" v-if="order.type === 1">Продажа USDT</h1>
-      <h1 class="order__title" v-else>Покупка USDT</h1>
+      <div v-if="order.type === 1">
+        <h1 class="order__title" >Продажа USDT</h1>
+        <n-link :to="`/bid/sell?edit=${id}`">Редактировать</n-link>
+      </div>
+      <div v-else>
+        <h1 class="order__title">Покупка USDT</h1>
+        <n-link :to="`/bid/sell?edit=${id}`">Редактировать</n-link>
+      </div>
     </header>
     <OrderInfo :order="order" />
     <div class="order__footer" v-if="user.username !== order.username">
@@ -28,7 +34,10 @@ export default {
     })
   },
   asyncData({ store, params }) {
-    return store.dispatch('order/fetchOrderById', params.id)
+    store.dispatch('order/fetchOrderById', params.id)
+    return {
+      id: params.id
+    }
   }
 }
 </script>

@@ -87,8 +87,13 @@ export default {
         this.chatConnected = false;
       }
       this.ws.onmessage = (e) => {
-        this.playSound();
-        this.chatMessages.push(JSON.parse(e.data))
+        const data = JSON.parse(e.data);
+
+        if(this.user.username !== data.sender) {
+          this.playSound();
+        }
+
+        this.chatMessages.push(data)
         let container = this.$refs.chatScroll.$el;
         let scrollAtEnd = container.scrollHeight - container.scrollTop === container.clientHeight;
         if(scrollAtEnd) {

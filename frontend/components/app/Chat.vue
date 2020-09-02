@@ -13,9 +13,11 @@
       div(v-if="chatMessages.length <= 0").mt-20.mb-15.text-center.chat__empty Чат пока пуст!
       PerfectScrollbar(:options="{ wheelPropagation: false, minScrollbarLength: 32 }" ref="chatScroll")
         div.chat__content
-          div.chat__message(v-for="msg in chatMessages")
-            div {{ msg.message_body }}
-            div {{ timestampToUtc(msg.created_at) }}
+          div.chat__message(v-for="(msg, i) in chatMessages" :key="i" :class="{'chat__message--me' : msg.sender === user.username }")
+            div.chat__message-header
+              span.chat__username {{ msg.sender }}
+              span.chat__date  {{ formatDate(msg.created_at) }}
+            div.chat__message-body {{ msg.message_body }}
 </template>
 
 <script>
@@ -39,6 +41,11 @@ export default {
     ws: null,
     audio: null
   }),
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
+  },
   methods: {
     playSound() {
       if(this.audio instanceof Audio) {
@@ -51,11 +58,23 @@ export default {
       }
     },
     sendMessage(e) {
+      if(this.textArea.length <= 0 ) {
+        if(e.code === 'Enter' && !e.shiftKey) {
+          e.preventDefault()
+        }
+        return
+      }
       if (e.shiftKey) {
         return
       }
+
+      let cleanedMsg = this.textArea.trim();
       e.preventDefault()
-      this.ws.send(this.textArea)
+
+      if(cleanedMsg.length > 0) {
+        this.ws.send(cleanedMsg)
+      }
+
       this.textArea = ''
     },
     chatConnect() {
@@ -104,12 +123,30 @@ export default {
 }
 
 .chat {
+  flex: 1 1 0;
+  margin-right: 93px;
   &__content {
-    padding-right: 10px;
+    padding: 20px;
   }
 
   &__empty {
     color: #7f828b;
+  }
+
+  &__message-header {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  &__date {
+    color: #888B8E;
+  }
+
+  &__username {
+    color: #11171D;
+    font-weight: 500;
+    display: inline-block;
+    margin-right: 3px;
   }
 
   &__box {
@@ -123,34 +160,49 @@ export default {
     &:after {
       content: "";
       width: 100%;
-      height: 64px;
-      background: linear-gradient(to bottom, #dddddd, rgba(0, 0, 0, 0)
-      );
+      height: 30px;
+      background: linear-gradient(to bottom, #dddddd, rgba(0, 0, 0, 0));
       top: 0;
       left: 0;
       position: absolute;
       pointer-events: none;
-      opacity: 0.2;
+      opacity: 0.3;
     }
   }
 
   &__message {
-    display: block;
-    border: 1px solid $grey;
-    border-radius: 6px 6px 6px 0px;
-    padding: 20px;
-    margin: 10px;
-    font-style: italic;
-    font-size: 14px;
-    color: $grey-dark;
-    max-width: 200px;
-    width: 100%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
 
-    &:nth-child(odd) {
-      margin-left: auto;
-      background-color: $grey;
-      border-radius: 6px 6px 0px 6px;
+    &:last-child {
+      margin-bottom: 0;
     }
+
+    &--me {
+      align-items: flex-end;
+
+      .chat__message-body {
+        border: 1px solid #E5F4EF;
+        background: rgba(72, 177, 144, 0.05);
+        border-radius: 6px 6px 0 6px;
+        text-align: right;
+      }
+    }
+  }
+
+  &__message-body {
+    border: 1px solid #CFD1D2;
+    padding: 10px;
+    border-radius: 6px 6px 6px 0;
+    font-size: 14px;
+    line-height: 170%;
+    color: #11171D;
+    max-width: 300px;
+    min-width: 161px;
+    text-align: left;
   }
 }
 </style>

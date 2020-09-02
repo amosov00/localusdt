@@ -6,11 +6,11 @@ export default {
       return moment(timestamp)
         .utc()
         .format("DD.MM.YYYY HH:mm");
-      },
-      regularDate(timestamp) {
-        return moment(timestamp)
-          .utc()
-          .format("DD.MM.YYYY");
+    },
+    regularDate(timestamp) {
+      return moment(timestamp)
+        .utc()
+        .format("DD.MM.YYYY");
     }
   }
 };

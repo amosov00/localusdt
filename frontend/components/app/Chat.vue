@@ -47,15 +47,14 @@ export default {
     }
   },
   methods: {
-    playSound() {
+    playSound(filename) {
       if(this.audio instanceof Audio) {
         this.audio.pause()
         this.audio.currentTime = 0;
-        this.audio.play()
-      } else {
-        this.audio = new Audio(require('~/assets/sounds/soft_notification.mp3'));
-        this.audio.play()
       }
+
+      this.audio = new Audio(require(`~/assets/sounds/${filename}`));
+      this.audio.play()
     },
     sendMessage(e) {
       if(this.textArea.length <= 0 ) {
@@ -90,7 +89,9 @@ export default {
         const data = JSON.parse(e.data);
 
         if(this.user.username !== data.sender) {
-          this.playSound();
+          this.playSound('soft_notification.mp3');
+        } else {
+          this.playSound('message-sent.mp3');
         }
 
         this.chatMessages.push(data)

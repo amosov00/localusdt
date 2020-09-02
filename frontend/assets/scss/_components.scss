@@ -2,6 +2,29 @@ hr {
   border: 1px solid #e7e8e8;
 }
 
+.radio-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+
+  label {
+    margin-right: 20px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  span {
+    margin-left: 5px;
+  }
+}
+
 .inline-link {
   text-decoration: underline;
 }

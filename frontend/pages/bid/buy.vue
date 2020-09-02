@@ -1,7 +1,7 @@
 <template lang="pug">
   div.create-order
-    p.create-order__token-price Текущий курс токена 
-      span.green {{commaSplitting(currencyPrice)}} 
+    p.create-order__token-price Текущий курс токена
+      span.green {{commaSplitting(currencyPrice)}}
       span ₽/USDT
     header.create-order__navigation
       h1 Купить USDT
@@ -11,9 +11,17 @@
         Select(:options="paymentOptions" v-model="adForm.payment_method" :width="350" header="Способ оплаты")
         Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты" hideArrow)
       Input.create-order__input( v-if="yourVersion" v-model="adForm.bank_title" header="" placeholder="Свой вариант")
-      Input.create-order__input.mb-110(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
+      Input.create-order__input.mt-40.mb-110(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
+      div.radio-group
+        label(for="profit-is-formula")
+          input(id="profit-is-formula" type="radio" value="formula" name="profit-mode" v-model="profitMode")
+          span Формула
+        label(for="profit-is-fixed")
+          input(id="profit-is-fixed" type="radio" value="fixed" name="profit-mode" v-model="profitMode")
+          span Фиксированная
+      Input.create-order__input(v-model="adForm.price" header="Цена" placeholder="Цена" v-if="adForm.fixed_price")
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
-      Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text")
+      Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text" v-if="profitMode === 'formula'")
       div.create-order__gap
         Input.mr-30(v-model="adForm.bot_limit" :width="250" type="number" header="Минимальный лимит транзакции")
         Input(v-model="adForm.top_limit" :width="250" type="number" header="Максимальный лимит транзакции")
@@ -39,6 +47,7 @@ export default {
   mixins: [formatCurrency],
   data() {
     return {
+      profitMode: 'formula',
       adForm: {
         type: 1,
         bot_limit: null,
@@ -48,7 +57,9 @@ export default {
         bank_title: '',
         currency: 1,
         condition: '',
-        profit: 0
+        profit: 0,
+        fixed_price: false,
+        price: 0
       },
       currencyOptions: [
         { name: 'RUB', value: 1 }
@@ -65,6 +76,16 @@ export default {
     }
   },
   watch: {
+    profitMode() {
+      if(this.profitMode === 'fixed') {
+        this.adForm.fixed_price = true
+        this.adForm.price = this.currencyPrice.toFixed(2)
+      } else {
+        this.adForm.fixed_price = false
+        this.adForm.price = 0
+      }
+    },
+
     checkbox: function() {
       if (this.checkbox) {
         this.adForm.condition = this.user.about_me

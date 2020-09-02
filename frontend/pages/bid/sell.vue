@@ -11,7 +11,7 @@
         Select(:options="paymentOptions" v-model="adForm.payment_method" :width="350" header="Способ оплаты")
         Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты" hideArrow)
       Input.create-order__input( v-if="yourVersion" v-model="adForm.bank_title" header="" placeholder="Свой вариант")
-      Input.create-order__input.mt-40.mb-80(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
+      Input.create-order__input.mt-40.mb-110(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
       div.radio-group
         label(for="profit-is-formula")
           input(id="profit-is-formula" type="radio" value="formula" name="profit-mode" v-model="profitMode")
@@ -21,7 +21,7 @@
           span Фиксированная
       Input.create-order__input(v-model="adForm.price" header="Цена" placeholder="Цена" v-if="adForm.fixed_price")
       Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
-      Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text")
+      Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text" v-if="profitMode === 'formula'")
       div.create-order__gap
         Input.mr-30(v-model="adForm.bot_limit" :width="250" type="number" header="Минимальный лимит транзакции")
         Input(v-model="adForm.top_limit" :width="250" type="number" header="Максимальный лимит транзакции")
@@ -169,26 +169,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .radio-group {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
-
-    label {
-      margin-right: 20px;
-      cursor: pointer;
-
-      &:hover {
-        opacity: 0.8;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-    span {
-      margin-left: 5px;
-    }
-  }
 </style>

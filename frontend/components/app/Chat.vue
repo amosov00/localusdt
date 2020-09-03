@@ -77,8 +77,8 @@ export default {
       this.textArea = ''
     },
     chatConnect() {
-      let token = this.$cookies.get('token')
-      this.ws = new WebSocket(`wss://localusdt-dev.elastoo.com/api/invoice/ws/${this.invoice.chat_id}?token=${token}`);
+      //let token = this.$cookies.get('token')
+      this.ws = new WebSocket(`wss://localusdt-dev.elastoo.com/api/invoice/ws/${this.invoice.chat_id}/`);
       this.ws.onopen = (e) => {
         this.chatConnected = true;
       }

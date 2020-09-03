@@ -17,8 +17,9 @@ def get_db(request: Request):
 
 
 async def get_user_chat(
-    websocket: WebSocket, token: Optional[str] = Query(None),
+    websocket: WebSocket
 ) -> Optional[User]:
+    token = websocket.cookies.get("token")
     user_id = (
         decode_jwt_token(token).get("id")
         if decode_jwt_token(token) is not None and decode_jwt_token(token).get("exp") > int(datetime.utcnow().timestamp())

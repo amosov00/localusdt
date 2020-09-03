@@ -5,14 +5,14 @@
       span.orange {{ name }}
     Textarea(v-model="textArea" class="w-100 mt-20"
       placeholder="Напишите трейдеру сообщение с контактной или другой информацией (необязательно)"
-      @keydown.enter.native="sendMessage" ref="chatText")
-    Button(green @click.native="sendMessage").mt-20.mr-15 Отправить
+      @keydown.enter.native="sendMessage" ref="chatText" :disabled="!chatConnected")
+    Button(green @click.native="sendMessage" :disabled="!chatConnected").mt-20.mr-15 Отправить
     span(v-if="chatConnected") Подключено
     span(v-else) Не подключено
     main.chat__box
       div(v-if="chatMessages.length <= 0").mt-20.mb-15.text-center.chat__empty Чат пока пуст!
       PerfectScrollbar(:options="{ wheelPropagation: false, minScrollbarLength: 32 }" ref="chatScroll")
-        div.chat__content
+        div.chat__content(ref="chatContent")
           div.chat__message(v-for="(msg, i) in chatMessages" :key="i" :class="{'chat__message--me' : msg.sender === user.username }")
             div.chat__message-header
               span.chat__username {{ msg.sender }}
@@ -99,7 +99,9 @@ export default {
         let scrollAtEnd = container.scrollHeight - container.scrollTop === container.clientHeight;
         if(scrollAtEnd) {
           this.$nextTick(() => {
-            container.scrollTo({ top: container.scrollHeight, left: 0, behavior: 'smooth'})
+            let chatContent = document.querySelector('.chat__content');
+            chatContent.lastChild.scrollIntoView();
+            chatContent.scrollTop = 1000000
           })
         }
       }
@@ -172,7 +174,7 @@ export default {
       left: 0;
       position: absolute;
       pointer-events: none;
-      opacity: 0.3;
+      opacity: 0.2;
     }
   }
 

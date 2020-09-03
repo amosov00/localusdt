@@ -1,13 +1,14 @@
 <template lang="pug">
   div.textarea-box
     p.textarea-box__header {{header}}
-    textarea.textarea(:value="value" @input="$emit('input', $event.target.value)"  :placeholder="placeholder")
+    textarea.textarea(:value="value" @input="$emit('input', $event.target.value)"  :placeholder="placeholder" :disabled="disabled")
 </template>
 
 <script>
 export default {
   props: {
     value: String,
+    disabled: Boolean,
     placeholder: {
       type: String,
       default: '',

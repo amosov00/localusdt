@@ -1,5 +1,20 @@
 import _ from 'lodash'
 
+let cookieOpts = {
+  path: '/',
+  maxAge: 60 * 60 * 24 * 7
+}
+
+if(process.env.NODE_ENV !== 'development') {
+  const additional = {
+    sameSite: 'none',
+    secure: true
+  }
+
+  cookieOpts = { ...additional }
+}
+
+
 export const state = () => ({
   user: null,
   currencyPrice: null
@@ -24,10 +39,7 @@ export const actions = {
       .post('/account/signup/', data)
       .then(resp => {
         this.$axios.setToken(resp.data.token, 'Bearer')
-        this.$cookies.set('token', resp.data.token, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
+        this.$cookies.set('token', resp.data.token, cookieOpts)
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
           content:
@@ -53,10 +65,8 @@ export const actions = {
       })
       .then(resp => {
         this.$axios.setToken(resp.data.token, 'Bearer')
-        this.$cookies.set('token', resp.data.token, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
+        this.$cookies.set('token', resp.data.token, cookieOpts)
+
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
           content: 'Успешный вход в систему!',

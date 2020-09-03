@@ -95,9 +95,14 @@ export default {
     padding: 15px 50px;
   }
   &--white {
-    border: 1px solid $grey;
-    color: $black;
+    border: 1px solid #888B8E;
     background-color: $white;
+    font-style: normal;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #11171D;
   }
 }
 </style>

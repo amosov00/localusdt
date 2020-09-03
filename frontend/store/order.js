@@ -51,6 +51,25 @@ export const actions = {
     commit('setOrders', data)
   },
 
+  async setOrderStatus({}, payload) {
+    return await this.$axios
+      .put(`/order/${payload.id}/${payload.endpoint}/`)
+      .then(() => {
+        this.$toast.showMessage({
+          content: `Статус успешно обновлен — ${payload.endpoint.toUpperCase()}`,
+          green: true
+        })
+        return true
+      })
+      .catch(() => {
+        this.$toast.showMessage({
+          content: 'Ошибка: не удалось изменить статус',
+          red: true
+        })
+        return false
+      })
+  },
+
   async updateOrder({}, payload) {
     return await this.$axios
       .put(`/order/${payload.id}/update/`, payload.data)
@@ -58,6 +77,25 @@ export const actions = {
       .catch(() => {
         this.$toast.showMessage({
           content: 'Ошибка: не удалось сохранить объявление',
+          red: true
+        })
+        return false
+      })
+  },
+
+  async removeOrder({}, orderId) {
+    return await this.$axios
+      .put(`/order/${orderId}/delete/`)
+      .then(() => {
+        this.$toast.showMessage({
+          content: 'Объявление успешно удалено!',
+          green: true
+        })
+        return true
+      })
+      .catch(() => {
+        this.$toast.showMessage({
+          content: 'Ошибка: не удалось удалить объявление',
           red: true
         })
         return false

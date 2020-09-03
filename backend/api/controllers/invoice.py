@@ -56,7 +56,7 @@ async def invoice_get(user: User = Depends(get_user), invoice_id: str = Path(...
     return await InvoiceCRUD.get_invoice(user, invoice_id)
 
 
-@router.websocket("/ws/{chatroom_id}")
+@router.websocket("/ws/{chatroom_id}/")
 async def websocket_endpoint(
     websocket: WebSocket,
     chatroom_id: str = Path(...),

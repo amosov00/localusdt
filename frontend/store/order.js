@@ -51,6 +51,18 @@ export const actions = {
     commit('setOrders', data)
   },
 
+  async updateOrder({}, payload) {
+    return await this.$axios
+      .put(`/order/${payload.id}/update/`, payload.data)
+      .then(() => true)
+      .catch(() => {
+        this.$toast.showMessage({
+          content: 'Ошибка: не удалось сохранить объявление',
+          red: true
+        })
+        return false
+      })
+  },
 
   async createOrder({}, adForm) {
     return await this.$axios

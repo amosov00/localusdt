@@ -21,7 +21,7 @@
           input(id="profit-is-fixed" type="radio" value="fixed" name="profit-mode" v-model="profitMode")
           span Фиксированная
       Input.create-order__input(v-model="adForm.price" header="Цена" placeholder="Цена" v-if="adForm.fixed_price")
-      Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint)
+      Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint v-if="!adForm.fixed_price")
       Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text" v-if="profitMode === 'formula'")
       div.create-order__gap
         Input.mr-30(v-model="adForm.bot_limit" :width="250" type="number" header="Минимальный лимит транзакции")
@@ -32,7 +32,7 @@
       Button.create-order__action(green @click.native="createAd(false)" v-if="!editMode") Создать объявление
       div(v-else).create-order__action
         Button(green @click.native="createAd(true)").mr-15 Сохранить
-        Button(white @click.native="$nuxt.context.redirect(`/order/${$route.query.edit}`)") Отменить
+        Button(white @click.native="$nuxt.context.redirect(`/order/${$route.query.edit}`)") Отмена
       Modal(:show="showModal" @toggleModal="toggleModal($event)" :type="2")
 </template>
 

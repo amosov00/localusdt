@@ -9,16 +9,22 @@ from schemas.user import User
 from database.crud import UserCRUD
 from core.utils.jwt import decode_jwt_token
 
-__all__ = ["get_db", "get_user", "user_is_superuser"]
+__all__ = [
+    "get_db",
+    "get_user",
+    "user_is_superuser",
+    "get_user_websocket"
+]
 
 
 def get_db(request: Request):
     return request.app.mongo_db
 
 
-async def get_user_chat(
-    websocket: WebSocket, token: Optional[str] = Query(None),
+async def get_user_websocket(
+    websocket: WebSocket
 ) -> Optional[User]:
+    token = websocket.cookies.get("token")
     user_id = (
         decode_jwt_token(token).get("id")
         if decode_jwt_token(token) is not None and decode_jwt_token(token).get("exp") > int(datetime.utcnow().timestamp())

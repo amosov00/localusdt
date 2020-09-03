@@ -10,7 +10,7 @@ from core.integrations.chat import ChatWrapper
 from core.mechanics.chat_manager import ChatManager
 from database.crud.invoice import InvoiceCRUD
 from database.crud.chat import ChatRoomCRUD, ChatMessageCRUD
-from api.dependencies import get_user, get_user_chat
+from api.dependencies import get_user, get_user_websocket
 from schemas.invoice import (
     InvoiceCreate,
     InvoiceInDB,
@@ -60,7 +60,7 @@ async def invoice_get(user: User = Depends(get_user), invoice_id: str = Path(...
 async def websocket_endpoint(
     websocket: WebSocket,
     chatroom_id: str = Path(...),
-    user: User = Depends(get_user_chat)
+    user: User = Depends(get_user_websocket)
 ):
     if user is None:
         return

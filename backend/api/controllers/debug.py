@@ -28,7 +28,7 @@ html = """
         var ws = null;
             function connect(event) {
                 var token = document.getElementById("token")
-                ws = new WebSocket("ws://0.0.0.0:8000/api/invoice/ws/5f490c1a6f5022288c4ae028?token=" + token.value);
+                ws = new WebSocket("ws://0.0.0.0:8000/api/invoice/ws/5f490c1a6f5022288c4ae028/", ["Bearer", token.value]);
                 ws.onmessage = function(event) {
                     var messages = document.getElementById('messages')
                     var message = document.createElement('li')

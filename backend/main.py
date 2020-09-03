@@ -7,6 +7,7 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from api.routes import api_router
 from core.mechanics.chat_manager import chat_manager
+from core.mechanics.notification_manager import notification_manager
 from core.utils import CustomJSONResponse, exception_handlers
 from core.middleware import JWTAuthBackend
 from database.init import mongo_client, mongo_db
@@ -22,7 +23,11 @@ docs_config = {
 app = FastAPI(
     title="LocalUSDT",
     exception_handlers=exception_handlers,
-    on_startup=[prepopulate_db],
+    on_startup=[
+        prepopulate_db,
+        chat_manager.init_manager,
+        notification_manager.init_manager
+    ],
     on_shutdown=[close_db_connection],
     **docs_config,
 )
@@ -58,9 +63,3 @@ app.add_middleware(authentication.AuthenticationMiddleware, backend=JWTAuthBacke
 ##########
 
 SentryAsgiMiddleware(app)
-
-
-@app.on_event("startup")
-async def on_startup():
-    await chat_manager.init_manager()
-

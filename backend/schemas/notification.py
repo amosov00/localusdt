@@ -26,6 +26,7 @@ class Notification(BaseModel):
     type: NotificationType = Field(...)
     watched: bool = Field(...)
     participant_nickname: str = Field(default=None)
+    invoice_id: ObjectIdPydantic = Field(default=None)
     system_message: str = Field(default=None)
     amount: float = Field(default=None)
     created_at: datetime = Field(default=None)

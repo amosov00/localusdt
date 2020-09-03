@@ -50,10 +50,6 @@ export default {
   middleware: ['authRequired'],
   mixins: [formatCurrency],
 
-  mounted() {
-    console.log(this.$data)
-  },
-
   data() {
     return {
       editMode: false,

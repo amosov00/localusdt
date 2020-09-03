@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from http import HTTPStatus
 from sentry_sdk import capture_message
 
+from core.mechanics.notification_manager import NotificationSender
 from core.integrations.chat import ChatWrapper
 from database.crud.base import BaseMongoCRUD
 from database.crud.ads import AdsCRUD
@@ -140,6 +141,12 @@ class InvoiceCRUD(BaseMongoCRUD):
             MailGunEmail().send_invoice_notification(to=owner_email, invoice_id=inserted_id)
         )
         invoice_in_db = await cls.find_one(query={"_id": inserted_id})
+        await NotificationSender.send_new_invoice(
+            str(ads["user_id"]),
+            amount=invoice.amount_usdt,
+            participant_nickname=user.username,
+            invoice_id=inserted_id
+        )
         return invoice_in_db
 
     @classmethod

@@ -27,6 +27,12 @@ def validate_profit(v: Optional[int]) -> int:
     return v
 
 
+def validate_amount(v: Optional[float]) -> float:
+    if v <= 0:
+        raise ValueError("Incorrect amount")
+    return v
+
+
 class AdsType(IntEnum):
     BUY = 1
     SELL = 2
@@ -108,9 +114,12 @@ class AdsCreate(BaseModel):
     profit: int = Field(default=0)
 
     _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
+    _validate_amount = validator("amount_usdt", allow_reuse=True)(validate_amount)
 
 
 class AdsUpdate(BaseModel):
+    amount_usdt: float = Field(default=None)
+
     bot_limit: float = Field(default=None)
     top_limit: float = Field(default=None)
 
@@ -128,6 +137,7 @@ class AdsUpdate(BaseModel):
     price: float = Field(default=None)
 
     _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
+    _validate_amount = validator("amount_usdt", allow_reuse=True)(validate_amount)
 
 
 class AdsSort(IntEnum):

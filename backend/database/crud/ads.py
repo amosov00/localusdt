@@ -159,6 +159,15 @@ class AdsCRUD(BaseMongoCRUD):
         ads_bot_limit = payload.bot_limit if payload.bot_limit else ads.get("bot_limit")
         ads_top_limit = payload.top_limit if payload.top_limit else ads.get("top_limit")
 
+        if payload.amount_usdt:
+            delta = payload.amount_usdt - ads["amount_usdt"]
+            if user.balance_usdt < delta:
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough money")
+            await UserCRUD.update_one(query={"_id": user.id}, payload={
+                "balance_usdt": user.balance_usdt - delta,
+                "usdt_in_invoices": user.usdt_in_invoices + delta
+            })
+
         if ads_bot_limit > ads_top_limit:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Incorrect limits")
 

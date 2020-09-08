@@ -1,6 +1,7 @@
 from datetime import datetime
 from bson import Decimal128
 
+from core.mechanics.notification_manager import NotificationSender
 from celery_app.celeryconfig import app
 from core.integrations.crypto import USDTWrapper
 from database.crud import UserCRUD, USDTTransactionCRUD
@@ -31,6 +32,10 @@ async def check_deposits(self, *args, **kwargs):
                 await UserCRUD.update_one(
                     query={"_id": user.get("_id")},
                     payload={"balance_usdt": new_balance},
+                )
+                await NotificationSender.send_deposit_notification(
+                    user.get("_id"),
+                    amount=float(transaction.get("usdt_amount")) * 0.000001
                 )
                 transaction["usdt_amount"] = Decimal128(transaction.get("usdt_amount"))
                 transaction["date"] = datetime.utcnow()

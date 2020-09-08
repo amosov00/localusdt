@@ -7,7 +7,7 @@ from starlette.websockets import WebSocketDisconnect
 from schemas.base import ObjectId
 from core.mechanics.chat_manager import chat_manager
 from core.integrations.chat import ChatWrapper
-from core.mechanics.chat_manager import ChatManager
+from core.mechanics.notification_manager import NotificationSender
 from database.crud.invoice import InvoiceCRUD
 from database.crud.chat import ChatRoomCRUD, ChatMessageCRUD
 from api.dependencies import get_user, get_user_websocket
@@ -82,6 +82,18 @@ async def websocket_endpoint(
                 **message,
                 "chatroom_id": ObjectId(chatroom_id)
             })
+            invoice = await InvoiceCRUD.find_one(query={
+                "chat_id": chatroom.get("_id")
+            })
+            for user_id in chatroom.get("participants"):
+                if user.id != user_id:
+                    await NotificationSender.send_new_message_notification(
+                        user_id,
+                        invoice_id=invoice.get("_id"),
+                        participant_nickname=user.username,
+                        message_text=message.get("message_body")
+                    )
+
             await chat_manager.push(message, chatroom_id)
 
     except WebSocketDisconnect:

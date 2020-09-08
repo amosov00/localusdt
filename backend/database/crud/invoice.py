@@ -150,6 +150,26 @@ class InvoiceCRUD(BaseMongoCRUD):
         return invoice_in_db
 
     @classmethod
+    async def _send_status_notification(cls, user: User, invoice: dict, status: InvoiceStatus):
+        status = str(status)
+        seller = await UserCRUD.find_by_id(invoice["seller_id"])
+        buyer = await UserCRUD.find_by_id(invoice["buyer_id"])
+        if user.id != seller["_id"]:
+            await NotificationSender.send_invoice_status_change(
+                seller["_id"],
+                participant_nickname=buyer["username"],
+                invoice_id=invoice["_id"],
+                new_status=status,
+            )
+        else:
+            await NotificationSender.send_invoice_status_change(
+                buyer["_id"],
+                participant_nickname=seller["username"],
+                invoice_id=invoice["_id"],
+                new_status=status,
+            )
+
+    @classmethod
     async def cancel_invoice(cls, user: User, invoice_id: str):
         invoice = await cls.find_by_id(invoice_id)
 
@@ -170,6 +190,8 @@ class InvoiceCRUD(BaseMongoCRUD):
         seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).cancel_invoice()
 
         await cls.update_all(invoice, seller, buyer, ads)
+
+        await cls._send_status_notification(user, invoice, InvoiceStatus.CANCELLED)
 
         return True
 
@@ -195,6 +217,8 @@ class InvoiceCRUD(BaseMongoCRUD):
                 "status_changed_at": datetime.utcnow(),
             },
         )
+
+        await cls._send_status_notification(user, invoice, InvoiceStatus.APPROVED)
 
         return True
 
@@ -224,6 +248,8 @@ class InvoiceCRUD(BaseMongoCRUD):
         seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer, ads_db).transfer_tokens()
 
         await cls.update_all(invoice, seller, buyer, ads)
+
+        await cls._send_status_notification(user, invoice, InvoiceStatus.COMPLETED)
 
         return True
 

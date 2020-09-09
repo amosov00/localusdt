@@ -82,7 +82,7 @@ export const actions = {
     commit('setInvoices', data)
   },
   async fetchInvoiceById({ commit }, id) {
-    const { data } = await this.$axios.get(`/invoice/${id}/`)
+    const { data } = await this.$axios.get(`/invoice/${id}/`, { progress: false })
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {

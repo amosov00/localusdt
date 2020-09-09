@@ -1,7 +1,7 @@
 <template>
-  <div class="select" @click.stop="areOptionsVisible = !areOptionsVisible" :style="{width: `${width}px`}">
+  <div class="select" :style="{width: `${width}px`}">
     <p class="select__header" v-if="header">{{header}}</p>
-    <div class="select__body">
+    <div class="select__body" @click.stop="toggle" :class="{ 'select__body--open': areOptionsVisible }">
       <div class="select__selected">
         <p class="select__title">{{ selected.name }}</p>
         <span class="select__icon" v-if="!hideArrow">
@@ -9,14 +9,14 @@
         </span>
       </div>
       <div class="select__options" v-if="areOptionsVisible">
-        <p
+        <div
           class="select__option"
           v-for="(option, i) in filteredOptions"
           :key="i"
           @click.stop="selectOption(option)"
         >
           {{ option.name }}
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -55,6 +55,9 @@ export default {
     }
   },
   methods: {
+    toggle() {
+      this.areOptionsVisible = !this.areOptionsVisible
+    },
     selectOption(option) {
       this.selected = option
       this.areOptionsVisible = false
@@ -65,7 +68,7 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener('click', this.hideSelect.bind(this), true)
+    document.addEventListener('click', this.hideSelect, { capture: false })
   },
   beforeDestroy() {
     document.removeEventListener('click', this.hideSelect)
@@ -90,12 +93,16 @@ export default {
     border: 1px solid #c8c8c8;
     border-radius: $border-radius;
     min-height: 50px;
-    padding: 15px 10px;
-    transition: $interaction-transition;
     cursor: pointer;
+    user-select: none;
+    position: relative;
+    box-sizing: border-box;
 
-    &:hover {
-      background-color: $grey-light;
+    &--open {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom: 0;
+      box-shadow: 0 8px 9px rgba(67, 78, 74, 0.07), 0 16px 23px rgba(67, 78, 74, 0.09);
     }
   }
 
@@ -103,6 +110,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 15px 10px;
+    transition: $interaction-transition;
+    &:hover {
+      background-color: $grey-light;
+    }
   }
 
   &__title {
@@ -112,13 +124,28 @@ export default {
     display: inline-block;
   }
 
+  &__options {
+    position: absolute;
+    background-color: #ffffff;
+/*    width: calc(100% + 2px);
+    left: -1px;*/
+    width: calc(100% + 2px);
+    left: -1px;
+    box-sizing: border-box;
+    border: 1px solid #c8c8c8;
+    border-top: 0;
+    border-radius: 0 0 $border-radius $border-radius;
+    box-shadow: 0 8px 9px rgba(67, 78, 74, 0.07), 0 16px 23px rgba(67, 78, 74, 0.09);
+  }
+
   &__option {
-    margin-top: 15px;
+    padding: 15px 10px;
     opacity: .5;
     transition: $interaction-transition;
 
     &:hover {
       opacity: 1;
+      background-color: $grey-light;
     }
   }
 }

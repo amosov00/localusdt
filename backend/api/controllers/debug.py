@@ -16,7 +16,7 @@ html = """
     <body>
         <h1>WebSocket Chat</h1>
         <form action="" onsubmit="sendMessage(event)">
-            <label>Token: <input type="text" id="token" autocomplete="off" value="some-key-token"/></label>
+            <label>Link: <input type="text" id="link_ws" autocomplete="off" value=""/></label>
             <button onclick="connect(event)">Connect</button>
             <hr>
             <label>Message: <input type="text" id="messageText" autocomplete="off"/></label>
@@ -27,22 +27,22 @@ html = """
         <script>
         var ws = null;
             function connect(event) {
-                var token = document.getElementById("token")
+                var link = document.getElementById("link_ws");
                 ws = new WebSocket("ws://0.0.0.0:8000/api/notification/ws/");
                 ws.onmessage = function(event) {
-                    var messages = document.getElementById('messages')
-                    var message = document.createElement('li')
-                    var content = document.createTextNode(event.data)
-                    message.appendChild(content)
-                    messages.appendChild(message)
+                    var messages = document.getElementById('messages');
+                    var message = document.createElement('li');
+                    var content = document.createTextNode(event.data);
+                    message.appendChild(content);
+                    messages.appendChild(message);
                 };
-                event.preventDefault()
+                event.preventDefault();
             }
             function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
+                var input = document.getElementById("messageText");
+                ws.send(input.value);
+                input.value = '';
+                event.preventDefault();
             }
         </script>
     </body>

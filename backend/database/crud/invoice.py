@@ -18,7 +18,7 @@ from schemas.user import User
 
 from schemas.invoice import InvoiceCreate, Invoice, InvoiceStatus
 
-from schemas.ads import AdsType
+from schemas.ads import AdsType, AdsStatuses
 
 __all__ = ["InvoiceCRUD"]
 
@@ -248,8 +248,20 @@ class InvoiceCRUD(BaseMongoCRUD):
         seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer, ads_db).transfer_tokens()
 
         await cls.update_all(invoice, seller, buyer, ads)
+        invoice_in_db = await cls.find_by_id(invoice_id)
+        ads_in_db = await AdsCRUD.find_by_id(invoice_in_db["ads_id"])
+        await cls._send_status_notification(user, invoice_in_db, InvoiceStatus.COMPLETED)
 
-        await cls._send_status_notification(user, invoice, InvoiceStatus.COMPLETED)
+        if ads.get("amount_usdt") * ads.get("price") <= ads["bot_limit"]:
+            invoices = await cls.find_many(query={
+                "ads_id": ads_in_db["_id"]
+            })
+            can_delete = True
+            for current_invoice in invoices:
+                if current_invoice["status"] in InvoiceStatus.ACTIVE:
+                    can_delete = False
+            if can_delete:
+                await AdsCRUD.set_status_safe(user, str(ads_in_db["_id"]), AdsStatuses.DELETED)
 
         return True
 

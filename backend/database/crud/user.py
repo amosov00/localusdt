@@ -124,7 +124,9 @@ class UserCRUD(BaseMongoCRUD):
                     "is_active": False,
                     "eth_address": eth_wallet,
                     "balance_usdt": 0.0,
-                    "usdt_in_invoices": 0.0
+                    "usdt_in_invoices": 0.0,
+                    "is_staff": False,
+                    "is_superuser": False
                 }
             )
         ).inserted_id

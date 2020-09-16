@@ -75,6 +75,8 @@ class User(BaseModel):
         default=None, description="1 - green, 2 - orange, 3 - red"
     )
     is_active: Optional[bool] = Field(default=True, description="User is active")
+    is_staff: Optional[bool] = Field(default=False, description="Moderator")
+    is_superuser: Optional[bool] = Field(default=False, description="Admin")
     verification_code: Optional[str] = Field(default=None)
     recover_code: Optional[str] = Field(
         default=None, description="JWT token for password recover"

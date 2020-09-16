@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, Path
 from typing import List, Optional
 
+from schemas.base import ObjectId
+from database.crud.user import UserCRUD
 from database.crud.invoice import InvoiceCRUD
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from api.dependencies import user_is_staff_or_superuser
@@ -45,3 +47,55 @@ async def transfer_not_safe(user: User = Depends(user_is_staff_or_superuser), in
 async def rollback_invoice(user: User = Depends(user_is_staff_or_superuser), invoice_id: str = Path(...)):
     return await InvoiceCRUD.rollback(invoice_id)
 
+
+@router.put("/users/ban/{user_id}/")
+async def ban_user(user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)):
+    # TODO: delete all ads and invoice for current user
+    await UserCRUD.update_one(
+        query={
+            "_id": ObjectId(user_id)
+        },
+        payload={
+            "banned": True
+        }
+    )
+    return True
+
+
+@router.put("/users/unban/{user_id}/")
+async def unban_user(user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)):
+    await UserCRUD.update_one(
+        query={
+            "_id": ObjectId(user_id)
+        },
+        payload={
+            "banned": False
+        }
+    )
+    return True
+
+
+@router.put("/users/deactivate/{user_id}/")
+async def deactivate_user(user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)):
+    await UserCRUD.update_one(
+        query={
+            "_id": ObjectId(user_id)
+        },
+        payload={
+            "is_active": False
+        }
+    )
+    return True
+
+
+@router.put("/users/activate/{user_id}/")
+async def activate_user(user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)):
+    await UserCRUD.update_one(
+        query={
+            "_id": ObjectId(user_id)
+        },
+        payload={
+            "is_active": True
+        }
+    )
+    return True

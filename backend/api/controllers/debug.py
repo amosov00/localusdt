@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
-from celery_app.tasks.crypto.deposits import check_deposits
+from celery_app.tasks.ads import check_expired_orders
 
 __all__ = ["router"]
 
@@ -94,7 +94,7 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    return HTMLResponse(html)
+    await check_expired_orders()
 
 
 @router.get("/2/")

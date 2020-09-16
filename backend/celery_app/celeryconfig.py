@@ -41,4 +41,9 @@ app.conf.beat_schedule = {
         "schedule": crontab(minute="*/1"),
         "args": (),
     },
+    "check_expired_orders": {
+        "task": "check_expired_orders",
+        "schedule": crontab(minute="*/10"),
+        "args": (),
+    },
 }

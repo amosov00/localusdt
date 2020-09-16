@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Depends, Body, Response, Path
 
 from database.crud.ads import AdsCRUD
 from database.crud.user import UserCRUD
-from api.dependencies import get_user
+from api.dependencies import get_user, user_not_banned
 from schemas.ads import (
     AdsFilters,
     AdsCreate,
@@ -28,7 +28,7 @@ router = APIRouter()
 
 @router.post("/", response_model=AdsInDB)
 async def create_ads(
-    user: User = Depends(get_user), data: AdsCreate = Body(...),
+    user: User = Depends(user_not_banned), data: AdsCreate = Body(...),
 ):
     created_ads = await AdsCRUD.create(user, data)
     return created_ads
@@ -73,23 +73,23 @@ async def ads_by_id(ads_id: str = Path(...)):
 
 
 @router.put("/{ads_id}/off/")
-async def off_order(user: User = Depends(get_user), ads_id: str = Path(...)):
+async def off_order(user: User = Depends(user_not_banned), ads_id: str = Path(...)):
     return await AdsCRUD.set_status_safe(user, ads_id, AdsStatuses.NOT_ACTIVE)
 
 
 @router.put("/{ads_id}/on/")
-async def on_order(user: User = Depends(get_user), ads_id: str = Path(...)):
+async def on_order(user: User = Depends(user_not_banned), ads_id: str = Path(...)):
     return await AdsCRUD.set_status_safe(user, ads_id, AdsStatuses.ACTIVE)
 
 
 @router.put("/{ads_id}/delete/")
-async def delete_order(user: User = Depends(get_user), ads_id: str = Path(...)):
+async def delete_order(user: User = Depends(user_not_banned), ads_id: str = Path(...)):
     return await AdsCRUD.set_status_safe(user, ads_id, AdsStatuses.DELETED)
 
 
 @router.put("/{ads_id}/update/", response_model=AdsInSearch)
 async def update_order(
-        user: User = Depends(get_user),
+        user: User = Depends(user_not_banned),
         ads_id: str = Path(...),
         payload: AdsUpdate = Body(...)):
     return await AdsCRUD.update_ads(user, ads_id, payload)

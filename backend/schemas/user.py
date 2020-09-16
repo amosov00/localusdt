@@ -77,6 +77,7 @@ class User(BaseModel):
     is_active: Optional[bool] = Field(default=True, description="User is active")
     is_staff: Optional[bool] = Field(default=False, description="Moderator")
     is_superuser: Optional[bool] = Field(default=False, description="Admin")
+    banned: Optional[bool] = Field(default=False, description="User banned or not")
     verification_code: Optional[str] = Field(default=None)
     recover_code: Optional[str] = Field(
         default=None, description="JWT token for password recover"

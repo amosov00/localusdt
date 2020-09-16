@@ -13,7 +13,8 @@ __all__ = [
     "get_db",
     "get_user",
     "user_is_superuser",
-    "get_user_websocket"
+    "get_user_websocket",
+    "user_is_staff_or_superuser"
 ]
 
 

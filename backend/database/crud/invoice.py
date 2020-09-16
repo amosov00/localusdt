@@ -154,6 +154,19 @@ class InvoiceCRUD(BaseMongoCRUD):
         status = str(status)
         seller = await UserCRUD.find_by_id(invoice["seller_id"])
         buyer = await UserCRUD.find_by_id(invoice["buyer_id"])
+        if user.is_staff:
+            await NotificationSender.send_invoice_status_change(
+                seller["_id"],
+                participant_nickname=buyer["username"],
+                invoice_id=invoice["_id"],
+                new_status=status,
+            )
+            await NotificationSender.send_invoice_status_change(
+                buyer["_id"],
+                participant_nickname=seller["username"],
+                invoice_id=invoice["_id"],
+                new_status=status,
+            )
         if user.id != seller["_id"]:
             await NotificationSender.send_invoice_status_change(
                 seller["_id"],
@@ -177,7 +190,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-            invoice.get("buyer_id") != user.id
+            (invoice.get("buyer_id") != user.id and not user.is_staff)
             or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
         ):
             raise HTTPException(
@@ -190,7 +203,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).cancel_invoice()
 
         await cls.update_all(invoice, seller, buyer, ads)
-
+        invoice = await cls.find_by_id(invoice_id)
         await cls._send_status_notification(user, invoice, InvoiceStatus.CANCELLED)
 
         return True
@@ -203,7 +216,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-            invoice.get("buyer_id") != user.id
+            (invoice.get("buyer_id") != user.id or not user.is_staff)
             or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
         ):
             raise HTTPException(
@@ -230,7 +243,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-            invoice.get("seller_id") != user.id
+            (invoice.get("seller_id") != user.id or not user.is_staff)
             or invoice.get("status") != InvoiceStatus.WAITING_FOR_TOKENS
         ):
             raise HTTPException(
@@ -261,7 +274,10 @@ class InvoiceCRUD(BaseMongoCRUD):
                 if current_invoice["status"] in InvoiceStatus.ACTIVE:
                     can_delete = False
             if can_delete:
-                await AdsCRUD.set_status_safe(user, str(ads_in_db["_id"]), AdsStatuses.DELETED)
+                if user.is_staff:
+                    await AdsCRUD.set_status_not_safe(str(ads_in_db["_id"]), AdsStatuses.DELETED)
+                else:
+                    await AdsCRUD.set_status_safe(user, str(ads_in_db["_id"]), AdsStatuses.DELETED)
 
         return True
 
@@ -270,7 +286,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         invoice = await InvoiceCRUD.find_by_id(invoice_id)
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
-        if not (invoice.get("seller_id") == user.id or invoice.get("buyer_id") == user.id):
+        if not (invoice.get("seller_id") == user.id or invoice.get("buyer_id") == user.id or user.is_staff):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
         ads = await AdsCRUD.find_by_id(invoice["ads_id"])
         buyer_username = (await UserCRUD.find_by_id(invoice.get("buyer_id"))).get("username")
@@ -284,3 +300,40 @@ class InvoiceCRUD(BaseMongoCRUD):
         invoice["condition"] = ads["condition"]
 
         return invoice
+
+    @classmethod
+    async def get_invoice_by_status(cls, status: InvoiceStatus):
+        invoices = await cls.find_many({})
+        invoices_to_response = []
+        for invoice in invoices:
+            if invoice.get("status") in status:
+                invoices_to_response.append(invoice)
+        return invoices_to_response
+
+    @classmethod
+    async def rollback(cls, invoice_id: str):
+        invoice = await cls.find_by_id(invoice_id)
+        if not invoice:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
+        if invoice.get("status") != InvoiceStatus.COMPLETED:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice status")
+        seller = await UserCRUD.find_by_id(invoice.get("seller_id"))
+        buyer = await UserCRUD.find_by_id(invoice.get("buyer_id"))
+        await UserCRUD.update_one(
+            query={
+                "_id": invoice.get("seller_id")
+            },
+            payload={
+                "balance_usdt": seller.get("balance_usdt") + invoice.get("amount_usdt")
+            }
+        )
+        await UserCRUD.update_one(
+            query={
+                "_id": invoice.get("buyer_id")
+            },
+            payload={
+                "balance_usdt": buyer.get("balance_usdt") - invoice.get("amount_usdt")
+            }
+        )
+
+        return True

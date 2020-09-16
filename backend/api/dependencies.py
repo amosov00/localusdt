@@ -14,7 +14,8 @@ __all__ = [
     "get_user",
     "user_is_superuser",
     "get_user_websocket",
-    "user_is_staff_or_superuser"
+    "user_is_staff_or_superuser",
+    "user_not_banned"
 ]
 
 
@@ -64,5 +65,14 @@ def user_is_superuser(request: Request):
 
     if not user.is_superuser:
         raise HTTPException(403, "User has not enough permissions")
+    else:
+        return user
+
+
+def user_not_banned(request: Request):
+    user = get_user(request)
+
+    if user.banned:
+        raise HTTPException(403, "User has been banned")
     else:
         return user

@@ -79,6 +79,7 @@ class Ads(BaseModel):
 
     # Datetimes
     created_at: datetime = Field(default_factory=datetime.utcnow, description="UTC")
+    expiration_timestamp: int = Field(default=None, description="Timestamp delta of expiration")
 
     # Contact
     contacts_id: List[ObjectIdPydantic] = Field(default=[])
@@ -99,6 +100,8 @@ class AdsCreate(BaseModel):
     top_limit: float = Field(...)
 
     amount_usdt: float = Field(...)
+
+    expiration_timestamp: int = Field(..., description="Timestamp delta of expiration")
 
     fixed_price: bool = Field(default=False, description="If true - show price_field, else - show profit field")
     price: float = Field(default=None)

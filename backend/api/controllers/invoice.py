@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Body, Path, WebSocket, status
-from collections import defaultdict
 from starlette.websockets import WebSocketDisconnect
 
 from schemas.base import ObjectId
@@ -10,7 +9,7 @@ from core.integrations.chat import ChatWrapper
 from core.mechanics.notification_manager import NotificationSender
 from database.crud.invoice import InvoiceCRUD
 from database.crud.chat import ChatRoomCRUD, ChatMessageCRUD
-from api.dependencies import get_user, get_user_websocket
+from api.dependencies import get_user, get_user_websocket, user_not_banned
 from schemas.invoice import (
     InvoiceCreate,
     InvoiceInDB,
@@ -27,22 +26,22 @@ router = APIRouter()
 
 
 @router.post("/create/", response_model=InvoiceInDB)
-async def invoice_create(user: User = Depends(get_user), payload: InvoiceCreate = Body(...)):
+async def invoice_create(user: User = Depends(user_not_banned), payload: InvoiceCreate = Body(...)):
     return await InvoiceCRUD.create_invoice(user, payload)
 
 
 @router.put("/{invoice_id}/cancel/")
-async def invoice_cancel(user: User = Depends(get_user), invoice_id: str = Path(...)):
+async def invoice_cancel(user: User = Depends(user_not_banned), invoice_id: str = Path(...)):
     return await InvoiceCRUD.cancel_invoice(user, invoice_id)
 
 
 @router.put("/{invoice_id}/confirm/")
-async def invoice_approve(user: User = Depends(get_user), invoice_id: str = Path(...)):
+async def invoice_approve(user: User = Depends(user_not_banned), invoice_id: str = Path(...)):
     return await InvoiceCRUD.approve_invoice(user, invoice_id)
 
 
 @router.put("/{invoice_id}/transfer/")
-async def invoice_transfer(user: User = Depends(get_user), invoice_id: str = Path(...)):
+async def invoice_transfer(user: User = Depends(user_not_banned), invoice_id: str = Path(...)):
     return await InvoiceCRUD.transfer_tokens(user, invoice_id)
 
 

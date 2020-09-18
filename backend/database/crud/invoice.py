@@ -190,8 +190,9 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-            (invoice.get("buyer_id") != user.id and not user.is_staff)
-            or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
+                (invoice.get("buyer_id") != user.id and not user.is_staff)
+                or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
+                        or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
         ):
             raise HTTPException(
                 HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
@@ -216,8 +217,8 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-            (invoice.get("buyer_id") != user.id or not user.is_staff)
-            or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
+                (invoice.get("buyer_id") != user.id or not user.is_staff)
+                or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
         ):
             raise HTTPException(
                 HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
@@ -243,8 +244,9 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-            (invoice.get("seller_id") != user.id or not user.is_staff)
-            or invoice.get("status") != InvoiceStatus.WAITING_FOR_TOKENS
+                (invoice.get("seller_id") != user.id or not user.is_staff)
+                or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
+                        or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
         ):
             raise HTTPException(
                 HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
@@ -336,4 +338,24 @@ class InvoiceCRUD(BaseMongoCRUD):
             }
         )
 
+        return True
+
+    @classmethod
+    async def freeze_invoice(cls, invoice_id: str):
+        invoice = await cls.find_by_id(invoice_id)
+        if not invoice:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
+        if invoice.get("status") != InvoiceStatus.WAITING_FOR_TOKENS:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice status")
+        await InvoiceCRUD.update_one(
+            query={
+                "_id": invoice.get("_id")
+            },
+            payload={
+                "status": InvoiceStatus.FROZEN
+            }
+        )
+        staff = await UserCRUD.find_many(query={"is_staff": True})
+        staff_ids = [i.get("_id") for i in staff]
+        await NotificationSender.send_frozen_invoice_notification(staff_ids, invoice_id=invoice_id)
         return True

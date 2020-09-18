@@ -1,10 +1,8 @@
-import asyncio
-import json
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 from fastapi import WebSocket
-from collections import defaultdict
 
+from schemas.base import ObjectId
 from schemas.notification import NotificationType, Notification
 from database.crud.notification import NotificationCRUD
 
@@ -130,3 +128,22 @@ class NotificationSender:
         )
         await notification_manager.push(new_notification.dict(), user_id)
         await NotificationCRUD.create_notification(new_notification)
+
+    @staticmethod
+    async def send_frozen_invoice_notification(users_id: List[ObjectId], **kwargs) -> None:
+        """
+        Send notifications to stuff
+        :param users_id:
+        :param kwargs: invoice_id
+        :return:
+        """
+        for user_id in users_id:
+            new_notification = Notification(
+                type=NotificationType.NEW_FROZEN_INVOICE,
+                watched=False,
+                user_id=user_id,
+                created_at=datetime.utcnow(),
+                invoice_id=kwargs.get("invoice_id")
+            )
+            await notification_manager.push(new_notification.dict(), str(user_id))
+            await NotificationCRUD.create_notification(new_notification)

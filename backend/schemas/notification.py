@@ -17,6 +17,7 @@ class NotificationType(IntEnum):
     SYSTEM = 4
     CHAT_MESSAGE = 5
     INVOICE_STATUS_CHANGE = 6
+    NEW_FROZEN_INVOICE = 7
 
 
 class Notification(BaseModel):

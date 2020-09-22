@@ -213,3 +213,14 @@ class UserCRUD(BaseMongoCRUD):
             }
             result.append(parsed_trans)
         return sorted(result, key=lambda i: i["date"], reverse=True)
+
+    @classmethod
+    async def set_online(cls, user: User) -> None:
+        await cls.update_one(
+            query={
+                "_id": user.id
+            },
+            payload={
+                "last_active": datetime.utcnow()
+            }
+        )

@@ -82,6 +82,7 @@ class User(BaseModel):
     recover_code: Optional[str] = Field(
         default=None, description="JWT token for password recover"
     )
+    last_active: Optional[datetime] = Field(default=None)
     created_at: Optional[datetime] = Field(default=None)
     about_me: str = Field(default="", description="About me field")
 

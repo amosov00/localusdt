@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional
 from fastapi import WebSocket, Query, status
 from fastapi.exceptions import HTTPException
@@ -40,7 +41,7 @@ async def get_user_websocket(
     return User(**user)
 
 
-def get_user(request: Request):
+async def get_user(request: Request):
     if isinstance(request.user, UnauthenticatedUser):
         raise HTTPException(401, "Auth is required")
 
@@ -48,11 +49,12 @@ def get_user(request: Request):
         raise HTTPException(401, "User is not active")
 
     else:
+        await UserCRUD.set_online(request.user)
         return request.user
 
 
-def user_is_staff_or_superuser(request: Request):
-    user = get_user(request)
+async def user_is_staff_or_superuser(request: Request):
+    user = await get_user(request)
 
     if not user.is_staff and not user.is_superuser:
         raise HTTPException(403, "User has not enough permissions")
@@ -60,8 +62,8 @@ def user_is_staff_or_superuser(request: Request):
         return user
 
 
-def user_is_superuser(request: Request):
-    user = get_user(request)
+async def user_is_superuser(request: Request):
+    user = await get_user(request)
 
     if not user.is_superuser:
         raise HTTPException(403, "User has not enough permissions")
@@ -69,8 +71,8 @@ def user_is_superuser(request: Request):
         return user
 
 
-def user_not_banned(request: Request):
-    user = get_user(request)
+async def user_not_banned(request: Request):
+    user = await get_user(request)
 
     if user.banned:
         raise HTTPException(403, "User has been banned")

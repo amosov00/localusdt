@@ -4,6 +4,8 @@ from typing import List, Optional
 from schemas.base import ObjectId
 from database.crud.user import UserCRUD
 from database.crud.invoice import InvoiceCRUD
+from database.crud.logging import LogCRUD
+from schemas.logging import Log
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from api.dependencies import user_is_staff_or_superuser
 from schemas import User
@@ -111,3 +113,12 @@ async def activate_user(
         query={"_id": ObjectId(user_id)}, payload={"is_active": True}
     )
     return True
+
+
+@router.get("/logs/", response_model=List[Log])
+async def get_logs(
+    user: User = Depends(user_is_staff_or_superuser)
+):
+    return await LogCRUD.find_many({})
+
+# TODO: Make nice logs filters

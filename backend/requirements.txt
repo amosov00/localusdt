@@ -22,5 +22,5 @@ celery==4.4.5
 celery-decorator-taskcls==0.1.4
 celery-pool-asyncio==0.2.0
 tenacity==6.2.0
-web3==5.11.1
+web3==5.12.1
 Jinja2==2.11.2

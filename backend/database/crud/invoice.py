@@ -13,6 +13,8 @@ from database.crud.user import UserCRUD
 from core.utils import to_objectid, MailGunEmail
 from core.mechanics import InvoiceMechanics
 from schemas.base import ObjectId
+from core.mechanics.logging import LogMechanics
+from schemas.logging import LogEvents
 
 from schemas.user import User
 
@@ -147,6 +149,11 @@ class InvoiceCRUD(BaseMongoCRUD):
             participant_nickname=user.username,
             invoice_id=inserted_id
         )
+        await LogMechanics.new_log(
+            event=LogEvents.START_INVOICE,
+            user_id=ObjectId(user.id),
+            invoice_id=invoice_in_db.get("_id")
+        )
         return invoice_in_db
 
     @classmethod
@@ -201,12 +208,16 @@ class InvoiceCRUD(BaseMongoCRUD):
         seller_db = await UserCRUD.find_by_id(invoice["seller_id"])
         buyer_db = await UserCRUD.find_by_id(invoice["buyer_id"])
         ads_db = await AdsCRUD.find_by_id(invoice["ads_id"])
+        await LogMechanics.new_log(
+            event=LogEvents.CANCEL_INVOICE,
+            user_id=ObjectId(user.id),
+            invoice_id=invoice.get("_id")
+        )
         seller, buyer, invoice, ads = await InvoiceMechanics(invoice, seller_db, buyer_db, ads_db).cancel_invoice()
 
         await cls.update_all(invoice, seller, buyer, ads)
         invoice = await cls.find_by_id(invoice_id)
         await cls._send_status_notification(user, invoice, InvoiceStatus.CANCELLED)
-
         return True
 
     @classmethod
@@ -233,6 +244,12 @@ class InvoiceCRUD(BaseMongoCRUD):
         )
 
         await cls._send_status_notification(user, invoice, InvoiceStatus.APPROVED)
+
+        await LogMechanics.new_log(
+            event=LogEvents.APPROVE_INVOICE,
+            user_id=ObjectId(user.id),
+            invoice_id=invoice.get("_id")
+        )
 
         return True
 
@@ -280,6 +297,12 @@ class InvoiceCRUD(BaseMongoCRUD):
                     await AdsCRUD.set_status_not_safe(str(ads_in_db["_id"]), AdsStatuses.DELETED)
                 else:
                     await AdsCRUD.set_status_safe(user, str(ads_in_db["_id"]), AdsStatuses.DELETED)
+
+        await LogMechanics.new_log(
+            event=LogEvents.TRANSFER_TOKENS,
+            user_id=ObjectId(user.id),
+            invoice_id=invoice.get("_id")
+        )
 
         return True
 

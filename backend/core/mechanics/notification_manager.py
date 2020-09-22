@@ -126,7 +126,6 @@ class NotificationSender:
             created_at=datetime.utcnow(),
             amount=kwargs.get("amount")
         )
-        await notification_manager.push(new_notification.dict(), user_id)
         await NotificationCRUD.create_notification(new_notification)
 
     @staticmethod

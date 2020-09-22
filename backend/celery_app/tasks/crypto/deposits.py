@@ -2,7 +2,6 @@ from datetime import datetime
 from bson import Decimal128
 
 from core.mechanics.notification_manager import NotificationSender
-from core.mechanics.notification_manager import notification_manager
 from celery_app.celeryconfig import app
 from core.integrations.crypto import USDTWrapper
 from database.crud import UserCRUD, USDTTransactionCRUD
@@ -14,7 +13,6 @@ __all__ = ["check_deposits"]
 
 @app.task(name="check_deposits", bind=True, soft_time_limit=46, time_limit=300)
 async def check_deposits(self, *args, **kwargs):
-    await notification_manager.init_manager()
     print(f"Parsing blocks and updating users balance starts at {datetime.now()}")
     users = await UserCRUD.find_many({})
     user_kw = {}

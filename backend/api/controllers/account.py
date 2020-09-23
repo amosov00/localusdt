@@ -2,6 +2,7 @@ from typing import List
 from http import HTTPStatus
 from datetime import datetime
 
+from decimal import Decimal
 from fastapi import APIRouter, HTTPException, Query, Depends, Body, Request
 
 from api.dependencies import get_user
@@ -16,7 +17,8 @@ from schemas.user import (
     UserRecover,
     UserRecoverLink,
     UserUpdate,
-    UserTransaction
+    UserTransaction,
+    UserMakeWithdraw
 )
 
 __all__ = ["router"]
@@ -68,3 +70,8 @@ async def account_update_user(user: User = Depends(get_user), payload: UserUpdat
 @router.get("/transactions/", response_model=List[UserTransaction])
 async def get_transactions(user: User = Depends(get_user)):
     return await UserCRUD.get_transactions(user)
+
+
+@router.post("/withdraw/")
+async def make_withdraw(user: User = Depends(get_user), payload: UserMakeWithdraw = Body(...)):
+    return await UserCRUD.make_withdraw(user, payload)

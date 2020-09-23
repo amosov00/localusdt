@@ -4,7 +4,7 @@ from http import HTTPStatus
 from passlib import pwd
 from typing import Optional, List
 from datetime import timedelta
-from bson import Decimal128
+from decimal import Decimal
 
 from fastapi.exceptions import HTTPException
 
@@ -25,7 +25,8 @@ from schemas.user import (
     UserUpdate,
     UserTransaction,
     UserTransactionEvents,
-    UserTransactionStatus
+    UserTransactionStatus,
+    UserMakeWithdraw
 )
 
 __all__ = ["UserCRUD"]
@@ -224,3 +225,15 @@ class UserCRUD(BaseMongoCRUD):
                 "last_active": datetime.utcnow()
             }
         )
+
+    @classmethod
+    async def make_withdraw(cls, user: User, payload):
+        if user.balance_usdt < payload.amount:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough for transaction")
+
+        await cls.update_one(
+            query={"_id": user.id},
+            payload={"balance_usdt": user.balance_usdt - payload.amount}
+        )
+
+        return await USDTWrapper().withdraw(payload.to, Decimal(payload.amount * 1000000))

@@ -1,11 +1,17 @@
 from typing import Tuple, List
 import ujson
 from os import path
+
+from hexbytes import HexBytes
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
 from passlib import pwd
 from decimal import Decimal
+from fastapi import HTTPException
+from http import HTTPStatus
+from sentry_sdk import capture_message
 
+from core.utils.gas_station import gas_price_from_ethgasstation
 from database.crud.transaction import USDTTransactionCRUD
 from config import (
     BASE_DIR,
@@ -15,12 +21,25 @@ from config import (
     ABI_FILEPATH_MAINNET,
     ABI_FILEPATH_TESTNET,
     USDT_CONTRACT_ADDRESS_MAINNET,
-    USDT_CONTRACT_ADDRESS_TESTNET
+    USDT_CONTRACT_ADDRESS_TESTNET,
+    HOT_WALLET_ADDRESS_MAINNET,
+    HOT_WALLET_ADDRESS_TESTNET,
+    HOT_WALLET_PRIVATE_KEY_MAINNET,
+    HOT_WALLET_PRIVATE_KEY_TESTNET
 )
+
+
+GAS = 90000
 
 
 class USDTWrapper:
     def __init__(self):
+        self.hot_wallet_addr = Web3.toChecksumAddress(
+            HOT_WALLET_ADDRESS_MAINNET.lower() if IS_PRODUCTION else HOT_WALLET_ADDRESS_TESTNET.lower()
+        )
+        self.hot_wallet_private_key = (
+            HOT_WALLET_PRIVATE_KEY_MAINNET.lower() if IS_PRODUCTION else HOT_WALLET_PRIVATE_KEY_TESTNET.lower()
+        )
         self.w3 = Web3(Web3.WebsocketProvider(INFURA_URL_MAINNET if IS_PRODUCTION else INFURA_URL_TESTNET))
         self._abi = []
         self.contract_address = Web3.toChecksumAddress(
@@ -77,4 +96,32 @@ class USDTWrapper:
                     pass
 
         return transactions_to_proceed
+
+    def _get_nonce(self):
+        return self.w3.eth.getTransactionCount(self.hot_wallet_addr, "pending")
+
+    @staticmethod
+    async def get_gas_price():
+        actual_gas_price_gwei = await gas_price_from_ethgasstation()
+        return Web3.toWei(actual_gas_price_gwei, "gwei")
+
+    async def _get_balance(self, adr: str) -> float:
+        return self.contract.functions.balanceOf(adr).call()
+
+    async def withdraw(self, to: str, value: Decimal) -> HexBytes:
+        to = self.w3.toChecksumAddress(to.lower())
+        if not self.w3.isAddress(to):
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong address")
+        balance = await self._get_balance(self.hot_wallet_addr)
+        if balance < value:
+            capture_message("No usdt on hot wallet")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "No usdt on hot wallet")
+        tx = self.contract.functions.transfer(to, int(value)).buildTransaction({
+            "from": self.hot_wallet_addr,
+            "nonce": self._get_nonce(),
+            "gas": GAS,
+            "gasPrice": await self.get_gas_price(),
+        })
+        signed_txn = self.w3.eth.account.signTransaction(tx, private_key=self.hot_wallet_private_key)
+        return self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
 

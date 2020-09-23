@@ -24,7 +24,8 @@ __all__ = [
     "UserUpdate",
     "UserTransactionStatus",
     "UserTransactionEvents",
-    "UserTransaction"
+    "UserTransaction",
+    "UserMakeWithdraw"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -57,6 +58,15 @@ def validate_username(v: Optional[str], values: dict) -> str:
             HTTPStatus.BAD_REQUEST,
             "username does not match username policy (contains only alphabetic, underline and dots)"
         )
+    return v
+
+
+def validate_withdraw_amount(v: Optional[float]) -> float:
+    if v >= 10000:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Too much usdt to withdraw")
+    if v <= 0:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong usdt format")
+
     return v
 
 
@@ -166,3 +176,9 @@ class UserTransaction(BaseModel):
     amount_usdt: float = Field(default=None)
     status: UserTransactionStatus = Field(default=None, description="1 -- IN_PROGRESS, 2 -- CANCELLED, 3 -- DONE")
 
+
+class UserMakeWithdraw(BaseModel):
+    amount: float = Field(...)
+    to: str = Field(...)
+
+    _validate_withdraw_amount = validator("amount", allow_reuse=True)(validate_withdraw_amount)

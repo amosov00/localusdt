@@ -5,6 +5,7 @@ from core.mechanics.notification_manager import NotificationSender
 from celery_app.celeryconfig import app
 from core.integrations.crypto import USDTWrapper
 from database.crud import UserCRUD, USDTTransactionCRUD
+from schemas.transaction import USDTTransactionStatus
 from config import LAST_BLOCKS_TO_PARSE
 
 
@@ -40,7 +41,10 @@ async def check_deposits(self, *args, **kwargs):
                 transaction["usdt_amount"] = Decimal128(transaction.get("usdt_amount"))
                 transaction["date"] = datetime.utcnow()
                 transaction["event"] = 1
+                transaction["status"] = 1
+                transaction["user_id"] = user.get("_id")
                 transactions_to_insert.append(transaction)
+
     if transactions_to_insert:
         await USDTTransactionCRUD.insert_many(payload=transactions_to_insert)
     print(f"Parsing blocks and updating users balance finished at {datetime.now()}")

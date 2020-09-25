@@ -17,7 +17,8 @@
             div.notify-center__watch-all(@click="markAllRead") Отметить все прочитанным
           div.notify-center__list(@click="hide")
             div(v-if="notif_list.length === 0").notify-center__empty Здесь будут уведомления о сделках
-            n-link(:to="'/invoice/' + msg.invoice_id" v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
+            //--n-link(:to="'/invoice/' + msg.invoice_id" v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
+            div(v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
               div.notify-center__msg-title
                 span Сделка
                 span(v-if="msg.new_status")

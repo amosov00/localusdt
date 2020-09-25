@@ -24,9 +24,7 @@
             header="Принимающий адрес"
             :width="400"
           />
-          <Button class="ml-30" @click.native="withdrawFunds" green
-            >Вывести</Button
-          >
+          <Button class="ml-30" @click.native="withdrawFunds" :disabled="withdrawBtn" green>Вывести</Button>
         </div>
       </form>
     </div>
@@ -61,6 +59,7 @@ export default {
   },
   data() {
     return {
+      withdrawBtn: false,
       show: false,
       withdrawForm: {
         amount: 0,
@@ -74,13 +73,29 @@ export default {
     })
   },
   methods: {
-    withdrawFunds() {
+    async withdrawFunds() {
       if (this.withdrawForm.amount <= 0) {
         this.$toast.showMessage({ content: 'Введите сумму', red: true })
       } else if (!this.withdrawForm.address) {
         this.$toast.showMessage({ content: 'Введите адрес', red: true })
       } else {
-        this.show = true
+        this.withdrawBtn = true;
+
+        const res = await this.$store.dispatch('wallet/withdraw', {
+          amount: this.withdrawForm.amount,
+          to: this.withdrawForm.address
+        })
+
+        if(res) {
+          this.withdrawForm.amount = ''
+          this.withdrawForm.address = ''
+          this.show = true
+          this.$store.dispatch('wallet/fetchTransactions')
+        } else {
+          this.$toast.showMessage({ content: 'Что-то пошло не так, попробуйте немного позже', red: true })
+        }
+
+        this.withdrawBtn = false;
       }
     }
   }

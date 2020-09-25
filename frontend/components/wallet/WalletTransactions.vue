@@ -2,7 +2,6 @@
   <div>
     <h2 class="fw-500 mt-50">История транзакций</h2>
     <AppTable class="mb-80" :data="transactions" :headers="headers" pagination>
-      <template slot-scope="header"></template>
       <template slot-scope="{ row }">
         <td class="table__data">
           {{regularDate(row.date)}}

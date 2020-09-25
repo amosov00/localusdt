@@ -16,7 +16,6 @@ export const actions = {
   async withdraw({}, payload) {
     return this.$axios.post('/account/withdraw/', payload)
       .then((res) => {
-        console.log(res);
         return true
       })
       .catch(() => false)

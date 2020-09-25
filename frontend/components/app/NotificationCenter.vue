@@ -19,24 +19,36 @@
             div(v-if="notif_list.length === 0").notify-center__empty Здесь будут уведомления о сделках
             //--n-link(:to="'/invoice/' + msg.invoice_id" v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
             div(v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
-              div.notify-center__msg-title
-                span Сделка
-                span(v-if="msg.new_status")
-                  = ': '
-                span.color-green {{ msg.new_status }}
-              div.notify-center__msg-body
-                div.notify-center__msg-content {{ msg.invoice_id }}
-                div.notify-center__msg-time {{ formatDate(msg.created_at) }}
+              div(v-if="msg.amount")
+                div.notify-center__msg-title
+                  span Вывод
+                  span.notify-center__amount(:class="{ 'notify-center__amount': msg.new_status === 1 }") {{ Number(msg.amount).toFixed(2) }} USDT
+                  span(v-if="msg.new_status")
+                    = ': '
+                  span.color-green {{ msg.new_status }}
+                div.notify-center__msg-body
+                  div.notify-center__msg-content {{ msg.invoice_id }}
+                  div.notify-center__msg-time {{ formatDate(msg.created_at) }}
+              div(v-else)
+                div.notify-center__msg-title
+                  span Сделка
+                  span(v-if="msg.new_status")
+                    = ': '
+                  span.color-green {{ msg.new_status }}
+                div.notify-center__msg-body
+                  div.notify-center__msg-content {{ msg.invoice_id }}
+                  div.notify-center__msg-time {{ formatDate(msg.created_at) }}
 </template>
 
 <script>
   import InlineSvg from 'vue-inline-svg';
 
   import formatDate from "~/mixins/formatDate";
+  import formatCurrency from "~/mixins/formatCurrency";
 
   export default {
     components: {InlineSvg},
-    mixins: [formatDate],
+    mixins: [formatDate, formatCurrency],
     data: () => ({
       connected: false,
       showMessages: false,
@@ -58,7 +70,6 @@
       }
       this.ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
-
         this.notif_list.unshift(data);
         this.notify(data)
       }
@@ -178,6 +189,16 @@
     border-radius: 99px;
     top: 8px;
     right: 8px;
+  }
+
+  &__amount {
+    margin-left: 10px;
+    font-size: 13px;
+    color: #ED9F43;
+
+    &--done {
+      color: #48AF8F;
+    }
   }
 
   &__icon {

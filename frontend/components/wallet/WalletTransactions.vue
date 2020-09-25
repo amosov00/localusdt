@@ -60,13 +60,13 @@ export default {
     transactionStatus(status) {
       switch (status) {
         case 1:
-          return 'Обрабатывается'
+          return 'Выполнено'
           break
         case 2:
-          return 'Отменена'
+          return 'Обрабатывается'
           break
         case 3:
-          return 'Выполнено'
+          return 'Отменена'
           break
         default:
           break

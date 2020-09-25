@@ -2,7 +2,8 @@ from typing import Tuple, List
 import ujson
 from os import path
 
-from hexbytes import HexBytes
+from bson import Decimal128
+from datetime import datetime
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
 from passlib import pwd
@@ -11,8 +12,12 @@ from fastapi import HTTPException
 from http import HTTPStatus
 from sentry_sdk import capture_message
 
+from schemas.user import User
 from core.utils.gas_station import gas_price_from_ethgasstation
 from database.crud.transaction import USDTTransactionCRUD
+from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
+from schemas.notification import Notification, NotificationType
+from database.crud.notification import NotificationCRUD
 from config import (
     BASE_DIR,
     INFURA_URL_TESTNET,
@@ -64,10 +69,33 @@ class USDTWrapper:
             entropy
         )
 
+    @staticmethod
+    async def _approve_withdraw(tx_hash: str, amount: Decimal) -> None:
+        tx = await USDTTransactionCRUD.find_one(
+            query={
+                "tx_hash": tx_hash
+            }
+        )
+        new_notification = Notification(
+            type=NotificationType.WITHDRAW,
+            watched=False,
+            user_id=tx.get("user_id"),
+            created_at=datetime.utcnow(),
+            amount=float(float(amount) * 0.000001)
+        )
+        await NotificationCRUD.create_notification(new_notification)
+
     async def parse_last_blocks(self, last_blocks: int) -> List[dict]:
         last_block_number: int = self.w3.eth.getBlock("latest").get("number")
         tx_hashes = set()
-        transactions_in_db = await USDTTransactionCRUD.find_many({})
+        pending_tx = await USDTTransactionCRUD.find_many(
+            query={"status": USDTTransactionStatus.PENDING}
+        )
+        set_of_pending_tx_hashes = set()
+        for trans in pending_tx:
+            set_of_pending_tx_hashes.add(trans.get("tx_hash"))
+
+        transactions_in_db = await USDTTransactionCRUD.find_many({"status": USDTTransactionStatus.DONE})
         for i in transactions_in_db:
             tx_hashes.add(i.get("tx_hash"))
         transactions_to_proceed = []
@@ -79,6 +107,13 @@ class USDTWrapper:
                     if not transaction.get("to") or transaction.get("to").lower() != self.contract_address.lower():
                         continue
                     input_field = self.contract.decode_function_input(transaction.get("input"))
+
+                    if transaction.get("hash").hex() in set_of_pending_tx_hashes:
+                        await USDTTransactionCRUD.approve_withdraw(transaction.get("hash").hex())
+                        await self._approve_withdraw(
+                            transaction.get("hash").hex(),
+                            Decimal(input_field[1].get("_value"))
+                        )
 
                     if (
                             len(input_field) >= 2 and
@@ -108,7 +143,7 @@ class USDTWrapper:
     async def _get_balance(self, adr: str) -> float:
         return self.contract.functions.balanceOf(adr).call()
 
-    async def withdraw(self, to: str, value: Decimal) -> HexBytes:
+    async def withdraw(self, user: User, to: str, value: Decimal) -> bool:
         to = self.w3.toChecksumAddress(to.lower())
         if not self.w3.isAddress(to):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong address")
@@ -123,5 +158,18 @@ class USDTWrapper:
             "gasPrice": await self.get_gas_price(),
         })
         signed_txn = self.w3.eth.account.signTransaction(tx, private_key=self.hot_wallet_private_key)
-        return self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
-
+        tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
+        new_trans = USDTTransaction(
+            date=datetime.utcnow(),
+            to_adr=to,
+            from_adr=self.hot_wallet_addr,
+            tx_hash=tx_hash,
+            event=USDTTransactionEvents.WITHDRAW,
+            status=USDTTransactionStatus.PENDING,
+            usdt_amount=Decimal128(value),
+            user_id=user.id
+        )
+        dct = new_trans.dict()
+        dct["usdt_amount"] = Decimal128(dct["usdt_amount"])
+        await USDTTransactionCRUD.insert_one(dct)
+        return True

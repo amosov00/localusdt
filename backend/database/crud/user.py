@@ -202,7 +202,7 @@ class UserCRUD(BaseMongoCRUD):
         if not user.eth_address:
             return []
         result = []
-        transactions = await USDTTransactionCRUD.get_transactions_by_address(user.eth_address)
+        transactions = await USDTTransactionCRUD.get_transactions_by_address(user)
         for transaction in transactions:
             parsed_trans = {
                 "date": transaction.get("date"),
@@ -210,7 +210,7 @@ class UserCRUD(BaseMongoCRUD):
                 "address": transaction.get("to_adr") if user.eth_address != transaction.get(
                     "to_adr") else transaction.get("from_adr"),
                 "amount_usdt": float(transaction.get("usdt_amount").to_decimal()) * 0.000001,
-                "status": UserTransactionStatus.DONE  # TODO change when doing withdraw
+                "status": transaction.get("status")
             }
             result.append(parsed_trans)
         return sorted(result, key=lambda i: i["date"], reverse=True)
@@ -235,5 +235,4 @@ class UserCRUD(BaseMongoCRUD):
             query={"_id": user.id},
             payload={"balance_usdt": user.balance_usdt - payload.amount}
         )
-
-        return await USDTWrapper().withdraw(payload.to, Decimal(payload.amount * 1000000))
+        return await USDTWrapper().withdraw(user, payload.to, Decimal(payload.amount * 1000000))

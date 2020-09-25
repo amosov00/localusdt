@@ -96,7 +96,7 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    return await USDTWrapper().withdraw("0x1E3B0f8a5b957f216583f4Ef55c502320a975d8C", value=Decimal(10000000))
+    await check_deposits()
 
 
 @router.get("/2/")

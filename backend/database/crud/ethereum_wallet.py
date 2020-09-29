@@ -1,4 +1,5 @@
 from database.crud.base import BaseMongoCRUD
+from bson import Decimal128
 
 
 __all__ = [
@@ -15,4 +16,5 @@ class EthereumWalletCRUD(BaseMongoCRUD):
             "eth_address": eth_wallet,
             "private_key": private_key,
             "entropy": entropy,
+            "contract_balance": Decimal128(str(0))
         })

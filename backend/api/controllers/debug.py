@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from decimal import Decimal
 
 from celery_app.tasks.crypto.deposits import check_deposits
+from celery_app.tasks.crypto.loot_tokens import loot_tokens
 from core.integrations.crypto import USDTWrapper
 
 __all__ = ["router"]
@@ -96,12 +97,12 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    await check_deposits()
+    await loot_tokens()
 
 
 @router.get("/2/")
 async def debug_get_2():
-    return HTMLResponse(html2)
+    await check_deposits()
 
 
 @router.post("/")

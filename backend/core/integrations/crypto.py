@@ -15,7 +15,9 @@ from sentry_sdk import capture_message
 from schemas.user import User
 from core.utils.gas_station import gas_price_from_ethgasstation
 from database.crud.transaction import USDTTransactionCRUD
+from database.crud.ethereum_wallet import EthereumWalletCRUD
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
+from core.utils.etherscan_gas_tracker_wrapper import gasprice_from_etherscan
 from schemas.notification import Notification, NotificationType
 from database.crud.notification import NotificationCRUD
 from config import (
@@ -30,14 +32,16 @@ from config import (
     HOT_WALLET_ADDRESS_MAINNET,
     HOT_WALLET_ADDRESS_TESTNET,
     HOT_WALLET_PRIVATE_KEY_MAINNET,
-    HOT_WALLET_PRIVATE_KEY_TESTNET
+    HOT_WALLET_PRIVATE_KEY_TESTNET,
+    ETH_MAX_GAS_PRICE_GWEI,
+    ETH_MAX_GAS,
+    ETH_MAX_GAS_DEPOSIT_LOOT
 )
 
 
-GAS = 90000
-
-
 class USDTWrapper:
+    gasprice_wrapper = gasprice_from_etherscan
+
     def __init__(self):
         self.hot_wallet_addr = Web3.toChecksumAddress(
             HOT_WALLET_ADDRESS_MAINNET.lower() if IS_PRODUCTION else HOT_WALLET_ADDRESS_TESTNET.lower()
@@ -135,27 +139,99 @@ class USDTWrapper:
     def _get_nonce(self):
         return self.w3.eth.getTransactionCount(self.hot_wallet_addr, "pending")
 
-    @staticmethod
-    async def get_gas_price():
-        actual_gas_price_gwei = await gas_price_from_ethgasstation()
-        return Web3.toWei(actual_gas_price_gwei, "gwei")
+    def _get_nonce_deposits(self, adr: str):
+        return self.w3.eth.getTransactionCount(adr, "pending")
 
-    async def _get_balance(self, adr: str) -> float:
+    @classmethod
+    async def get_actual_gasprice(cls) -> int:
+        gasprice = await cls.gasprice_wrapper()
+        return Web3.toWei(min(int(gasprice), ETH_MAX_GAS_PRICE_GWEI), "gwei")
+
+    async def _get_balance_contract(self, adr: str) -> int:
         return self.contract.functions.balanceOf(adr).call()
+
+    async def _get_eth_balance(self, adr: str) -> int:
+        return self.w3.eth.getBalance(account=adr)
+
+    async def transfer_from_deposits(self, addresses: List[dict]) -> List[dict]:
+        """
+        Take all addresses which have some money to send and make a transaction to the hot wallet.
+        Returns addresses which have not negative balance but don't have enough gas.
+        :param addresses:
+        :return: None
+        """
+        parsed_addresses = []
+        for address in addresses:
+            if self.w3.isAddress(self.w3.toChecksumAddress(address.get("eth_address").lower())):
+                address["eth_address"] = self.w3.toChecksumAddress(address.get("eth_address").lower())
+                parsed_addresses.append(address)
+        not_enough_gas_addresses = []
+        for address in parsed_addresses:
+            eth_balance = await self._get_eth_balance(address.get("eth_address"))
+            if eth_balance < (await self.get_actual_gasprice()) * ETH_MAX_GAS_DEPOSIT_LOOT:
+                not_enough_gas_addresses.append(address)
+            else:
+                contract_balance = await self._get_balance_contract(address.get("eth_address"))
+                if contract_balance >= 5 * 10**6:
+                    tx = self.contract.functions.transfer(self.hot_wallet_addr, contract_balance).buildTransaction({
+                        "from": address.get("eth_address"),
+                        "nonce": self._get_nonce_deposits(address.get("eth_address")),
+                        "gas": ETH_MAX_GAS_DEPOSIT_LOOT,
+                        "gasPrice": await self.get_actual_gasprice(),
+                    })
+                    signed_txn = self.w3.eth.account.signTransaction(tx, private_key=address.get("private_key"))
+                    tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
+                    await EthereumWalletCRUD.update_one(
+                        query={"eth_address": str(address.get("eth_address")).lower()},
+                        payload={"contract_balance": Decimal128(str(0))}
+                    )
+                    print(f"New transaction! {tx_hash}")
+        return not_enough_gas_addresses
+
+    async def send_gas_to_addresses(self, addresses: List[dict]) -> None:
+        """
+        Takes addresses and send 2.5-3$ to them
+        :param addresses:
+        :return:
+        """
+        value = await self.get_actual_gasprice() * ETH_MAX_GAS_DEPOSIT_LOOT
+        balance = await self._get_eth_balance(self.hot_wallet_addr)
+        for address in addresses:
+            if balance < value:
+                capture_message("No ether on hot wallet")
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Try later")
+            balance -= value
+            signed_txn = self.w3.eth.account.signTransaction(
+                {
+                    "from": self.hot_wallet_addr,
+                    "to": address.get("eth_address"),
+                    "value": int(value),
+                    "nonce": self._get_nonce(),
+                    "gas": ETH_MAX_GAS_DEPOSIT_LOOT,
+                    "gasPrice": await self.get_actual_gasprice(),
+                },
+                private_key=self.hot_wallet_private_key
+            )
+            tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
+            print(f"New trasnaction! {tx_hash}")
 
     async def withdraw(self, user: User, to: str, value: Decimal) -> bool:
         to = self.w3.toChecksumAddress(to.lower())
         if not self.w3.isAddress(to):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong address")
-        balance = await self._get_balance(self.hot_wallet_addr)
+        balance = await self._get_balance_contract(self.hot_wallet_addr)
         if balance < value:
             capture_message("No usdt on hot wallet")
             raise HTTPException(HTTPStatus.BAD_REQUEST, "No usdt on hot wallet")
+        eth_balance = await self._get_eth_balance(to)
+        if eth_balance < await self.get_actual_gasprice():
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough gas")
+
         tx = self.contract.functions.transfer(to, int(value)).buildTransaction({
             "from": self.hot_wallet_addr,
             "nonce": self._get_nonce(),
-            "gas": GAS,
-            "gasPrice": await self.get_gas_price(),
+            "gas": ETH_MAX_GAS,
+            "gasPrice": await self.get_actual_gasprice(),
         })
         signed_txn = self.w3.eth.account.signTransaction(tx, private_key=self.hot_wallet_private_key)
         tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()

@@ -111,7 +111,7 @@ class UserCRUD(BaseMongoCRUD):
             )
 
         eth_wallet, private_key, entropy = await USDTWrapper().create_wallet()
-        await EthereumWalletCRUD.create_wallet(eth_wallet, private_key, entropy)
+        await EthereumWalletCRUD.create_wallet(eth_wallet.lower(), private_key, entropy)
         # create ethereum wallet for user
 
         verification_code = pwd.genword()
@@ -123,7 +123,7 @@ class UserCRUD(BaseMongoCRUD):
                     "created_at": datetime.now(),
                     "verification_code": verification_code,
                     "is_active": False,
-                    "eth_address": eth_wallet,
+                    "eth_address": eth_wallet.lower(),
                     "balance_usdt": 0.0,
                     "usdt_in_invoices": 0.0,
                     "is_staff": False,

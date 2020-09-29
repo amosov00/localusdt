@@ -4,7 +4,7 @@ from bson import Decimal128
 from core.mechanics.notification_manager import NotificationSender
 from celery_app.celeryconfig import app
 from core.integrations.crypto import USDTWrapper
-from database.crud import UserCRUD, USDTTransactionCRUD
+from database.crud import UserCRUD, USDTTransactionCRUD, EthereumWalletCRUD
 from schemas.transaction import USDTTransactionStatus
 from config import LAST_BLOCKS_TO_PARSE
 
@@ -39,6 +39,12 @@ async def check_deposits(self, *args, **kwargs):
                     amount=float(transaction.get("usdt_amount")) * 0.000001
                 )
                 transaction["usdt_amount"] = Decimal128(transaction.get("usdt_amount"))
+                ethwallet = await EthereumWalletCRUD.find_one(query={"eth_address": user.get("eth_address").lower()})
+                if ethwallet is not None:
+                    await EthereumWalletCRUD.update_one(
+                        query={"eth_address": transaction.get("to_adr").lower()},
+                        payload={"contract_balance": Decimal128(str(ethwallet.get("contract_balance").to_decimal() + transaction["usdt_amount"].to_decimal()))}
+                    )
                 transaction["date"] = datetime.utcnow()
                 transaction["event"] = 1
                 transaction["status"] = 1

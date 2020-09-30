@@ -18,9 +18,7 @@ async def loot_tokens(self, *args, **kwargs):
     for wallet in wallets:
         if int(wallet.get("contract_balance").to_decimal()) > LOCALUSDT_FEE * 10**6:
             target_wallets.append(wallet)
-    print(target_wallets)
     wallets_to_send = await USDTWrapper().transfer_from_deposits(target_wallets)
-    print(wallets_to_send)
     await USDTWrapper().send_gas_to_addresses(wallets_to_send)
 
     print(f"Looting deposits ends at {datetime.now()}")

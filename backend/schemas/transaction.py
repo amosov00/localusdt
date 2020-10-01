@@ -23,17 +23,20 @@ class USDTTransactionStatus(IntEnum):
 class USDTTransactionEvents(IntEnum):
     DEPOSIT = 1
     WITHDRAW = 2
+    DEPOSIT_LOOT_TOKENS = 3
+    DEPOSIT_LOOT_ETHER = 3
 
 
 class USDTTransaction(BaseModel):
-    date: datetime = Field(...)
-    to_adr: str = Field(...)
-    from_adr: str = Field(...)
-    tx_hash: str = Field(...)
-    event: int = Field(...)
-    status: USDTTransactionStatus = Field(...)
-    usdt_amount: Decimal = Field(...)
-    user_id: ObjectIdPydantic = Field(default=None)
+    date: Optional[datetime] = Field(default=None)
+    to_adr: Optional[str] = Field(default=None)
+    from_adr: Optional[str] = Field(default=None)
+    tx_hash: Optional[str] = Field(default=None)
+    event: Optional[int] = Field(default=None)
+    status: Optional[USDTTransactionStatus] = Field(default=None, description="DEPOSIT = 1 WITHDRAW = 2 DEPOSIT_LOOT_TOKENS = 3 DEPOSIT_LOOT_ETHER = 3")
+    usdt_amount: Optional[Decimal] = Field(default=None)
+    user_id: Optional[ObjectIdPydantic] = Field(default=None)
+    ether_amount: Optional[Decimal] = Field(default=None)
 
 
 class USDTTransactionInDB(USDTTransaction):

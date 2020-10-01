@@ -185,6 +185,17 @@ class USDTWrapper:
                         query={"eth_address": str(address.get("eth_address")).lower()},
                         payload={"contract_balance": Decimal128(str(0))}
                     )
+                    new_tx = USDTTransaction(
+                        event=USDTTransactionEvents.DEPOSIT_LOOT_TOKENS,
+                        date=datetime.utcnow(),
+                        to_adr=self.hot_wallet_addr,
+                        from_adr=address.get("eth_address"),
+                        tx_hash=tx_hash,
+                        status=USDTTransactionStatus.DONE,
+                        usdt_amount=Decimal128(str(contract_balance))
+                    )
+                    new_tx.usdt_amount = Decimal128(new_tx.usdt_amount)
+                    await USDTTransactionCRUD.insert_one(payload=new_tx.dict())
                     print(f"New transaction! {tx_hash}")
         return not_enough_gas_addresses
 
@@ -213,6 +224,17 @@ class USDTWrapper:
                 private_key=self.hot_wallet_private_key
             )
             tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
+            new_tx = USDTTransaction(
+                event=USDTTransactionEvents.DEPOSIT_LOOT_ETHER,
+                date=datetime.utcnow(),
+                to_adr=address.get("eth_address"),
+                from_adr=self.hot_wallet_addr,
+                tx_hash=tx_hash,
+                status=USDTTransactionStatus.DONE,
+                ether_amount=Decimal128(str(value)),
+            )
+            new_tx.ether_amount = Decimal128(new_tx.ether_amount)
+            await USDTTransactionCRUD.insert_one(payload=new_tx.dict())
             print(f"New trasnaction! {tx_hash}")
 
     async def withdraw(self, user: User, to: str, value: Decimal) -> bool:

@@ -1,12 +1,14 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Query
 from typing import List, Optional
 
 from schemas.base import ObjectId
 from database.crud.user import UserCRUD
 from database.crud.invoice import InvoiceCRUD
 from database.crud.logging import LogCRUD
+from database.crud import USDTTransactionCRUD
 from schemas.logging import Log
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
+from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
 from api.dependencies import user_is_staff_or_superuser
 from schemas import User
 
@@ -122,3 +124,22 @@ async def get_logs(
     return await LogCRUD.find_many({})
 
 # TODO: Make nice logs filters
+
+
+@router.get("/transactions/", response_model=List[USDTTransaction])
+async def get_transactions(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: Optional[str] = None,
+    to_adr: Optional[str] = None,
+    from_adr: Optional[str] = None,
+    status: Optional[USDTTransactionStatus] = None,
+    event: Optional[USDTTransactionEvents] = None,
+):
+    tx_filter = USDTTransaction(
+        user_id=ObjectId(user_id) if user_id is not None else None,
+        to_adr=to_adr,
+        from_adr=from_adr,
+        status=status,
+        event=event
+    )
+    return await USDTTransactionCRUD.find_many(query=tx_filter.dict(exclude_unset=True, exclude_none=True))

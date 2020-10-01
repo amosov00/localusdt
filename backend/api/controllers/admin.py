@@ -5,8 +5,9 @@ from schemas.base import ObjectId
 from database.crud.user import UserCRUD
 from database.crud.invoice import InvoiceCRUD
 from database.crud.logging import LogCRUD
-from database.crud import USDTTransactionCRUD
+from database.crud import USDTTransactionCRUD, EthereumWalletCRUD
 from schemas.logging import Log, LogInDB, LogEvents
+from schemas.ethereum_wallet import EthereumWallet
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
 from api.dependencies import user_is_staff_or_superuser
@@ -153,3 +154,14 @@ async def get_transactions(
         event=event
     )
     return await USDTTransactionCRUD.find_many(query=tx_filter.dict(exclude_unset=True, exclude_none=True))
+
+
+@router.get("/wallets/", response_model=List[EthereumWallet])
+async def get_wallets(
+    user: User = Depends(user_is_staff_or_superuser),
+    eth_address: Optional[str] = None
+):
+    query = EthereumWallet(
+        eth_address=eth_address
+    )
+    return await EthereumWalletCRUD.find_many(query=query.dict(exclude_unset=True, exclude_none=True))

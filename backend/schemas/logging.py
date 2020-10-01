@@ -28,7 +28,7 @@ class LogEvents:
 
 
 class Log(BaseModel):
-    event: str = Field(..., description="Log events in trello =)")
+    event: str = Field(default=None, description="Log events in trello =)")
     user_id: ObjectIdPydantic = Field(default=None, description="User who done this")
     invoice_id: ObjectIdPydantic = Field(default=None, description="Invoice id")
     ads_id: ObjectIdPydantic = Field(default=None)

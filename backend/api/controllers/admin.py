@@ -6,7 +6,7 @@ from database.crud.user import UserCRUD
 from database.crud.invoice import InvoiceCRUD
 from database.crud.logging import LogCRUD
 from database.crud import USDTTransactionCRUD
-from schemas.logging import Log
+from schemas.logging import Log, LogInDB, LogEvents
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
 from api.dependencies import user_is_staff_or_superuser
@@ -119,11 +119,21 @@ async def activate_user(
 
 @router.get("/logs/", response_model=List[Log])
 async def get_logs(
-    user: User = Depends(user_is_staff_or_superuser)
+    user: User = Depends(user_is_staff_or_superuser),
+    event: Optional[str] = None,
+    user_id: Optional[str] = None,
+    invoice_id: Optional[str] = None,
+    ads_id: Optional[str] = None,
+    tx_hash: Optional[str] = None,
 ):
-    return await LogCRUD.find_many({})
-
-# TODO: Make nice logs filters
+    log_filter = Log(
+        event=event,
+        user_id=ObjectId(user_id) if user_id else None,
+        invoice_id=ObjectId(invoice_id) if invoice_id else None,
+        ads_id=ObjectId(ads_id) if ads_id else None,
+        tx_hash=tx_hash
+    )
+    return await LogCRUD.find_many(query=log_filter.dict(exclude_unset=True, exclude_none=True))
 
 
 @router.get("/transactions/", response_model=List[USDTTransaction])
@@ -136,7 +146,7 @@ async def get_transactions(
     event: Optional[USDTTransactionEvents] = None,
 ):
     tx_filter = USDTTransaction(
-        user_id=ObjectId(user_id) if user_id is not None else None,
+        user_id=ObjectId(user_id) if user_id else None,
         to_adr=to_adr,
         from_adr=from_adr,
         status=status,

@@ -1,12 +1,8 @@
 from typing import List
-from http import HTTPStatus
-from datetime import datetime
-
-from decimal import Decimal
-from fastapi import APIRouter, HTTPException, Query, Depends, Body, Request
+from fastapi import APIRouter, Depends, Body
 
 from api.dependencies import get_user
-from database.crud import UserCRUD
+from database.crud import UserCRUD, ReferralCRUD
 from schemas.user import (
     UserLogin,
     User,
@@ -20,6 +16,10 @@ from schemas.user import (
     UserTransaction,
     UserMakeWithdraw
 )
+from schemas.referral import (
+    ReferralGeneralInfo,
+)
+
 
 __all__ = ["router"]
 
@@ -33,7 +33,9 @@ async def account_login(data: UserLogin = Body(...)):
 
 @router.post("/signup/")
 async def account_signup(data: UserCreationSafe = Body(...)):
-    return await UserCRUD.create_safe(data)
+    user_id = await UserCRUD.create_safe(data)
+    await ReferralCRUD.create_referral(str(user_id), data.referral_id)
+    return True
 
 
 @router.post("/verify/", response_model=UserLoginResponse, response_model_exclude={"_id"})
@@ -75,3 +77,8 @@ async def get_transactions(user: User = Depends(get_user)):
 @router.post("/withdraw/")
 async def make_withdraw(user: User = Depends(get_user), payload: UserMakeWithdraw = Body(...)):
     return await UserCRUD.make_withdraw(user, payload)
+
+
+@router.get("/referral_info/", response_model=ReferralGeneralInfo)
+async def get_referral_info(user: User = Depends(get_user)):
+    return await ReferralCRUD.get_general_info(user)

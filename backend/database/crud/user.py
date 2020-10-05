@@ -136,7 +136,7 @@ class UserCRUD(BaseMongoCRUD):
             MailGunEmail().send_verification_code(user.email, verification_code)
         )
 
-        return True
+        return inserted_id
 
     @classmethod
     async def change_password(cls, user: User, payload: UserChangePassword) -> bool:

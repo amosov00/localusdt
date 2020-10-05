@@ -25,7 +25,8 @@ __all__ = [
     "UserTransactionStatus",
     "UserTransactionEvents",
     "UserTransaction",
-    "UserMakeWithdraw"
+    "UserMakeWithdraw",
+    "UserUpdateNotSafe"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -76,8 +77,8 @@ class BaseUser(BaseModel):
 
 class User(BaseModel):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
-    email: str = Field(...)
-    username: str = Field(...)
+    email: str = Field(default=None)
+    username: str = Field(default=None)
     balance_usdt: float = Field(default=0)
     usdt_in_invoices: float = Field(default=0)
     eth_address: Optional[str] = Field(default=None)
@@ -139,8 +140,8 @@ class UserCreationNotSafe(BaseModel):
     repeat_password: Optional[str] = Field(default=None)
     password: Optional[str] = Field(default=None)
 
-    _validate_email = validator("email", pre=True, allow_reuse=True)(validate_email)
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)
+    _validate_email = validator("email", pre=True, allow_reuse=True)(validate_email)
 
 
 class UserRecover(BaseModel):
@@ -157,6 +158,17 @@ class UserRecoverLink(BaseModel):
 
 class UserUpdate(BaseModel):
     about_me: str = Field(..., description="'About me' field")
+
+
+class UserUpdateNotSafe(BaseModel):
+    email: Optional[str] = Field(default=None)
+    username: Optional[str] = Field(default=None)
+    is_staff: Optional[bool] = Field(default=False, description="Moderator")
+    repeat_password: Optional[str] = Field(default=None)
+    password: Optional[str] = Field(default=None)
+
+    _validate_passwords = validator("password", allow_reuse=True)(validate_password)
+    _validate_email = validator("email", pre=True, allow_reuse=True)(validate_email)
 
 
 class UserTransactionEvents(IntEnum):

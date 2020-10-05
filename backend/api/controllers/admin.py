@@ -1,17 +1,19 @@
-from fastapi import APIRouter, Depends, Path, Query
+from fastapi import APIRouter, Depends, Path, Body, HTTPException
 from typing import List, Optional
+from http import HTTPStatus
 
 from schemas.base import ObjectId
 from database.crud.user import UserCRUD
 from database.crud.invoice import InvoiceCRUD
 from database.crud.logging import LogCRUD
-from database.crud import USDTTransactionCRUD, EthereumWalletCRUD
+from database.crud import USDTTransactionCRUD, EthereumWalletCRUD, ReferralCRUD
 from schemas.logging import Log, LogInDB, LogEvents
 from schemas.ethereum_wallet import EthereumWallet
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
-from api.dependencies import user_is_staff_or_superuser
-from schemas import User
+from api.dependencies import user_is_staff_or_superuser, user_is_superuser
+from schemas import User, UserUpdateNotSafe, UserTransaction
+from schemas.referral import ReferralGeneralInfo
 
 __all__ = ["router"]
 
@@ -75,6 +77,63 @@ async def freeze_invoice(
     user: User = Depends(user_is_staff_or_superuser), invoice_id: str = Path(...)
 ):
     return await InvoiceCRUD.freeze_invoice(invoice_id)
+
+
+@router.get("/users/", response_model=Optional[List[User]], response_model_exclude={"password"})
+async def get_all_users(
+    user: User = Depends(user_is_staff_or_superuser)
+):
+    users = await UserCRUD.find_many({})
+    for user in users:
+        print(user)
+        user["_id"] = str(user["_id"])
+    return users
+
+
+@router.put("/users/{user_id}/", response_model=User)
+async def update_user(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: str = Path(...),
+    payload: UserUpdateNotSafe = Body(...)
+):
+    await UserCRUD.update_one(
+        query={"_id": ObjectId(user_id)},
+        payload=payload.dict(exclude_none=True, exclude_unset=True)
+    )
+    user = await UserCRUD.find_by_id(user_id)
+    return user
+
+
+@router.get("/users/transactions/{user_id}/", response_model=List[UserTransaction])
+async def get_user_transactions(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: str = Path(...)
+):
+    user = await UserCRUD.find_by_id(user_id)
+    if not user:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad user id")
+    user = User(**user)
+    return await UserCRUD.get_transactions(user)
+
+
+@router.get("/users/info/{user_id}", response_model=User)
+async def get_user_info(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: str = Path(...)
+):
+    return await UserCRUD.find_by_id(user_id)
+
+
+@router.get("/users/referral_info/{user_id}", response_model=ReferralGeneralInfo)
+async def get_user_referral_info(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: str = Path(...)
+):
+    user = await UserCRUD.find_by_id(user_id)
+    if not user:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad user id")
+    user = User(**user)
+    return await ReferralCRUD.get_general_info(user)
 
 
 @router.put("/users/ban/{user_id}/")

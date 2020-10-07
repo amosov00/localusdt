@@ -1,19 +1,22 @@
 from fastapi import APIRouter, Depends, Path, Body, HTTPException
 from typing import List, Optional
 from http import HTTPStatus
+from decimal import Decimal
 
-from schemas.base import ObjectId
+from api.dependencies import user_is_staff_or_superuser, user_is_superuser
 from database.crud.user import UserCRUD
 from database.crud.invoice import InvoiceCRUD
 from database.crud.logging import LogCRUD
 from database.crud import USDTTransactionCRUD, EthereumWalletCRUD, ReferralCRUD
+from core.integrations.crypto import USDTWrapper
+from schemas.base import ObjectId
 from schemas.logging import Log, LogInDB, LogEvents
 from schemas.ethereum_wallet import EthereumWallet
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
-from api.dependencies import user_is_staff_or_superuser, user_is_superuser
 from schemas import User, UserUpdateNotSafe, UserTransaction
 from schemas.referral import ReferralGeneralInfo
+from schemas.admin_stats import DepositStatistic
 
 __all__ = ["router"]
 
@@ -224,3 +227,34 @@ async def get_wallets(
         eth_address=eth_address
     )
     return await EthereumWalletCRUD.find_many(query=query.dict(exclude_unset=True, exclude_none=True))
+
+
+@router.get("/wallets/statistic/", response_model=DepositStatistic)
+async def get_stats(
+    user: User = Depends(user_is_staff_or_superuser)
+):
+    wallets = await EthereumWalletCRUD.find_many({})
+    transactions = await USDTTransactionCRUD.find_many({})
+    total_deposits = Decimal(0)
+    total_withdraw_pending = Decimal(0)
+    total_withdraw_done = Decimal(0)
+    total_on_wallets = Decimal(0)
+    total_on_hot_wallet = await USDTWrapper().get_hot_wallet_balance()
+    for wallet in wallets:
+        total_on_wallets += wallet.get("contract_balance").to_decimal()
+    for transaction in transactions:
+        if transaction.get("event") == USDTTransactionEvents.WITHDRAW:
+            total_withdraw_pending += transaction.get("usdt_amount").to_decimal() if transaction.get("status") == USDTTransactionStatus.PENDING else Decimal(0)
+            total_withdraw_done += transaction.get("usdt_amount").to_decimal() if transaction.get("status") == USDTTransactionStatus.DONE else Decimal(0)
+        elif transaction.get("event") == USDTTransactionEvents.DEPOSIT:
+            total_deposits += transaction.get("usdt_amount").to_decimal() if transaction.get("status") == USDTTransactionStatus.DONE else Decimal(0)
+
+    return {
+        "total_withdraw_pending": total_withdraw_pending,
+        "total_withdraw_done": total_withdraw_done,
+        "total_withdraw": total_withdraw_pending + total_withdraw_done,
+        "total_on_wallets": total_on_wallets,
+        "total_on_hot_wallet": total_on_hot_wallet,
+        "total_active": total_on_wallets + total_on_hot_wallet,
+        "total": total_on_wallets + total_on_hot_wallet - total_withdraw_pending - total_withdraw_done
+    }

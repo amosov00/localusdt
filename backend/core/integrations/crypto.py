@@ -147,6 +147,9 @@ class USDTWrapper:
         gasprice = await cls.gasprice_wrapper()
         return Web3.toWei(min(int(gasprice), ETH_MAX_GAS_PRICE_GWEI), "gwei")
 
+    async def get_hot_wallet_balance(self) -> int:
+        return Decimal(str(self.contract.functions.balanceOf(self.hot_wallet_addr).call()))
+
     async def _get_balance_contract(self, adr: str) -> int:
         return self.contract.functions.balanceOf(adr).call()
 

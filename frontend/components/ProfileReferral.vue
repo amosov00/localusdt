@@ -6,7 +6,7 @@
     </div>
     <div class="profile-referral__body">
       <Input
-        value="https://localerc/1231213lsfd1221134dv"
+        :value="referralId"
         disabled
         header="Поделитесь этой ссылкой с друзьями"
         endIcon="copy"
@@ -19,8 +19,8 @@
           <p class="opacity-50">Доход с реферальной программы:</p>
         </div>
         <div class="info__row">
-          <p class="mb-15">12 человек</p>
-          <p>800,00 USDT</p>
+          <p class="mb-15">{{referralInfo.referral_count}} человек</p>
+          <p>{{referralInfo.income}},00 USDT</p>
         </div>
       </div>
     </div>
@@ -31,6 +31,7 @@
 <script>
 import Input from '~/components/app/Input'
 import ReferralModal from '~/components/ReferralModal'
+
 export default {
   components: {
     Input,
@@ -38,7 +39,24 @@ export default {
   },
   data() {
     return {
-      showModal: false
+      showModal: false,
+      referralInfo: {
+        income: 0,
+        referral_count: 0,
+        referral_id: ''
+      }
+    }
+  },
+  async mounted() {
+    let referralInfo = await this.$store.dispatch('fetchReferralInfo')
+    if(referralInfo) {
+      this.referralInfo = referralInfo
+    }
+
+  },
+  computed: {
+    referralId() {
+      return 'https://localerc/' + this.referralInfo.referral_id
     }
   },
   methods: {

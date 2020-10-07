@@ -183,5 +183,16 @@ export const actions = {
   async fetchCurrencyPrice({ commit }) {
     const { data } = await this.$axios.get('/currency/')
     commit('setCurrencyPrice', data)
+  },
+  async fetchReferralInfo({}) {
+    return this.$axios.get('/account/referral_info/')
+      .then(res => res.data)
+      .catch((e) => {
+        console.log(e)
+        this.$toast.showMessage({
+          content: 'Ошибка загрузки реферальной ссылки',
+          red: true
+        })
+      })
   }
 }

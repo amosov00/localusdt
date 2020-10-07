@@ -172,17 +172,20 @@ export default {
   },
   computed: {
     top() {
+      let top = 100
       if (!this.$userIsLoggedIn()) {
-        return 300
-      } else {
-        return 100
+        top = 300
       }
+      return this.isToastActive ? top + 50 : top
     },
     buyOrdersWithLimit() {
       return this.$store.getters['order/buyOrdersWithLimit'](5)
     },
     sellOrdersWithLimit() {
       return this.$store.getters['order/sellOrdersWithLimit'](5)
+    },
+    isToastActive() {
+      return this.$store.getters['toast/isActive']
     }
   },
   methods: {

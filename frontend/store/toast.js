@@ -2,7 +2,8 @@ export const state = () => ({
   content: '',
   color: '',
   red: false,
-  green: true
+  green: true,
+  active: false,
 })
 
 export const mutations = {
@@ -11,5 +12,12 @@ export const mutations = {
     state.color = payload.color
     state.red = payload.red
     state.green = payload.green
+  },
+  closeToast(s){s.active = false},
+  openToast(s){s.active = true}
+}
+export const getters = {
+  isActive(s) {
+    return s.active
   }
 }

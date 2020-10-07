@@ -132,6 +132,7 @@ export default {
   width: 100%;
   margin-top: 50px;
   margin-bottom: 50px;
+  transition: all .5s;
 
   .tab-nav {
     display: flex;

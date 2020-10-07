@@ -20,12 +20,14 @@ export default {
     halfLife() {
       setTimeout(() => {
         this.show = false
+        this.$toast.closeToast()
       }, 10000)
     }
   },
   created() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'toast/showMessage') {
+        this.$toast.openToast()
         this.message = state.toast.content
         this.red = state.toast.red
         this.green = state.toast.green

@@ -61,9 +61,6 @@ export default {
       environment: 'local'
     }
   },
-  axios: {
-    baseURL: 'https://localusdt-dev.elastoo.com/api/',
-  },
   build: {
     extend(config, ctx) {
       config.module.rules.push({

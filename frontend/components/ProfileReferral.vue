@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     referralId() {
-      return 'https://localerc/' + this.referralInfo.referral_id
+      return window.location.origin + '/ref?id=' + this.referralInfo.referral_id
     }
   },
   methods: {

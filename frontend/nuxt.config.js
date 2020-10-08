@@ -43,11 +43,14 @@ export default {
     'cookie-universal-nuxt',
     '@nuxtjs/style-resources'
   ],
+  router: {
+    middleware: ['checkRef']
+  },
   styleResources: {
     scss: ['~/assets/scss/variables.scss', '~/assets/scss/mixins.scss']
   },
   buildModules: ['@nuxtjs/dotenv'],
-  dotenv: !process.env.ENV
+  dotenv: 'local'
     ? {
         filename: '.env.local'
       }
@@ -55,7 +58,7 @@ export default {
   sentry: {
     initialize: true,
     config: {
-      environment: process.env.ENV
+      environment: 'local'
     }
   },
   build: {

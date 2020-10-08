@@ -82,6 +82,7 @@ import Button from '~/components/app/Button'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
 export default {
+  middleware: ['notAuthRequired'],
   components: { Input, Button, ValidationObserver, ValidationProvider },
   data() {
     return {

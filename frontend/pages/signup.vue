@@ -55,14 +55,12 @@
         <ValidationProvider
           tag="div"
           v-slot="{ errors }"
-          v-if="referralId"
         >
           <Input
             :value="referralId"
             placeholder="Реферальный код"
-            icon="email"
+            icon="copy-green"
             type="text"
-            disabled
           />
           <span class="error">{{ errors[0] }}</span>
         </ValidationProvider>

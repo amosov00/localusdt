@@ -49,31 +49,31 @@ export const actions = {
               content: 'Вы превысили нижний лимит объявления',
               red: true
             })
-            break;
+            break
           case 'You have exceeded the upper limit':
             this.$toast.showMessage({
               content: 'Вы превысили верхний лимит объявления',
               red: true
             })
-            break;
+            break
           case 'No such USDT on order':
             this.$toast.showMessage({
               content: 'Нет такого количества USDT в объявлении',
               red: true
             })
-            break;
+            break
           case 'Not enough USDT on wallet':
             this.$toast.showMessage({
               content: 'Недостаточно USDT на вашем кошельке',
               red: true
             })
-            break;
+            break
           case 'Wrong user role or invoice status':
             this.$toast.showMessage({
               content: 'Неправильный статус объявления',
               red: true
             })
-            break;
+            break
         }
       })
   },

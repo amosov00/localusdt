@@ -4,7 +4,7 @@ from bson import Decimal128
 from core.mechanics.notification_manager import NotificationSender
 from celery_app.celeryconfig import app
 from core.integrations.crypto import USDTWrapper
-from database.crud import UserCRUD, USDTTransactionCRUD, EthereumWalletCRUD
+from database.crud import UserCRUD, USDTTransactionCRUD, EthereumWalletCRUD, ReferralCRUD
 from schemas.transaction import USDTTransactionStatus
 from config import LAST_BLOCKS_TO_PARSE
 
@@ -34,6 +34,7 @@ async def check_deposits(self, *args, **kwargs):
                     query={"_id": user.get("_id")},
                     payload={"balance_usdt": new_balance},
                 )
+                await ReferralCRUD.accrue_bonuses(user.get("_id"), float(transaction.get("usdt_amount")) * 0.000001)
                 await NotificationSender.send_deposit_notification(
                     user.get("_id"),
                     amount=float(transaction.get("usdt_amount")) * 0.000001

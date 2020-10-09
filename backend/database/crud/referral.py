@@ -28,14 +28,22 @@ class ReferralCRUD(BaseMongoCRUD):
 
     @classmethod
     async def create_referral(cls, user_id: str, referral_id: Optional[str] = None):
-        parent = (await cls.find_one(query={"_id": ObjectId(referral_id)})) if referral_id else None
-        number_of_referrals = len(await cls.find_many({"parent_id": parent.get("_id")})) if referral_id else 0
+        parent = (
+            (await cls.find_one(query={"_id": ObjectId(referral_id)}))
+            if referral_id
+            else None
+        )
+        number_of_referrals = (
+            len(await cls.find_many({"parent_id": parent.get("_id")}))
+            if referral_id
+            else 0
+        )
         new_referral = Referral(
             user_id=ObjectId(user_id),
             parent_id=parent.get("_id") if referral_id else None,
             level=await cls._get_level(number_of_referrals),
             income=float(0),
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow(),
         )
         await cls.insert_one(payload=new_referral.dict())
 
@@ -52,3 +60,23 @@ class ReferralCRUD(BaseMongoCRUD):
         referral["referral_count"] = count
         referral["referral_id"] = str(referral.get("_id"))
         return referral
+
+    @classmethod
+    async def accrue_bonuses(cls, user_id: ObjectId, deposit_amount: float):
+        referral = await cls.find_one(query={"user_id": user_id})
+        percent = 0.005
+        while referral is not None and percent > 0:
+            await cls.update_one(
+                query={"_id": referral.get("_id")},
+                payload={
+                    "income": (
+                        referral.get("income") if referral.get("income") else 0.0
+                    )
+                    + deposit_amount * percent
+                },
+            )
+            referral = (
+                await cls.find_one(query={"_id": referral.get("parent_id")})
+                if referral.get("parent_id") is not None
+                else None
+            )

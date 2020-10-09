@@ -2,13 +2,15 @@
   <section class="profile">
     <div class="profile__header">
       <div class="profile__user">
-        <h1 class="profile__username">{{ user.username }}</h1>
+        <h1 class="profile__username">
+          {{ user.username }}
+        </h1>
         <span class="profile__activity"></span>
       </div>
       <div class="profile__actions">
-        <nuxt-link class="underline-link underline-link--grey" to="/change"
-          >Изменить пароль</nuxt-link
-        >
+        <nuxt-link class="underline-link underline-link--grey" to="/change">
+          Изменить пароль
+        </nuxt-link>
         <p class="underline-link red" @click="logout()">Выйти</p>
       </div>
     </div>
@@ -16,29 +18,72 @@
       <div class="bio__container">
         <h2 class="bio__title">О себе</h2>
         <Textarea v-model="condition" />
-        <Button @click.native="setCondition" class="mt-20" green
-          >Сохранить</Button
+        <Button @click.native="setCondition" class="mt-20" green>
+          Сохранить
+        </Button
         >
       </div>
       <ProfileReferral />
     </div>
-    <AppTable :data="invoices" :headers="headers" pagination>
-      <template slot-scope="header"></template>
-      <template slot-scope="{ row }">
-        <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
-        <td class="table__data" v-if="row.ads_type === 1">Продажа USDT</td>
-        <td class="table__data" v-else-if="row.ads_type === 2"> Покупка USDT</td>
-        <td class="table__data">
-          {{row.seller_username}}
-          <span class="status green--bg" />
-          <span class="orders-count">(10+)</span>
-        </td>
-        <td class="table__data">{{commaSplitting(row.amount_usdt)}} <span class="grey-dark fw-400">за {{commaSplitting(row.amount_rub)}} ₽</span> </td>
-        <td class="table__data" :style="{ color: statusColor(row.status) }">
-          <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
-        </td>
-      </template>
-    </AppTable>
+    <div class="tab" :style="{ top: '0' }">
+      <nav class="tab-nav">
+        <div
+          class="tab-nav__item"
+          @click="setTab(1)"
+          :class="{ 'tab-nav__item--active': activeTab === 1 }"
+        >
+          Инвойсы
+        </div>
+        <div
+          class="tab-nav__item"
+          @click="setTab(2)"
+          :class="{ 'tab-nav__item--active': activeTab === 2 }"
+        >
+          Ордер
+        </div>
+      </nav>
+      <div class="tab-item" v-if="activeTab===1">
+        <AppTable :data="invoices" :headers="headers" pagination>
+          <template slot-scope="header"></template>
+          <template slot-scope="{ row }">
+            <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
+            <td class="table__data" v-if="row.ads_type === 1">Продажа USDT</td>
+            <td class="table__data" v-else-if="row.ads_type === 2">Покупка USDT</td>
+            <td class="table__data">
+              {{row.seller_username}}
+              <span class="status green--bg" />
+              <span class="orders-count">(10+)</span>
+            </td>
+            <td class="table__data">{{commaSplitting(row.amount_usdt)}} <span class="grey-dark fw-400">за
+              {{commaSplitting(row.amount_rub)}} ₽</span></td>
+            <td class="table__data" :style="{ color: statusColor(row.status) }">
+              <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
+            </td>
+          </template>
+        </AppTable>
+      </div>
+      <div class="tab-item" v-if="activeTab===2">
+        <AppTable :data="orders" :headers="orderHeaders" pagination>
+          <template slot-scope="header"></template>
+          <template slot-scope="{ row }">
+            <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
+            <td class="table__data" v-if="row.type === 1">Продажа USDT</td>
+            <td class="table__data" v-else-if="row.type === 2"> Покупка USDT</td>
+            <td class="table__data">{{row.price}}</td>
+            <td class="table__data">
+              <span>
+                {{spaceSplitting(row.bot_limit)}} -
+                {{spaceSplitting(row.top_limit)}} ₽
+              </span>
+            </td>
+            <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT</td>
+            <td class="table__data" :style="{ color: orderStatusColor(row.status) }">
+              <nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
+            </td>
+          </template>
+        </AppTable>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -51,10 +96,12 @@ import AppTable from '~/components/app/AppTable'
 import formatCurreny from '~/mixins/formatCurrency'
 import formatDate from '~/mixins/formatDate'
 import invoiceStatuses from '~/mixins/invoiceStatuses'
+import orderStatuses from '~/mixins/orderStatuses'
+
 export default {
   name: 'profile',
   middleware: ['authRequired', 'fetchUser'],
-  mixins: [formatCurreny, formatDate, invoiceStatuses],
+  mixins: [formatCurreny, formatDate, invoiceStatuses, orderStatuses],
   components: {
     ProfileReferral,
     Textarea,
@@ -63,8 +110,20 @@ export default {
   },
   data() {
     return {
+      activeTab: 1,
+      orderHeaders: [
+        'Дата, время',
+        'Вид объявления',
+        'Курс продажи покупки',
+        'Лимит',
+        'Оставшееся количество',
+        'Статус'
+      ],
       headers: ['Дата, время', 'Вид сделки', 'Покупатель/продавец', 'Сумма', 'Статус']
     }
+  },
+  created() {
+    this.$store.dispatch('order/fetchOrdersByUser')
   },
   computed: {
     user() {
@@ -72,6 +131,9 @@ export default {
     },
     invoices() {
       return this.$store.getters['invoice/invoices']
+    },
+    orders() {
+      return this.$store.getters['order/ordersByUser']
     },
     condition: {
       get: function() {
@@ -83,6 +145,9 @@ export default {
     }
   },
   methods: {
+    setTab(tab) {
+      this.activeTab = tab
+    },
     logout() {
       this.$store.dispatch('logOut')
     },
@@ -136,6 +201,20 @@ export default {
       margin-bottom: 35px;
       font-weight: 500;
     }
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+
+.tab {
+  position: relative;
+
+  &-item {
+    background-color: #fdfdfd;
+    border: 1px solid #f3f3f3;
+    margin-top: -1px;
+    padding-right: 20px;
   }
 }
 </style>

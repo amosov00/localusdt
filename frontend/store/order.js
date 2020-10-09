@@ -1,11 +1,13 @@
 export const state = () => ({
   orders: [],
-  orderById: null
+  orderById: null,
+  ordersByUser: []
 })
 
 export const getters = {
   orders: s => s.orders,
   orderById: s => s.orderById,
+  ordersByUser: s => s.ordersByUser,
   buyOrders: s => s.orders.filter(order => order.type === 1),
   sellOrders: s =>
     s.orders
@@ -24,7 +26,8 @@ export const getters = {
 
 export const mutations = {
   setOrders: (state, payload) => (state.orders = payload),
-  setOrderById: (state, payload) => (state.orderById = payload)
+  setOrderById: (state, payload) => (state.orderById = payload),
+  setOrdersByUser: (state, payload) => (state.ordersByUser = payload)
 }
 
 export const actions = {
@@ -43,6 +46,10 @@ export const actions = {
   async fetchOrderById({ commit }, id) {
     const { data } = await this.$axios.get(`/order/${id}`)
     commit('setOrderById', data)
+  },
+  async fetchOrdersByUser({ commit }) {
+    const { data } = await this.$axios.get(`/order/user/`)
+    commit('setOrdersByUser', data)
   },
   async searchOrders({ commit }, params) {
     const { data } = await this.$axios.get(

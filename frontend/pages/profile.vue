@@ -50,7 +50,7 @@
             <td class="table__data" v-if="row.ads_type === 1">Продажа USDT</td>
             <td class="table__data" v-else-if="row.ads_type === 2">Покупка USDT</td>
             <td class="table__data">
-              {{row.seller_username}}
+              {{ getUsername(row.seller_username, row.buyer_username)}}
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
             </td>
@@ -69,7 +69,7 @@
             <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
             <td class="table__data" v-if="row.type === 1">Продажа USDT</td>
             <td class="table__data" v-else-if="row.type === 2"> Покупка USDT</td>
-            <td class="table__data">{{row.price}}</td>
+            <td class="table__data">{{commaSplitting(row.price)}}</td>
             <td class="table__data">
               <span>
                 {{spaceSplitting(row.bot_limit)}} -
@@ -114,7 +114,7 @@ export default {
       orderHeaders: [
         'Дата, время',
         'Вид объявления',
-        'Курс продажи покупки',
+        'Курс продажи, покупки',
         'Лимит',
         'Оставшееся количество',
         'Статус'
@@ -133,7 +133,7 @@ export default {
       return this.$store.getters['invoice/invoices']
     },
     orders() {
-      return this.$store.getters['order/ordersByUser']
+      return [...this.$store.getters['order/ordersByUser']].reverse()
     },
     condition: {
       get: function() {
@@ -145,6 +145,10 @@ export default {
     }
   },
   methods: {
+    getUsername(seller, buyer) {
+      const { username } = this.user
+      return username === seller ? buyer : seller
+    },
     setTab(tab) {
       this.activeTab = tab
     },

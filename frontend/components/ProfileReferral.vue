@@ -20,7 +20,7 @@
         </div>
         <div class="info__row">
           <p class="mb-15">{{referralInfo.referral_count}} человек</p>
-          <p>{{referralInfo.income}},00 USDT</p>
+          <p>{{spaceSplitting(referralInfo.income)}} USDT</p>
         </div>
       </div>
     </div>
@@ -31,8 +31,10 @@
 <script>
 import Input from '~/components/app/Input'
 import ReferralModal from '~/components/ReferralModal'
+import formatCurrency from '~/mixins/formatCurrency'
 
 export default {
+  mixins: [formatCurrency],
   components: {
     Input,
     ReferralModal

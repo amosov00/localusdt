@@ -151,13 +151,15 @@ export default {
       this.diffDate(this.invoice.status_changed_at)
     },
     diffDate(date) {
+      const timeOffset = moment().utcOffset()
       const startTime = moment(date)
         .add(this.timerDuration, 'minutes')
-        .utcOffset(date)
         .format('HH:mm:ss')
-      const endTime = moment().format('HH:mm:ss')
-      const seconds = moment(startTime, 'HH:mm:ss')
-        .diff(moment(endTime, 'HH:mm:ss'), 'seconds')
+      const endTime = moment()
+        .subtract(timeOffset, 'minutes')
+        .format('HH:mm:ss')
+      const seconds = moment(endTime, 'HH:mm:ss')
+        .diff(moment(startTime, 'HH:mm:ss'), 'seconds')
       const duration = moment
         .duration(seconds, 'seconds')
       const time = `${duration.hours()}:${duration.minutes()}:${duration.seconds()}`

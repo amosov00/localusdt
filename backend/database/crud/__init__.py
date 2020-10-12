@@ -5,3 +5,4 @@ from .invoice import InvoiceCRUD
 from .transaction import USDTTransactionCRUD
 from .ethereum_wallet import EthereumWalletCRUD
 from .referral import ReferralCRUD
+from .logging import LogCRUD

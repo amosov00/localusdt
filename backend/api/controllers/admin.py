@@ -4,14 +4,20 @@ from http import HTTPStatus
 from decimal import Decimal
 
 from api.dependencies import user_is_staff_or_superuser, user_is_superuser
-from database.crud.user import UserCRUD
-from database.crud.invoice import InvoiceCRUD
-from database.crud.logging import LogCRUD
-from database.crud import USDTTransactionCRUD, EthereumWalletCRUD, ReferralCRUD
+from database.crud import (
+    USDTTransactionCRUD,
+    EthereumWalletCRUD,
+    ReferralCRUD,
+    AdsCRUD,
+    UserCRUD,
+    InvoiceCRUD,
+    LogCRUD
+)
 from core.integrations.crypto import USDTWrapper
+from schemas.ads import AdsInSearch, AdsStatuses
 from schemas.base import ObjectId
 from schemas.logging import Log, LogInDB, LogEvents
-from schemas.ethereum_wallet import EthereumWallet
+from schemas.ethereum_wallet import EthereumWallet, EthereumWalletResponse, ServiceEthereumWalletsResponse
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
 from schemas import User, UserUpdateNotSafe, UserTransaction
@@ -218,15 +224,51 @@ async def get_transactions(
     return await USDTTransactionCRUD.find_many(query=tx_filter.dict(exclude_unset=True, exclude_none=True))
 
 
-@router.get("/wallets/", response_model=List[EthereumWallet])
+@router.get("/wallets/", response_model=List[EthereumWalletResponse])
 async def get_wallets(
     user: User = Depends(user_is_staff_or_superuser),
-    eth_address: Optional[str] = None
+    user_email: Optional[str] = None
 ):
-    query = EthereumWallet(
-        eth_address=eth_address
-    )
-    return await EthereumWalletCRUD.find_many(query=query.dict(exclude_unset=True, exclude_none=True))
+    wallets = await EthereumWalletCRUD.find_many({})
+    eth_wallet_kw = {}
+    for wallet in wallets:
+        eth_wallet_kw[wallet.get("eth_address").lower()] = wallet
+    query = User(email=user_email)
+    users = await UserCRUD.find_many(query=query.dict(exclude_unset=True, exclude_none=True))
+    response = []
+    for user in users:
+        wallet = eth_wallet_kw.get(user.get("eth_address").lower() if user.get("eth_address") else None)
+        response.append({
+            "email": user.get("email"),
+            "eth_address": user.get("eth_address"),
+            "contract_balance": wallet.get("contract_balance") if wallet else None
+        })
+    return response
+
+
+@router.get("/service_wallets/", response_model=ServiceEthereumWalletsResponse)
+async def get_service_wallets(
+    user: User = Depends(user_is_staff_or_superuser),
+    username: Optional[str] = None
+):
+    query = User(username=username)
+    users = await UserCRUD.find_many(query=query.dict(exclude_unset=True, exclude_none=True))
+    total: float = 0.
+    response = []
+    for user in users:
+        service_balance = (user.get("balance_usdt") if user.get("balance_usdt") else 0.) \
+            + (user.get("usdt_in_invoices") if user.get("usdt_in_invoices") else 0.)
+        response.append({
+            "username": user.get("username"),
+            "service_balance": service_balance,
+            "email": user.get("email"),
+            "eth_address": user.get("eth_address"),
+        })
+        total += service_balance
+    return {
+        "total": total,
+        "wallets": response
+    }
 
 
 @router.get("/wallets/statistic/", response_model=DepositStatistic)
@@ -258,3 +300,23 @@ async def get_stats(
         "total_active": total_on_wallets + total_on_hot_wallet,
         "total": total_on_wallets + total_on_hot_wallet - total_withdraw_pending - total_withdraw_done
     }
+
+
+@router.get("/orders/", response_model=List[Optional[AdsInSearch]])
+async def get_orders(
+    user: User = Depends(user_is_staff_or_superuser),
+    username: Optional[str] = None
+):
+    user = await UserCRUD.find_by_username(username) if username else None
+    if user:
+        adses = await AdsCRUD.find_many(query={"user_id": user.get("_id")})
+    else:
+        adses = await AdsCRUD.find_many({})
+    users = await UserCRUD.find_many(query={})
+    users_kw = {}
+    for user in users:
+        if user.get("username"):
+            users_kw[user["_id"]] = user["username"]
+    for ads in adses:
+        ads["username"] = users_kw[ads["user_id"]]
+    return adses

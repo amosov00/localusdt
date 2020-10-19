@@ -51,7 +51,11 @@ export default {
       default: ''
     },
     hint: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
+    toastText: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
@@ -79,8 +83,9 @@ export default {
       this.showPassword = !this.showPassword
     },
     copy() {
+      const text = this.toastText ? this.toastText : 'Адрес скопирован'
       this.$clipboard(this.value)
-      this.$toast.showMessage({content: 'Адрес скопирован', green: true})
+      this.$toast.showMessage({content: text, green: true})
     }
   }
 }

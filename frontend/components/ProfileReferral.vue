@@ -11,6 +11,14 @@
         header="Поделитесь этой ссылкой с друзьями"
         endIcon="copy"
       />
+      <Input
+        class="profile-referral__code"
+        :value="referralInfo.referral_id"
+        disabled
+        header="Реферальный код"
+        endIcon="copy"
+        toastText="Код скопирован"
+      />
       <hr class="divider" />
 
       <div class="info">
@@ -72,6 +80,10 @@ export default {
 <style lang="scss">
 .profile-referral {
   width: 400px;
+
+  &__code {
+    margin-top: 40px;
+  }
 
   &__header {
     height: 20px;

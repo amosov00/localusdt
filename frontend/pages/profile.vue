@@ -32,14 +32,14 @@
           @click="setTab(1)"
           :class="{ 'tab-nav__item--active': activeTab === 1 }"
         >
-          Инвойсы
+          История сделок
         </div>
         <div
           class="tab-nav__item"
           @click="setTab(2)"
           :class="{ 'tab-nav__item--active': activeTab === 2 }"
         >
-          Ордер
+          Ваши объявления
         </div>
       </nav>
       <div class="tab-item" v-if="activeTab===1">

@@ -9,7 +9,7 @@
 					<nuxt-link v-for="link in footerLinks" :key="link.title" :to="link.url" class="nav__item">{{link.title}}</nuxt-link>
 				</ul>
 			</nav>
-      <p class="footer__copyright">Все права защищены © 2019 / 2020</p>
+      <p class="footer__copyright">{{$t('footer.right')}} © 2019 / 2020</p>
 		</div>
 	</footer>
 </template>
@@ -19,10 +19,10 @@ export default {
   data() {
     return {
       footerLinks: [
-        {title: 'Помощь', url: '/'},
-        {title: 'О нас', url: '/'},
-        {title: 'Как провести сделку', url: '/'},
-        {title: 'Обратиться в службу поддержки', url: '/'},
+        {title: this.$t('footer.support'), url: '/'},
+        {title: this.$t('footer.aboutUs'), url: '/'},
+        {title: this.$t('footer.order'), url: '/'},
+        {title: this.$t('footer.write'), url: '/'},
       ]
     }
   },

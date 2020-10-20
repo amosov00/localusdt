@@ -1,0 +1,9 @@
+{
+  "navbar": {
+    "buy": "Buy Tether",
+    "sell": "Sell Tether"
+  },
+  "login": {
+    "login": "Login"
+  }
+}

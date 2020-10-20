@@ -1,33 +1,36 @@
 <template>
   <div class="profile-referral">
     <div class="profile-referral__header">
-      <h2 class="profile-referral__title">Реферальная программа</h2>
-      <p class="profile-referral__conditions" @click="showModal = true">Условия</p>
+      <h2 class="profile-referral__title">{{ $t('profile.refProgram') }}</h2>
+      <p class="profile-referral__conditions"
+         @click="showModal = true">
+        {{ $t('profile.terms') }}
+      </p>
     </div>
     <div class="profile-referral__body">
       <Input
         :value="referralId"
         disabled
-        header="Поделитесь этой ссылкой с друзьями"
+        :header="$t('profile.link')"
         endIcon="copy"
       />
       <Input
         class="profile-referral__code"
         :value="referralInfo.referral_id"
         disabled
-        header="Реферальный код"
+        :header="$t('profile.refCode')"
         endIcon="copy"
-        toastText="Код скопирован"
+        :toastText="$t('profile.copied')"
       />
       <hr class="divider" />
 
       <div class="info">
         <div class="info__row">
-          <p class="opacity-50 mb-15">Зарегистрировалось по ссылке:</p>
-          <p class="opacity-50">Доход с реферальной программы:</p>
+          <p class="opacity-50 mb-15">{{$t('profile.signUpByLink')}}</p>
+          <p class="opacity-50">{{$t('profile.earn')}}</p>
         </div>
         <div class="info__row">
-          <p class="mb-15">{{referralInfo.referral_count}} человек</p>
+          <p class="mb-15">{{referralInfo.referral_count}} {{$t('profile.people')}}</p>
           <p>{{spaceSplitting(referralInfo.income)}} USDT</p>
         </div>
       </div>
@@ -59,7 +62,7 @@ export default {
   },
   async mounted() {
     let referralInfo = await this.$store.dispatch('fetchReferralInfo')
-    if(referralInfo) {
+    if (referralInfo) {
       this.referralInfo = referralInfo
     }
 

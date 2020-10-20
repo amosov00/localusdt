@@ -1,53 +1,47 @@
 <template>
   <div class="steps">
     <div class="step-1">
-      <p><span class="opacity-50">Шаг 1: </span> Заплатите продавцу</p>
       <p>
-        Отправьте сообщение {{ invoice.seller_username }}, чтобы обратиться за
-        помощью в совершении платежа.
+        <span class="opacity-50">{{$t('sendMoney.step')}} 1: </span>
+        {{$t('sendMoney.payToSeller')}}
+      </p>
+      <p>
+        {{$t('sendMoney.text1', {msg: invoice.seller_username})}}
       </p>
       <div class="steps-list">
         <div class="steps-list__row">
-        <p>
-          <span class="opacity-50">Сумма:</span>
-        </p>
-        <p class="steps-list--left">
-          <span>{{ commaSplitting(invoice.amount_rub) }} ₽</span>
-        </p>
+          <p>
+            <span class="opacity-50">{{$t('sendMoney.sum')}} </span>
+          </p>
+          <p class="steps-list--left">
+            <span>{{ commaSplitting(invoice.amount_rub) }} ₽</span>
+          </p>
         </div>
         <div class="steps-list__row">
-        <p>
-          <span class="opacity-50">Способ оплаты: </span>
-        </p>
-        <p class="steps-list--left">
-          <span>Банковский перевод: Сбербанк</span>
-        </p>
+          <p>
+            <span class="opacity-50">{{$t('sendMoney.payType')}} </span>
+          </p>
+          <p class="steps-list--left">
+            <span>{{$t('main.bankTransfer')}} {{$t('main.sberbank')}} </span>
+          </p>
         </div>
       </div>
     </div>
     <div class="step-2">
-      <p><span class="opacity-50">Шаг 2: </span> Подтвердите платеж</p>
-      <p>
-        Токены удерживаются на счете в течение
-        <span class="orange">90 минут</span>, за это время необходимо
-        осуществить оплату. После оплаты Вам необходимо
-        <span class="orange"> отметить платеж как завершенный</span>, нажав на
-        кнопку “я заплатил”, в противном случае сделка будет автоматически
-        отменена.
+      <p><span class="opacity-50">{{$t('sendMoney.step')}} 2: </span> {{$t('sendMoney.approve')}} </p>
+      <p v-html="$t('sendMoney.text2')">
       </p>
       <Button
         class="w-100 mt-20"
         green
         @click.native="paid"
         :disabled="invoice.status !== 'waiting_for_payment'"
-        >Я заплатил</Button
-      >
+      >{{$t('sendMoney.payed')}}
+      </Button>
     </div>
     <div class="step-3" v-if="invoice.status === 'waiting_for_tokens'">
-      <p><span class="opacity-50">Шаг 3: </span> Ожидайте токены</p>
-      <p>
-        В течении <span class="orange">30 минут</span> продавец отпрвит токены
-        на ваш адрес.
+      <p><span class="opacity-50">{{$t('sendMoney.step')}} 3: </span> {{$t('sendMoney.wait')}} </p>
+      <p v-html="$t('sendMoney.text3')">
       </p>
     </div>
   </div>
@@ -56,6 +50,7 @@
 <script>
 import Button from '~/components/app/Button'
 import formatCurrency from '~/mixins/formatCurrency'
+
 export default {
   mixins: [formatCurrency],
   props: {
@@ -89,13 +84,13 @@ export default {
     &__row {
 
       display: flex;
-    justify-content: space-between;
-    // flex-direction: column;
+      justify-content: space-between;
+      // flex-direction: column;
 
-    span {
-      text-align: left;
+      span {
+        text-align: left;
 
-    }
+      }
     }
 
     &--left {

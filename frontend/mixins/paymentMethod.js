@@ -3,13 +3,13 @@ export default {
     paymentMethod(method) {
       switch (method) {
         case 1:
-          return 'Банковский перевод: Сбербанк'
+          return `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`
         case 2:
-          return 'Банковский перевод: Тинькофф'
+          return `${this.$t('main.bankTransfer')} ${this.$t('main.tinkof')}`
         case 3:
-          return 'Банковский перевод: Альфа Банк'
+          return `${this.$t('main.bankTransfer')} ${this.$t('main.alfa')}`
         case 4:
-          return 'Иной способ'
+          return `${this.$t('main.otherWay')}}`
         default:
           break;
       }

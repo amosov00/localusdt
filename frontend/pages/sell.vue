@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h1 class="table-section__title mt-330">Продать USDT</h1>
+    <h1 class="table-section__title mt-330">{{$t('main.sellUSDT')}}</h1>
     <Tab :nav="false" :outsideParams="$route.query" :type="1" />
     <AppTable class="mb-80" :data="orders" :headers="headers" pagination>
       <template slot-scope="header"></template>
@@ -21,7 +21,7 @@
         <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
         <td class="table__data">
           <nuxt-link :to="`/order/${row._id}`">
-            <Button rounded outlined green>Продать</Button>
+            <Button rounded outlined green>{{$t('main.sell')}}</Button>
           </nuxt-link>
         </td>
       </template>
@@ -48,11 +48,11 @@ export default {
   data() {
     return {
       headers: [
-        'Продавец',
-        'Способ оплаты',
-        'Лимит',
-        'Количество',
-        'Цена за токен'
+        this.$t('main.seller'),
+        this.$t('main.payType'),
+        this.$t('main.limit'),
+        this.$t('main.quantity'),
+        this.$t('main.cost'),
       ]
     }
   },

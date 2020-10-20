@@ -1,17 +1,17 @@
 <template>
   <section class="order">
     <header class="order__header">
-      <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
+      <h1 class="ad__title">{{$t('invoice.contact')}} № {{ invoice._id }}</h1>
       <div class="order__info">
         <div>
           <span class="opacity-50 fz-20">
             <span>{{ roleAction }}</span>
-            <span>{{ commaSplitting(invoice.amount_usdt) }} USDT на</span>
+            <span>{{ commaSplitting(invoice.amount_usdt) }} USDT {{$t('invoice.for')}}</span>
             <span>{{ commaSplitting(invoice.amount_rub) }} ₽</span>
           </span>
           <div class="ad__subtitle">
             <p>
-              <span class="green">Статус сделки: </span>
+              <span class="green">{{$t('invoice.status')}}</span>
               {{ invoiceStatus(invoice.status) }}
             </p>
             <p
@@ -21,7 +21,7 @@
           "
               @click="cancelModal = true"
             >
-              Отменить сделку
+              {{$t('invoice.cancel')}}
             </p>
           </div>
         </div>
@@ -31,8 +31,8 @@
     <OrderInfo :order="invoice" />
     <div class="order__footer">
       <Chat :invoice="invoice" :name="roleUser" />
-      <SendMoneySteps v-if="role === 'Продавец'" :invoice="invoice" />
-      <SendUSDTSteps v-else-if="role === 'Покупатель'" :invoice="invoice" />
+      <SendMoneySteps v-if="role === 'seller'" :invoice="invoice" />
+      <SendUSDTSteps v-else-if="role === 'bayer'" :invoice="invoice" />
     </div>
     <InvoiceCancelModal
       :show="cancelModal"
@@ -87,12 +87,12 @@ export default {
         (this.invoice.ads_type || this.invoice.type === 1) &&
         this.invoice.seller_username === this.user.username
       ) {
-        return 'Продажа'
+        return this.$t('invoice.sell')
       } else if (
         (this.invoice.ads_type || this.invoice.type === 2) &&
         this.invoice.buyer_username === this.user.username
       ) {
-        return 'Покупка'
+        return this.$t('invoice.buy')
       }
     },
     role() {
@@ -100,20 +100,20 @@ export default {
         (this.invoice.ads_type || this.invoice.type === 1) &&
         this.invoice.seller_username === this.user.username
       ) {
-        return 'Покупатель'
+        return 'bayer'
       } else if (
         (this.invoice.ads_type || this.invoice.type === 2) &&
         this.invoice.buyer_username === this.user.username
       ) {
-        return 'Продавец'
+        return 'seller'
       }
     },
     roleUser() {
       switch (this.role) {
-        case 'Покупатель':
+        case 'bayer':
           return this.invoice.buyer_username
           break
-        case 'Продавец':
+        case 'seller':
           return this.invoice.username || this.invoice.seller_username
           break
         default:

@@ -7,13 +7,13 @@ from fastapi import APIRouter, HTTPException, Depends, Body, Response, Path
 from database.crud.ads import AdsCRUD
 from database.crud.user import UserCRUD
 from api.dependencies import get_user, user_not_banned
+from schemas.currency import CurrencyType
 from schemas.ads import (
     AdsFilters,
     AdsCreate,
     AdsInDB,
     AdsInSearch,
     AdsType,
-    Currency,
     PaymentMethod,
     AdsSort,
     AdsStatuses,
@@ -44,7 +44,7 @@ async def ads_fetch_all(
         order_type: Optional[AdsType] = None,
         price_bot: Optional[float] = None,
         price_top: Optional[float] = None,
-        currency: Optional[Currency] = Currency.RUB,
+        currency: Optional[CurrencyType] = None,
         payment_method: Optional[PaymentMethod] = None,
         sort: Optional[AdsSort] = AdsSort.ASC,
         limit: int = 10000

@@ -58,7 +58,7 @@ class AdsCRUD(BaseMongoCRUD):
             payload,
             user
         )
-        current_rate = (await CurrencyCRUD.find_last())["current_rate"]
+        current_rate = (await CurrencyCRUD.find_last(payload.currency))["current_rate"]
         if not current_rate:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate.")
 
@@ -175,7 +175,7 @@ class AdsCRUD(BaseMongoCRUD):
                 (ads["status"] != AdsStatuses.ACTIVE and ads["status"] != AdsStatuses.NOT_ACTIVE):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Cannot get order")
 
-        current_rate = (await CurrencyCRUD.find_last())["current_rate"]
+        current_rate = (await CurrencyCRUD.find_last(ads.get("currency")))["current_rate"]
         if not current_rate:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Can't get currency rate.")
 

@@ -55,7 +55,7 @@
             </td>
             <td class="table__data">{{commaSplitting(row.amount_usdt)}}
               <span class="grey-dark fw-400">
-                {{$t('profile.for')}} {{commaSplitting(row.amount_rub)}} ₽
+                {{$t('profile.for')}} {{commaSplitting(row.amount)}} ₽
               </span>
             </td>
             <td class="table__data" :style="{ color: statusColor(row.status) }">

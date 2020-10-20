@@ -5,12 +5,12 @@ from pydantic import Field, validator
 
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
+from schemas.currency import CurrencyType
 
 __all__ = [
     "Ads",
     "AdsType",
     "PaymentMethod",
-    "Currency",
     "AdsCreate",
     "AdsInDB",
     "AdsFilters",
@@ -45,12 +45,6 @@ class PaymentMethod(IntEnum):
     OTHER = 4
 
 
-class Currency(IntEnum):
-    RUB = 1
-    USD = 2
-    EUR = 3
-
-
 class AdsStatuses(IntEnum):
     ACTIVE = 1
     NOT_ACTIVE = 2
@@ -74,7 +68,7 @@ class Ads(BaseModel):
     # Extra info
     payment_method: PaymentMethod = Field(default=None)
     other_payment_method: str = Field(default=None)
-    currency: Currency = Field(default=None)
+    currency: CurrencyType = Field(default=None)
     condition: str = Field(default=None, description="Condition of the Ads")
 
     # Datetimes
@@ -111,7 +105,7 @@ class AdsCreate(BaseModel):
         description="Payment method, 1 = Sberbank, 2 = Tinkoff, 3 = Alfa-bank, 4 = Other"
     )
     other_payment_method: str = Field(default=None)
-    currency: str = Field(default=Currency.RUB)
+    currency: CurrencyType = Field(default=CurrencyType.RUB, description='1 -- RUB, 2 -- BYN')
     condition: str = Field(default="", description="Condition of the Ads")
 
     profit: int = Field(default=0)
@@ -154,7 +148,7 @@ class AdsFilters(BaseModel):
     type: Optional[AdsType] = Field(default=None)
     price_bot: Optional[float] = Field(default=None)
     price_top: Optional[float] = Field(default=None)
-    currency: Optional[Currency] = Field(default=Currency.RUB)
+    currency: Optional[CurrencyType] = Field(default=CurrencyType.RUB)
     payment_method: Optional[PaymentMethod] = Field(default=PaymentMethod.SBERBANK)
     sort: Optional[AdsSort] = Field(default=AdsSort.ASC)
     limit: int = Field(...)

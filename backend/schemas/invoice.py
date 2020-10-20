@@ -6,6 +6,7 @@ from pydantic import Field, validator
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
 from schemas.ads import AdsType
+from schemas.currency import CurrencyType
 
 __all__ = [
     "Invoice",
@@ -33,7 +34,8 @@ class Invoice(BaseModel):
     ads_id: ObjectIdPydantic = Field(...)
     seller_id: ObjectIdPydantic = Field(...)
     buyer_id: ObjectIdPydantic = Field(...)
-    amount_rub: float = Field(default=None)
+    currency: CurrencyType = Field(..., description="1 -- RUB, 2 -- BYN")
+    amount: float = Field(default=None)
     amount_usdt: float = Field(...)
     status: Literal[InvoiceStatus.ALL] = Field( # noqa
         ...,

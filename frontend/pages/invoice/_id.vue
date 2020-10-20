@@ -7,7 +7,7 @@
           <span class="opacity-50 fz-20">
             <span>{{ roleAction }}</span>
             <span>{{ commaSplitting(invoice.amount_usdt) }} USDT на</span>
-            <span>{{ commaSplitting(invoice.amount_rub) }} ₽</span>
+            <span>{{ commaSplitting(invoice.amount) }} ₽</span>
           </span>
           <div class="ad__subtitle">
             <p>

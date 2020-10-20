@@ -55,7 +55,7 @@
               <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">{{commaSplitting(row.amount_usdt)}} <span class="grey-dark fw-400">за
-              {{commaSplitting(row.amount_rub)}} ₽</span></td>
+              {{commaSplitting(row.amount)}} ₽</span></td>
             <td class="table__data" :style="{ color: statusColor(row.status) }">
               <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
             </td>

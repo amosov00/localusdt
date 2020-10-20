@@ -3,7 +3,7 @@
     <div class="order-details__row fz-20">
       <p class="order-details__cell grey-dark">Цена</p>
       <p class="order-details__cell">
-        {{ commaSplitting(orderDetails.price || orderDetails.amount_rub) }}
+        {{ commaSplitting(orderDetails.price || orderDetails.amount) }}
         ₽/USDT
       </p>
     </div>

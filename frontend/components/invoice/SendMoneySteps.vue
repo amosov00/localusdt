@@ -12,7 +12,7 @@
           <span class="opacity-50">Сумма:</span>
         </p>
         <p class="steps-list--left">
-          <span>{{ commaSplitting(invoice.amount_rub) }} ₽</span>
+          <span>{{ commaSplitting(invoice.amount) }} ₽</span>
         </p>
         </div>
         <div class="steps-list__row">

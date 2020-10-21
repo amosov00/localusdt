@@ -3,11 +3,11 @@
     table.table
       thead.table__header
         tr.table__row
-          th.table__head Продавец
-          th.table__head Способ оплаты
-          th.table__head Лимит
-          th.table__head Количество
-          th.table__head Цена за токен
+          th.table__head {{$t('main.seller')}}
+          th.table__head {{$t('main.payType')}}
+          th.table__head {{$t('main.limit')}}
+          th.table__head {{$t('main.quantity')}}
+          th.table__head {{$t('main.cost')}}
       tbody.table__body
         tr.table__row(v-for="order in paginatedTableData" :key="order._id")
           td.table__data {{order.username}}

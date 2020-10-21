@@ -1,38 +1,106 @@
 <template lang="pug">
   div.create-order
-    p.create-order__token-price Текущий курс токена
+    p.create-order__token-price {{$t('bid.actualCourse')}}
       =' '
       span.green {{commaSplitting(currencyPrice)}}
       span ₽/USDT
     header.create-order__navigation
-      h1 Продать USDT
+      h1 {{$t('bid.sellUSDT')}}
     hr
     div.create-order__form
       div.create-order__options
-        Select(:options="paymentOptions" :selectedOptionProp="adForm.payment_method" v-model="adForm.payment_method" :width="350" header="Способ оплаты")
-        Select(:options="currencyOptions" v-model="adForm.currency" :width="80" header="Валюты" hideArrow)
-      Input.create-order__input( v-if="yourVersion" v-model="adForm.bank_title" header="" placeholder="Свой вариант")
-      Input.create-order__input.mt-40.mb-110(v-model="adForm.amount_usdt" type="number" :header="inputHeader" placeholder="0" endIcon="usdt")
+        Select(
+        :options="paymentOptions"
+        :selectedOptionProp="adForm.payment_method"
+        v-model="adForm.payment_method"
+        :width="350"
+        :header="$t('bid.payType')"
+        )
+        Select(
+        :options="currencyOptions"
+        v-model="adForm.currency"
+        :width="80"
+        :header="$t('bid.currency')"
+        hideArrow)
+      Input.create-order__input(
+      v-if="yourVersion"
+      v-model="adForm.bank_title"
+      header=""
+      :placeholder="$t('bid.otherVariant')"
+      )
+      Input.create-order__input.mt-40.mb-110(
+      v-model="adForm.amount_usdt"
+      type="number"
+      :header="inputHeader"
+      placeholder="0"
+      endIcon="usdt")
       div.radio-group
         label(for="profit-is-formula")
-          input(id="profit-is-formula" type="radio" value="formula" name="profit-mode" v-model="profitMode")
-          span Формула
+          input(id="profit-is-formula"
+          type="radio"
+          value="formula"
+          name="profit-mode"
+          v-model="profitMode")
+          span {{$t('bid.formula')}}
         label(for="profit-is-fixed")
-          input(id="profit-is-fixed" type="radio" value="fixed" name="profit-mode" v-model="profitMode")
-          span Фиксированная
-      Input.create-order__input(v-model="adForm.price" header="Цена" placeholder="Цена" v-if="adForm.fixed_price")
-      Input.create-order__input(v-model="adForm.profit" header="Прибыль" placeholder="Прибыль" type="number" endIcon="procent" hint v-if="!adForm.fixed_price")
-      Input.create-order__input(disabled :value="equation" header="Уравнение установление цены" placeholder="" type="text" v-if="profitMode === 'formula'")
+          input(
+          id="profit-is-fixed"
+          type="radio"
+          value="fixed"
+          name="profit-mode"
+          v-model="profitMode")
+          span {{$t('bid.fixed')}}
+
+      Input.create-order__input(
+      v-model="adForm.price"
+      :header="$t('bid.price')"
+      :placeholder="$t('bid.price')"
+      v-if="adForm.fixed_price")
+
+      Input.create-order__input(
+      v-model="adForm.profit"
+      :header="$t('bid.profit')"
+      :placeholder="$t('bid.profit')"
+      type="number"
+      endIcon="procent"
+      hint v-if="!adForm.fixed_price")
+
+      Input.create-order__input(
+      disabled
+      :value="equation"
+      :header="$t('bid.priceSetting')"
+      placeholder=""
+      type="text"
+      v-if="profitMode === 'formula'")
+
       div.create-order__gap
-        Input.mr-30(v-model="adForm.bot_limit" :width="250" type="number" header="Минимальный лимит транзакции")
-        Input(v-model="adForm.top_limit" :width="250" type="number" header="Максимальный лимит транзакции")
+        Input.mr-30(
+        v-model="adForm.bot_limit"
+        :width="250"
+        type="number"
+        :header="$t('bid.minLimit')")
+        Input(
+        v-model="adForm.top_limit"
+        :width="250"
+        type="number"
+        :header="$t('bid.maxLimit')")
         //- Select.create-order__gap--select(:options="currencyOptions" v-model="adForm.currency" :width="80")
-      Textarea.create-order__conditions(v-model="adForm.condition" placeholder="Напишите условия сделки")
-      Checkbox(v-model="checkbox" label="Вставить условия сделки из профиля")
-      Button.create-order__action(green @click.native="createAd(false)" v-if="!editMode") Создать объявление
+      Textarea.create-order__conditions(
+      v-model="adForm.condition"
+      :placeholder="$t('bid.writeTerms')"
+      )
+      Checkbox(
+      v-model="checkbox"
+      :label="$t('bid.putProfileTerms')")
+
+      Button.create-order__action(
+      green
+      @click.native="createAd(false)"
+      v-if="!editMode") {{$t('bid.createAd')}}
+
       div(v-else).create-order__action
-        Button(green @click.native="createAd(true)").mr-15 Сохранить
-        Button(white @click.native="$nuxt.context.redirect(`/order/${$route.query.edit}`)") Отмена
+        Button(green @click.native="createAd(true)").mr-15 {{$t('bid.save')}}
+        Button(white @click.native="$nuxt.context.redirect(`/order/${$route.query.edit}`)") {{$t('bid.cancel')}}
       Modal(:show="showModal" @toggleModal="toggleModal($event)" :type="2")
 </template>
 
@@ -45,6 +113,7 @@ import Select from '~/components/app/Select'
 import Modal from '~/components/app/Modal'
 import { mapGetters } from 'vuex'
 import formatCurrency from '~/mixins/formatCurrency'
+
 export default {
   components: { Input, Textarea, Button, Checkbox, Select, Modal },
   middleware: ['authRequired'],
@@ -73,9 +142,9 @@ export default {
         // { name: 'EUR', value: 3 }
       ],
       paymentOptions: [
-        { name: 'Банковский перевод: Сбербанк', value: 1 },
-        { name: 'Банковский перевод: Тиньков', value: 2 },
-        { name: 'Свой вариант', value: 3 }
+        { name: this.$t('main.sberTransfer'), value: 1 },
+        { name: this.$t('main.tinkofTransfer'), value: 2 },
+        { name: this.$t('main.otherWay'), value: 3 }
       ],
       showModal: false,
       checkbox: false
@@ -83,7 +152,7 @@ export default {
   },
   watch: {
     profitMode() {
-      if(this.profitMode === 'fixed') {
+      if (this.profitMode === 'fixed') {
         this.adForm.fixed_price = true
         this.adForm.price = this.currencyPrice.toFixed(2)
       } else {
@@ -110,32 +179,26 @@ export default {
         return currency.value === this.adForm.currency
       })
 
-/*      if(this.profitMode === 'fixed') {
-        return `${this.currencyPrice.toFixed(2)}*${this.adForm.profit}`
-      }*/
+      /*      if(this.profitMode === 'fixed') {
+              return `${this.currencyPrice.toFixed(2)}*${this.adForm.profit}`
+            }*/
 
       return `usdt_in_${currencyName.name.toLowerCase()}*${this.adForm.profit}`
     },
     yourVersion() {
-      if (this.adForm.payment_method === 3) {
-        return true
-      }
-      return false
+      return this.adForm.payment_method === 3;
+
     },
     inputHeader() {
-      if (this.adForm.type === 2) {
-        return 'Сколько вы хотите продать'
-      } else {
-        return 'Сколько вы хотите купить'
-      }
+      return this.adForm.type === 2 ? this.$t('bid.wantToSell') : this.$t('bid.wantToBuy')
     }
   },
   methods: {
     async createAd(save = false) {
-      if(this.adForm.fixed_price) {
-        if(isNaN(Number(this.adForm.price)) || Number(this.adForm.price) <= 0) {
+      if (this.adForm.fixed_price) {
+        if (isNaN(Number(this.adForm.price)) || Number(this.adForm.price) <= 0) {
           this.$toast.showMessage({
-            content: 'Введите корректную цену',
+            content: this.$t('bid.correctPrice'),
             red: true
           })
           return
@@ -144,27 +207,27 @@ export default {
 
       if (!this.adForm.amount_usdt || this.adForm.amount_usdt <= 0) {
         this.$toast.showMessage({
-          content: 'Введите количество USDT',
+          content: this.$t('bid.quantity'),
           red: true
         })
       } else if (!this.adForm.bot_limit || !this.adForm.top_limit) {
         this.$toast.showMessage({
-          content: 'Введите лимиты объявления',
+          content: this.$t('bid.limits'),
           red: true
         })
       } else if (!this.adForm.condition) {
         this.$toast.showMessage({
-          content: 'Введите условие',
+          content: this.$t('bid.terms'),
           red: true
         })
       } else {
-        let res;
+        let res
 
-        if(save) {
+        if (save) {
           res = await this.$store.dispatch('order/updateOrder', { id: this.$route.query.edit, data: this.adForm })
-          if(res) {
+          if (res) {
             this.$toast.showMessage({
-              content: 'Объявление успешно сохранено!',
+              content: this.$t('bid.adSaved'),
               green: true
             })
 
@@ -189,7 +252,7 @@ export default {
 
     await store.dispatch('fetchCurrencyPrice')
 
-    let res = null;
+    let res = null
     let adForm = {
       type: 2,
       bot_limit: null,
@@ -204,17 +267,17 @@ export default {
       price: 0
     }
 
-    if(query.hasOwnProperty('edit')) {
-      if(query.edit.length > 0) {
+    if (query.hasOwnProperty('edit')) {
+      if (query.edit.length > 0) {
         res = await store.$axios.get(`/order/${query.edit}`)
 
-        for(const key in adForm) {
+        for (const key in adForm) {
           adForm[key] = res.data[key]
         }
 
         let profitMode = 'formula'
 
-        if(adForm.fixed_price) {
+        if (adForm.fixed_price) {
           profitMode = 'fixed'
         }
 

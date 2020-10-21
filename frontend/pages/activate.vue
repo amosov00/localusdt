@@ -1,6 +1,6 @@
 <template>
   <section class="activate">
-    <h1 class="activate__title">Активация почты</h1>
+    <h1 class="activate__title">{{$t('other.activationEmail')}}</h1>
   </section>
 </template>
 

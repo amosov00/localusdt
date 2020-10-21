@@ -2,10 +2,9 @@
   <transition name="fade">
     <div class="modal-wrapper" v-show="show">
       <div class="text-center">
-        <h1>Транзакция обрабатывается</h1>
+        <h1>{{$t('other.transactionProcessed')}}</h1>
         <p class="mt-20">
-          В зависимости от загрузки сети транзакции обрабатываются от 5 минут до
-          суток
+          {{$t('other.text1')}}
         </p>
         <Button
           @click.native="$emit('toggleModal', false)"

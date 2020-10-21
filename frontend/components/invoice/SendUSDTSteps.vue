@@ -1,16 +1,12 @@
 <template>
   <div class="steps">
-    <p class="fz-20">Отправить токены</p>
-    <p>
-      Покупатель еще не отметил платеж как завершенный, и остается
-      <span class="green">89 минут</span> для проведения оплаты. Если оплата не
-      будет осуществлена, сделка автоматически отменится. Когда Вы получите
-      платеж, <span class="orange">отправьте токены</span> из депонирования.
+    <p class="fz-20">{{ $t('sendSteps.sendTokens') }}</p>
+    <p v-html="$t('sendSteps.text1')">
     </p>
     <div class="ma-0 pa-20">
       <p>
         <span class="opacity-50">
-          Не забудьте дать покупателю указания об оплате
+          {{$t('sendSteps.text2')}}
         </span>
       </p>
     </div>
@@ -52,9 +48,9 @@ export default {
     sendTokenBtnText() {
       const { status } = this.invoice
       if (status === 'cancelled') {
-        return 'сделка отменена'
+        return this.$t('sendSteps.orderCancelled')
       }
-      return 'отправить токены'
+      return this.$t('sendSteps.sendTokens')
     }
   },
   methods: {

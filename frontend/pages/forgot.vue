@@ -1,7 +1,7 @@
 <template>
   <section class="auth-form">
     <header class="auth-form__header">
-      <h1 class="auth-form__title">Восстановление пароля</h1>
+      <h1 class="auth-form__title">{{ $t('signup.forgotPass') }}</h1>
     </header>
     <ValidationObserver v-slot="{ invalid }">
       <form class="auth-form__form">
@@ -12,7 +12,7 @@
         >
           <Input
             v-model="forgotForm.email"
-            placeholder="Эл. почта"
+            :placeholder="$t('signup.email')"
             icon="email"
             type="email"
           />
@@ -21,7 +21,7 @@
       </form>
       <div class="auth-form__action">
         <Button @click.native="startRecover" :disabled="invalid" green
-          >Отправить</Button
+          >{{ $t('signup.send') }}</Button
         >
       </div>
     </ValidationObserver>

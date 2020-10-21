@@ -2,9 +2,9 @@
   <div class="interaction">
     <div class="withdraw">
       <div class="withdraw__header">
-        <h2 class="withdraw__title">Вывести USDT</h2>
+        <h2 class="withdraw__title">{{$t('wallet.withdrawUSDT')}}</h2>
         <p class="withdraw__subtitle">
-          Минимальная сумма отправки <span class="orange">1 USDT</span>
+          {{$t('wallet.minSend')}} <span class="orange">1 USDT</span>
         </p>
       </div>
 
@@ -13,7 +13,7 @@
           <Input
             v-model="withdrawForm.amount"
             type="number"
-            header="Сумма перевода"
+            :header="$t('wallet.transferAmount')"
             :width="150"
           />
         </div>
@@ -21,19 +21,25 @@
           <Input
             v-model="withdrawForm.address"
             type="text"
-            header="Принимающий адрес"
+            :header="$t('wallet.receivingAddress')"
             :width="400"
           />
-          <Button class="ml-30" @click.native="withdrawFunds" :disabled="withdrawBtn" green>Вывести</Button>
+          <Button
+            class="ml-30"
+            @click.native="withdrawFunds"
+            :disabled="withdrawBtn"
+            green>
+            {{$t('wallet.withdraw')}}
+          </Button>
         </div>
       </form>
     </div>
     <div class="add">
-      <h2 class="add__title">Пополнить USDT</h2>
+      <h2 class="add__title">{{$t('wallet.topUp')}}</h2>
       <Input
         class="mt-50"
         type="text"
-        header="Используйте этот адрес чтобы пополнить баланс"
+        :header="$t('wallet.balanceAddress')"
         :value="user.eth_address"
         disabled
         endIcon="copy"
@@ -50,6 +56,7 @@ import Input from '~/components/app/Input'
 import Select from '~/components/app/Select'
 import WalletTxModal from '~/components/WalletTxModal'
 import { mapGetters } from 'vuex'
+
 export default {
   components: {
     Button,
@@ -75,27 +82,27 @@ export default {
   methods: {
     async withdrawFunds() {
       if (this.withdrawForm.amount <= 0) {
-        this.$toast.showMessage({ content: 'Введите сумму', red: true })
+        this.$toast.showMessage({ content: this.$t('wallet.editSum'), red: true })
       } else if (!this.withdrawForm.address) {
-        this.$toast.showMessage({ content: 'Введите адрес', red: true })
+        this.$toast.showMessage({ content: this.$t('wallet.editAddress'), red: true })
       } else {
-        this.withdrawBtn = true;
+        this.withdrawBtn = true
 
         const res = await this.$store.dispatch('wallet/withdraw', {
           amount: this.withdrawForm.amount,
           to: this.withdrawForm.address
         })
 
-        if(res) {
+        if (res) {
           this.withdrawForm.amount = ''
           this.withdrawForm.address = ''
           this.show = true
           this.$store.dispatch('wallet/fetchTransactions')
         } else {
-          this.$toast.showMessage({ content: 'Что-то пошло не так, попробуйте немного позже', red: true })
+          this.$toast.showMessage({ content: this.$t('wallet.error'), red: true })
         }
 
-        this.withdrawBtn = false;
+        this.withdrawBtn = false
       }
     }
   }

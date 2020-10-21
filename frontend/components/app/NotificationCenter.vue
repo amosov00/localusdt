@@ -11,12 +11,12 @@
         div.notify-center__popup(v-if="showMessages" @click.stop)
           div.notify-center__header
             div.notify-center__header-left
-              span.notify-center__title Уведомления
+              span.notify-center__title {{ $t('other.notifications') }}
               div.notify-center__refresh(@click="loadNotifictions")
                 InlineSvg(:src="require('~/assets/icons/refresh.svg')")
-            div.notify-center__watch-all(@click="markAllRead") Отметить все прочитанным
+            div.notify-center__watch-all(@click="markAllRead") {{ $t('other.mark') }}
           div.notify-center__list(@click="hide")
-            div(v-if="notif_list.length === 0").notify-center__empty Здесь будут уведомления о сделках
+            div(v-if="notif_list.length === 0").notify-center__empty {{ $t('other.orderNotes') }}
             //--n-link(:to="'/invoice/' + msg.invoice_id" v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
             div(v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
               div(v-if="msg.amount")
@@ -81,11 +81,7 @@
 
     computed: {
       showBadge() {
-        if(this.notif_list.findIndex(el => el.watched === false) !== -1) {
-          return true
-        }
-
-        return false
+        return this.notif_list.findIndex(el => el.watched === false) !== -1;
       }
     },
 
@@ -103,7 +99,7 @@
           .then(res => {
             this.notif_list = res.data;
           }).catch(() => {
-          this.$toast.showMessage({content: 'Ошибка загрузки уведомлений', red: true})
+          this.$toast.showMessage({content: this.$t('other.notesError'), red: true})
         })
       },
 

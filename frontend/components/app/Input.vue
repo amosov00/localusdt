@@ -13,7 +13,7 @@
         <InlineSvg :src="require(`~/assets/icons/${endIcon}.svg`)" />
       </span>
     </div>
-    <p v-if="hint" class="input__hint">Размер прибыли, которую Вы хотите получить <br> сверху рыночной цены.</p>
+    <p v-if="hint" class="input__hint" v-html="$t('main.inputWarn')"></p>
   </div>
 </template>
 
@@ -83,7 +83,7 @@ export default {
       this.showPassword = !this.showPassword
     },
     copy() {
-      const text = this.toastText ? this.toastText : 'Адрес скопирован'
+      const text = this.toastText ? this.toastText : this.$t('main.addressCopied')
       this.$clipboard(this.value)
       this.$toast.showMessage({content: text, green: true})
     }

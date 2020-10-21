@@ -1,4 +1,100 @@
 {
+  "other": {
+    "congrats": "Your ad was posted successfully!",
+    "control": "You can control it on the buy / sell page",
+    "close": "Close",
+    "notifications": "Notifications",
+    "mark": "Mark all read",
+    "orderNotes": "Trade notifications will be here",
+    "notesError": "Error loading notifications",
+    "cancelOrder": "Do you want to cancel the trade?",
+    "approveCancel": "Confirm transaction cancellation from",
+    "cancelBtn": "cancel the deal",
+    "cancel": "cancel",
+    "sendUSDT": "Send USDT",
+    "send": "send",
+    "refTerms": "Terms of the referral program",
+    "transactionProcessed": "Transaction being processed",
+    "text1": "Depending on the network load, transactions are processed from 5 minutes to a day",
+    "activationEmail": "Mail activation"
+  },
+  "sendSteps": {
+    "sendTokens": "Send tokens",
+    "text1": "The buyer has not yet marked the payment as completed, and there are <span class =\"green\"> 89 minutes </span> left to process the payment. If the payment is not completed, the transaction will be automatically canceled. When you receive your payment, <span class = \"orange\"> send tokens </span> from escrow. ",
+    "text2": "Don't forget to give the buyer payment instructions",
+    "orderCancelled": "trade canceled"
+  },
+  "orderForm": {
+    "wantToSell": "How much do you want to sell?",
+    "wantToBuy": "How much do you want to buy?",
+    "writeTo": "Write a message to the trader with contact or other information (optional)",
+    "send": "Send a trade request",
+    "reg": "Register for free",
+    "writeSum": "Enter the amount"
+  },
+  "wallet": {
+    "wallet": "Wallet",
+    "all": "Total:",
+    "inOrders": "In deals:",
+    "withdrawUSDT": "Withdraw USDT",
+    "minSend": "Minimum send amount",
+    "transferAmount": "Transfer amount",
+    "receivingAddress": "Receiving address",
+    "withdraw": "Withdraw",
+    "topUp": "Top up USDT",
+    "topUp2": "USDT top-up",
+    "balanceAddress": "Use this address to top up your balance",
+    "editSum": "Enter amount",
+    "editAddress": "Please enter an address",
+    "error": "Something went wrong, please try a little later",
+    "transactionHistory": "Transaction History",
+    "date": "Date",
+    "action": "Action",
+    "address": "Address",
+    "amount": "Amount",
+    "status": "Status",
+    "done": "Done",
+    "processed": "Processed",
+    "canceled": "Canceled"
+  },
+  "bid": {
+    "title": "What do you want?",
+    "subtitle": "Select the type of deal",
+    "buyUSDT": "Buy USDT",
+    "sellUSDT": "Sell USDT",
+    "actualCourse": "Current token rate",
+    "payType": "Payment method",
+    "currency": "Currencies",
+    "otherVariant": "Your own variant",
+    "formula": "Formula",
+    "fixed": "Fixed",
+    "price": "Price",
+    "profit": "Profit",
+    "priceSetting": "Price setting equation",
+    "minLimit": "Minimum transaction limit",
+    "maxLimit": "Maximum transaction limit",
+    "writeTerms": "Write the terms of the deal",
+    "putProfileTerms": "Insert trade conditions from profile",
+    "createAd": "Create ad",
+    "save": "Save",
+    "cancel": "Cancel",
+    "wantToSell": "How much do you want to sell",
+    "wantToBuy": "How much do you want to buy",
+    "correctPrice": "Please enter correct price",
+    "quantity": "Enter the amount of USDT",
+    "limits": "Enter ad limits",
+    "terms": "Enter a condition",
+    "adSaved": "The ad was successfully saved!"
+  },
+  "order": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "deletedByUser": "Declared deleted by user",
+    "online": "Online",
+    "offline": "Offline",
+    "deleteAd": "Delete ad",
+    "question": "Do you want to delete the ad?"
+  },
   "sendMoney": {
     "step": "Step",
     "payToSeller": "Pay the seller",
@@ -6,10 +102,10 @@
     "sum": "Sum:",
     "payType": "Payment method:",
     "approve": "Confirm payment",
-    "text2": "Tokens are held on the account for <span class =\"orange\"> 90 minutes </span>, during this time you need to make payment. After payment you need to <span class = \"orange\"> check payment as completed </span> by clicking on the “I paid” button, otherwise the transaction will be automatically canceled.",
+    "text2": "Tokens are held on the account for <span class = \"orange\"> 90 minutes </span>, during this time you need to make payment. After payment you need to <span class =\"orange\"> check payment as completed </span> by clicking on the “I paid” button, otherwise the transaction will be automatically canceled. ",
     "payed": "I paid",
     "wait": "Wait for tokens",
-    "text3": "Within <span class =\"orange\"> 30 minutes </span>, the seller will send tokens to your address."
+    "text3": "Within <span class = \"orange\"> 30 minutes </span>, the seller will send tokens to your address."
   },
   "orderDetails": {
     "price": "Price",
@@ -93,7 +189,14 @@
     "passApprove": "Password confirmation",
     "ref": "Referral code",
     "signUp": "Register",
-    "remindPass": "Forgot your password?"
+    "remindPass": "Forgot your password?",
+    "changePass": "Change password",
+    "changePass2": "Change password",
+    "oldPass": "Old password",
+    "newPass": "New password",
+    "forgotPass": "Password recovery",
+    "send": "Send",
+    "recoverPass": "Password recovery"
   },
   "footer": {
     "right": "All rights reserved",
@@ -107,7 +210,7 @@
     "sell": "Sell Tether",
     "reg": "Registration",
     "signIn": "Sign in",
-    "newOrder": "Place an ad"
+    "newOrder": "Create ad"
   },
   "main": {
     "buyUSDT": "Buy USDT",
@@ -130,6 +233,11 @@
     "sberbank": "Sberbank",
     "tinkof": "Tinkoff",
     "alfa": "Alfa Bank",
-    "otherWay": "Other way"
+    "otherWay": "Other way",
+    "sberTransfer": "Bank Transfer: Sberbank",
+    "tinkofTransfer": "Bank Transfer: Tinkoff",
+    "alfaTransfer": "Bank transfer: Alfa Bank",
+    "inputWarn": "The amount of profit you want to make <br> on top of the market price.",
+    "addressCopied": "Address copied"
   }
 }

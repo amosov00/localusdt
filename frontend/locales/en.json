@@ -1,9 +1,135 @@
 {
+  "sendMoney": {
+    "step": "Step",
+    "payToSeller": "Pay the seller",
+    "text1": "Send a message to {msg} to request assistance with your payment.",
+    "sum": "Sum:",
+    "payType": "Payment method:",
+    "approve": "Confirm payment",
+    "text2": "Tokens are held on the account for <span class =\"orange\"> 90 minutes </span>, during this time you need to make payment. After payment you need to <span class = \"orange\"> check payment as completed </span> by clicking on the “I paid” button, otherwise the transaction will be automatically canceled.",
+    "payed": "I paid",
+    "wait": "Wait for tokens",
+    "text3": "Within <span class =\"orange\"> 30 minutes </span>, the seller will send tokens to your address."
+  },
+  "orderDetails": {
+    "price": "Price",
+    "payType": "Payment method:",
+    "limits": "Trade limits:",
+    "quantity": "Quantity",
+    "place": "Location:",
+    "rf": "Russian Federation",
+    "timeLimit": "Payment window:",
+    "hour": "hour",
+    "min": "minutes",
+    "bayer": "Buyer",
+    "seller": "Seller",
+    "terms": "Terms of the deal"
+  },
+  "chat": {
+    "sendMessage": "Send message",
+    "placeholder": "Write a message to the trader with contact or other information (optional)",
+    "send": "Send",
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "empty": "The chat is empty yet!"
+  },
+  "invoice": {
+    "contact": "Contact",
+    "for": "on",
+    "status": "Trade status:",
+    "cancel": "Cancel trade",
+    "sell": "Sale",
+    "buy": "Buy"
+  },
+  "status": {
+    "canceled": "Canceled",
+    "waiting_for_payment": "Waiting for confirmation of payment by the buyer",
+    "approved": "Approved",
+    "waiting_for_tokens": "Waiting for tokens to be sent",
+    "completed": "Completed",
+    "small_waiting_for_payment": "In progress",
+    "small_approved": "Completed",
+    "small_waiting_for_tokens": "In progress",
+    "small_completed": "Completed",
+    "active": "Active",
+    "notActive": "Not active",
+    "deleted": "Deleted"
+  },
+  "profile": {
+    "changePass": "Change password",
+    "logOut": "Log out",
+    "about": "About me",
+    "save": "Save",
+    "history": "History of transactions",
+    "orders": "Your ads",
+    "buyUSDT": "Buy USDT",
+    "sellUSDT": "Sell USDT",
+    "for": "for",
+    "dateTime": "Date, time",
+    "type": "Ad type",
+    "course": "Selling, buying course",
+    "limit": "Limit",
+    "residue": "Remaining amount",
+    "status": "Status",
+    "orderType": "Deal type",
+    "buyerSeller": "Buyer / Seller",
+    "sum": "Sum",
+    "refProgram": "Referral program",
+    "terms": "Terms",
+    "link": "Share this link with your friends",
+    "refCode": "Referral code",
+    "copied": "Copied code",
+    "signUpByLink": "Registered by link:",
+    "earn": "Income from the referral program:",
+    "people": "person"
+  },
+  "signup": {
+    "reg": "Registration",
+    "signin": "Login",
+    "signin2": "Sign in",
+    "username": "Username",
+    "email": "Email",
+    "pass": "Password",
+    "passApprove": "Password confirmation",
+    "ref": "Referral code",
+    "signUp": "Register",
+    "remindPass": "Forgot your password?"
+  },
+  "footer": {
+    "right": "All rights reserved",
+    "support": "Help",
+    "aboutUs": "About us",
+    "order": "How to make a deal",
+    "write": "Contact support"
+  },
   "navbar": {
     "buy": "Buy Tether",
-    "sell": "Sell Tether"
+    "sell": "Sell Tether",
+    "reg": "Registration",
+    "signIn": "Sign in",
+    "newOrder": "Place an ad"
   },
-  "login": {
-    "login": "Login"
+  "main": {
+    "buyUSDT": "Buy USDT",
+    "sellUSDT": "Sell USDT",
+    "sell": "Sell",
+    "buy": "Buy",
+    "showMore": "Show more ads",
+    "seller": "Seller",
+    "payType": "Payment method",
+    "limit": "Limit",
+    "quantity": "Quantity",
+    "cost": "Price per token",
+    "buyAndSell": "Buy and Sell",
+    "simpleFastSafe": "Simple, fast and safe",
+    "safeReg": "Register for free",
+    "fastBuy": "Fast Buy",
+    "fastSell": "Fast Sell",
+    "search": "Find",
+    "bankTransfer": "Bank transfer:",
+    "sberbank": "Sberbank",
+    "tinkof": "Tinkoff",
+    "alfa": "Alfa Bank",
+    "otherWay": "Other way"
   }
 }

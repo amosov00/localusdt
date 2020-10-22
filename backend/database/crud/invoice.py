@@ -199,6 +199,7 @@ class InvoiceCRUD(BaseMongoCRUD):
 
         if (
                 (invoice.get("buyer_id") != user.id and not user.is_staff)
+                or invoice.get("buyer_id") != user.id
                 or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
                         or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
         ):
@@ -229,7 +230,8 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-                (invoice.get("buyer_id") != user.id or not user.is_staff)
+                (invoice.get("buyer_id") != user.id and not user.is_staff)
+                or invoice.get("buyer_id") != user.id
                 or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
         ):
             raise HTTPException(
@@ -262,7 +264,8 @@ class InvoiceCRUD(BaseMongoCRUD):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
         if (
-                (invoice.get("seller_id") != user.id or not user.is_staff)
+                (invoice.get("seller_id") != user.id and not user.is_staff)
+                or invoice.get("seller_id") != user.id
                 or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
                         or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
         ):

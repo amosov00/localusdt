@@ -13,7 +13,7 @@
             </div>
           </div>
           <span class="close" @click.prevent.stop="props.close">
-            Закрыть
+            {{ $t('other.close') }}
           </span>
         </div>
         <div v-html="props.item.text">

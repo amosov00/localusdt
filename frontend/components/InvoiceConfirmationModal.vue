@@ -5,18 +5,18 @@
         <img src="~/assets/icons/cross.svg" alt="cross">
       </span>
       <div class="referral">
-        <h1 class="referral__title">Отправить USDT</h1>
+        <h1 class="referral__title">{{$t('other.sendUSDT')}}</h1>
         <p class="mt-20 fz-20">
           {{ commaSplitting(invoice.amount_usdt) }} USDT за <span class="opacity-50"> {{ commaSplitting(invoice.amount) }} ₽ </span>
         </p>
         <p class="fz-14 mt-20">{{ userName }} <span class="status-circle"></span></p>
         <div>
-          <Button @click.native="confirm" class="referral__button mr-15" green lg
-            >отправить</Button
-          >
-          <Button @click.native="hideModal" class="referral__button" white lg
-            >отмена</Button
-          >
+          <Button @click.native="confirm" class="referral__button mr-15" green lg>
+            {{$t('other.send')}}
+          </Button>
+          <Button @click.native="hideModal" class="referral__button" white lg>
+            {{$t('other.cancel')}}
+          </Button>
         </div>
       </div>
     </div>

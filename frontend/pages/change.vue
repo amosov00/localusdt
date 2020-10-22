@@ -1,7 +1,7 @@
 <template>
   <section class="auth-form">
     <header class="auth-form__header">
-      <h1 class="auth-form__title">Изменить пароль</h1>
+      <h1 class="auth-form__title">{{$t('signup.changePass')}}</h1>
     </header>
     <ValidationObserver v-slot="{ invalid }">
       <form class="auth-form__form">
@@ -12,7 +12,7 @@
         >
           <Input
             v-model="changeForm.old_password"
-            placeholder="Старый пароль"
+            :placeholder="$t('signup.oldPass')"
             type="password"
             icon="password"
           />
@@ -25,7 +25,7 @@
         >
           <Input
             v-model="changeForm.password"
-            placeholder="Новый пароль"
+            :placeholder="$t('signup.newPass')"
             type="password"
             icon="password"
           />
@@ -39,7 +39,7 @@
         >
           <Input
             v-model="changeForm.repeat_password"
-            placeholder="Подтверждение пароля"
+            :placeholder="$t('signup.passApprove')"
             type="password"
             icon="password"
           />
@@ -48,7 +48,7 @@
       </form>
       <div class="auth-form__action">
         <Button @click.native="change" :disabled="invalid" green
-          >Сменить пароль</Button
+          >{{ $t('signup.changePass2') }}</Button
         >
       </div>
     </ValidationObserver>

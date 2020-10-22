@@ -1,6 +1,6 @@
 <template>
   <div class="order-condition">
-    <h2 class="order-condition__title">Условия сделки</h2>
+    <h2 class="order-condition__title">{{$t('orderDetails.terms')}}</h2>
     <div class="order-condition__box">
       <p class="opacity-50">{{ orderCondition }}</p>
     </div>

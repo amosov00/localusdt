@@ -1,10 +1,23 @@
 <template>
-  <div class="lang-switcher">EN</div>
+  <div v-if="locale === 'ru'" class="lang-switcher" @click="switchLang('en')">EN</div>
+  <div v-else class="lang-switcher" @click="switchLang('ru')">RU</div>
 </template>
 
 <script>
-export default {
+import { mapGetters } from 'vuex'
 
+export default {
+  computed: {
+    ...mapGetters({
+      locale: 'i18n/GET_LOCALE'
+    })
+  },
+  methods: {
+    switchLang(locale) {
+      localStorage.setItem('locale', locale)
+      location.reload()
+    }
+  }
 }
 </script>
 

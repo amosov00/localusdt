@@ -34,7 +34,8 @@ export default {
     '~/plugins/toast.js',
     '~/plugins/vee-validate.js',
     '~/plugins/vue-clipboard.js',
-    '~/plugins/vue-notification.js'
+    '~/plugins/vue-notification.js',
+    '~/plugins/i18n.js'
   ],
   modules: [
     '@nuxtjs/axios',
@@ -44,7 +45,7 @@ export default {
     '@nuxtjs/style-resources'
   ],
   router: {
-    middleware: ['checkRef']
+    middleware: ['checkRef', 'i18n']
   },
   styleResources: {
     scss: ['~/assets/scss/variables.scss', '~/assets/scss/mixins.scss']
@@ -62,6 +63,7 @@ export default {
     }
   },
   build: {
+    vendor: ['vue-i18n'],
     extend(config, ctx) {
       config.module.rules.push({
         test: /\.(ogg|mp3|wav|mpe?g)$/i,

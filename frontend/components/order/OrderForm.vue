@@ -1,7 +1,7 @@
 <template>
   <form class="order-form">
-    <h2 v-if="order.type === 2">Сколько Вы хотите купить?</h2>
-    <h2 v-else>Сколько Вы хотите продать?</h2>
+    <h2 v-if="order.type === 2">{{ $t('orderForm.wantToBuy') }}</h2>
+    <h2 v-else>{{ $t('orderForm.wantToSell') }}</h2>
     <div v-if="$userIsLoggedIn()">
       <Input
         v-model="invoiceForm.amount_usdt"
@@ -11,15 +11,16 @@
       />
       <Textarea
         class="mt-20"
-        placeholder="Напишите трейдеру сообщение с контактной или другой информацией
-(необязательно)"
+        :placeholder="$t('orderForm.writeTo')"
       />
-      <Button class="mt-20" green @click.native="createInvoice"
-        >Отправить запрос на сделку</Button
-      >
+      <Button class="mt-20" green @click.native="createInvoice">
+        {{ $t('orderForm.send') }}
+      </Button>
     </div>
     <nuxt-link v-else to="/signup">
-      <Button orange>Зарегистрируйтесь бесплатно</Button>
+      <Button orange>
+        {{ $t('orderForm.reg') }}
+      </Button>
     </nuxt-link>
   </form>
 </template>
@@ -50,7 +51,7 @@ export default {
       if (this.invoiceForm.amount_usdt) {
         this.$store.dispatch('invoice/createInvoice', this.invoiceForm)
       } else {
-        this.$toast.showMessage({ content: 'Введите сумму', red: true })
+        this.$toast.showMessage({ content: this.$t('orderForm.writeSum'), red: true })
       }
     }
   }

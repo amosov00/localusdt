@@ -14,18 +14,18 @@
             class="nav__item"
             >{{ link.title }}</nuxt-link
           >
-          <nuxt-link class="nav__item" to="/bid" v-if="$userIsLoggedIn()"
-            >Разместить объявление</nuxt-link
-          >
+          <nuxt-link class="nav__item" to="/bid" v-if="$userIsLoggedIn()">
+            {{ $t('navbar.newOrder')}}
+          </nuxt-link>
         </ul>
       </nav>
       <div class="header__actions">
         <NotificationCenter class="mr-15" v-if="$userIsLoggedIn()"></NotificationCenter>
         <div v-if="!$userIsLoggedIn()">
           <nuxt-link class="header__action disabled" to="/signup"
-            >Регистрация</nuxt-link
+            >{{$t('navbar.reg')}}</nuxt-link
           >
-          <nuxt-link class="header__action" to="/login">Вход</nuxt-link>
+          <nuxt-link class="header__action" to="/login">{{$t('navbar.signIn')}}</nuxt-link>
         </div>
         <div class="header__user" v-else>
           <nuxt-link to="/wallet" class="header__balance"
@@ -55,8 +55,8 @@ export default {
   data() {
     return {
       footerLinks: [
-        { title: 'Купить Tether', url: '/buy' },
-        { title: 'Продать Tether', url: '/sell' }
+        { title: this.$t('navbar.buy'), url: '/buy' },
+        { title: this.$t('navbar.sell'), url: '/sell' }
       ]
     }
   },

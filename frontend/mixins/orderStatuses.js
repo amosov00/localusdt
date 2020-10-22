@@ -4,13 +4,13 @@ export default {
     orderStatus(status) {
       switch (status) {
         case 1:
-          return 'Активно'
+          return this.$t('status.active')
           break
         case 2:
-          return 'Не активно'
+          return this.$t('status.notActive')
           break
         case 3:
-          return 'Удален'
+          return this.$t('status.deleted')
           break
       }
     },

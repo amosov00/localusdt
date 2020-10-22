@@ -1,23 +1,23 @@
 <template>
   <section class="order">
     <header class="order__header">
-      <h1 v-if="order.type === 1" class="order__title" >Продажа USDT</h1>
-      <h1 v-else class="order__title">Покупка USDT</h1>
+      <h1 v-if="order.type === 1" class="order__title" >{{$t('profile.sellUSDT')}}</h1>
+      <h1 v-else class="order__title">{{$t('profile.buyUSDT')}}</h1>
       <!--<div>{{ order }}</div>-->
       <div class="order__header-additional">
-        <div class="order__subtitle flex-1">Банковский перевод: Сбербанк</div>
+        <div class="order__subtitle flex-1">{{$t('main.bankTransfer')}} {{$t('main.sberbank')}}</div>
         <div class="flex-1 order__header-actions" v-if="order.status < 3 && order.username === user.username">
           <n-link class="order__link order__link--edit" :to="`/bid/${isSell ? 'sell' : 'buy' }?edit=${id}`">
             <InlineSvg :src="require('~/assets/icons/pen.svg')"></InlineSvg>
-            <span>Редактировать</span>
+            <span>{{$t('order.edit')}}</span>
           </n-link>
           <div class="order__link order__link--remove" @click="showModal = true">
             <InlineSvg :src="require('~/assets/icons/trash.svg')"></InlineSvg>
-            <span>Удалить</span>
+            <span>{{$t('order.delete')}}</span>
           </div>
         </div>
         <div v-else-if="order.status === 3" class="order__deleted">
-          Объявлено удалено пользователем
+          {{$t('order.deletedByUser')}}
         </div>
       </div>
     </header>
@@ -25,21 +25,21 @@
       <label for="radio-online" class="radio mr-15">
         <input id="radio-online" type="radio" name="status" value="on" v-model="adStatus">
         <span class="radio__check"></span>
-        <span class="radio__text">Онлайн</span>
+        <span class="radio__text">{{$t('order.online')}}</span>
       </label>
       <label for="radio-offline" class="radio">
         <input id="radio-offline" type="radio" name="status" value="off" v-model="adStatus">
         <span class="radio__check"></span>
-        <span class="radio__text">Оффлайн</span>
+        <span class="radio__text">{{$t('order.offline')}}</span>
       </label>
     </div>
     <OrderInfo :order="order" />
     <div class="order__footer" v-if="user.username !== order.username">
       <OrderForm :order="order" />
     </div>
-    <Confirm title="Вы хотите удалить объявление?" :show="showModal" @toggleModal="showModal = $event">
+    <Confirm :title="$t('order.question')" :show="showModal" @toggleModal="showModal = $event">
       <template v-slot:actions>
-        <Button red class="mr-15" @click.native="removeOrder(order._id)">Удалить объявление</Button>
+        <Button red class="mr-15" @click.native="removeOrder(order._id)">{{$t('order.deleteAd')}}</Button>
         <Button white @click.native="showModal = false">Отмена</Button>
       </template>
     </Confirm>

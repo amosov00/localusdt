@@ -3,50 +3,52 @@ export default {
     invoiceStatus(status) {
       switch (status) {
         case 'waiting_for_payment':
-          return 'Ожидание подтверждения платежа покупателем'
+          return this.$t('status.waiting_for_payment')
           break
         case 'approved':
-          return 'Подтверждено'
+          return this.$t('status.approved')
           break
         case 'waiting_for_tokens':
-          return 'Ожидание отправки токенов'
+          return this.$t('status.waiting_for_tokens')
           break
         case 'completed':
-          return 'Завершен'
+          return this.$t('status.completed')
           break
         case 'cancelled':
-          return 'Отменен'
+          return this.$t('status.canceled')
           break
       }
     },
     invoiceStatusShort(status) {
       switch (status) {
         case 'waiting_for_payment':
-          return 'В процессе'
+          return this.$t('status.small_waiting_for_payment')
           break
         case 'approved':
-          return 'Завершен'
+          return this.$t('status.small_approved')
           break
         case 'waiting_for_tokens':
-          return 'В процессе'
+          return this.$t('status.small_waiting_for_tokens')
           break
         case 'completed':
-          return 'Завершен'
+          return this.$t('status.small_waiting_for_tokens')
           break
         case 'cancelled':
-          return 'Отменена'
+          return this.$t('status.cancelled')
           break
       }
     },
     statusColor(status) {
-      switch (this.invoiceStatusShort(status)) {
-        case 'Завершен':
+      switch (status) {
+        case 'approved':
+        case 'completed':
           return '#48B190'
           break
-        case 'В процессе':
+        case 'waiting_for_payment':
+        case 'waiting_for_tokens':
           return '#ED9F43'
           break
-        case 'Отменена':
+        case 'cancelled':
           return '#B31B11'
           break
       }

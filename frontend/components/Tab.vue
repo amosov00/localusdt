@@ -6,21 +6,21 @@
         :class="{ 'tab-nav__item--active': firstTab }"
         @click="selectTab"
       >
-        Быстрая покупка
+        {{ $t('main.fastBuy') }}
       </div>
       <div
         class="tab-nav__item"
         :class="{ 'tab-nav__item--active': secondTab }"
         @click="selectTab"
       >
-        Быстрая продажа
+        {{ $t('main.fastSell') }}
       </div>
     </nav>
     <div class="tab-body">
       <Input
         v-model="searchForm.bot_limit"
         type="number"
-        header="Цена за токен"
+        :header="$t('main.cost')"
         placeholder="0,00"
       />
       <Input v-model="searchForm.top_limit" type="number" placeholder="0,00" />
@@ -36,7 +36,7 @@
         :options="paymentOptions"
         :selectedOptionProp="outsideParams ? outsideParams.payment_method : '1'"
       />
-      <Button green @click.native="searchOrders">Найти</Button>
+      <Button green @click.native="searchOrders"> {{ $t('main.search') }}</Button>
     </div>
   </div>
 </template>
@@ -45,6 +45,7 @@
 import Input from '~/components/app/Input'
 import Select from '~/components/app/Select'
 import Button from '~/components/app/Button'
+
 export default {
   props: {
     top: Number,
@@ -76,10 +77,10 @@ export default {
         { name: 'EUR', value: 3 }
       ],
       paymentOptions: [
-        { name: 'Банковский перевод: Сбербанк', value: 1 },
-        { name: 'Банковский перевод: Тинькофф', value: 2, selected: true },
-        { name: 'Банковский перевод: Альфа Банк', value: 3 },
-        { name: 'Иной способ', value: 4 }
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`, value: 1 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.tinkof')}`, value: 2, selected: true },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.alfa')}`, value: 3 },
+        { name: this.$t('main.otherWay'), value: 4 }
       ]
     }
   },

@@ -1,10 +1,10 @@
 <template>
 	<section class="auth-form">
 		<header class="auth-form__header">
-			<h1 class="auth-form__title">Вход</h1>
-			<nuxt-link class="auth-form__subtitle" to="/signup"
-				>Регистрация</nuxt-link
-			>
+			<h1 class="auth-form__title">{{$t('signup.signin')}}</h1>
+			<nuxt-link class="auth-form__subtitle" to="/signup">
+				{{$t('signup.reg')}}
+			</nuxt-link>
 		</header>
 		<ValidationObserver v-slot="{ invalid }">
 			<form class="auth-form__form">
@@ -15,7 +15,7 @@
 				>
 					<Input
 						v-model="loginForm.email"
-						placeholder="Эл. почта"
+						:placeholder="$t('signup.email')"
 						icon="email"
 						type="email"
 					/>
@@ -24,7 +24,7 @@
 				<ValidationProvider rules="required" v-slot="{ errors }">
 					<Input
 						v-model="loginForm.password"
-						placeholder="Пароль"
+						:placeholder="$t('signup.pass')"
 						icon="password"
 						type="password"
 					/>
@@ -32,12 +32,12 @@
 				</ValidationProvider>
 			</form>
 			<div class="auth-form__action">
-				<Button@click.native="login" :disabled="invalid" green>Войти</Button>
+				<Button @click.native="login" :disabled="invalid" green>{{$t('signup.signin2')}}</Button>
 			</div>
 		</ValidationObserver>
-		<nuxt-link to="/forgot" class="auth-form__forgot-password"
-			>Забыли пароль?</nuxt-link
-		>
+		<nuxt-link to="/forgot" class="auth-form__forgot-password">
+			{{$t('signup.remindPass')}}
+		</nuxt-link>
 	</section>
 </template>
 

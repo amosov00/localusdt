@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="fw-500 mt-50">История транзакций</h2>
+    <h2 class="fw-500 mt-50">{{$t('wallet.transactionHistory')}}</h2>
     <AppTable class="mb-80" :data="transactions" :headers="headers" pagination>
       <template slot-scope="{ row }">
         <td class="table__data">
@@ -48,7 +48,13 @@ export default {
   },
   data() {
     return {
-      headers: ['Дата', 'Действие', 'Адрес', 'Сумма', 'Статус']
+      headers: [
+        this.$t('wallet.date'),
+        this.$t('wallet.action'),
+        this.$t('wallet.address'),
+        this.$t('wallet.amount'),
+        this.$t('wallet.status')
+      ]
     }
   },
   computed: {
@@ -60,13 +66,13 @@ export default {
     transactionStatus(status) {
       switch (status) {
         case 1:
-          return 'Выполнено'
+          return this.$t('wallet.done')
           break
         case 2:
-          return 'Обрабатывается'
+          return this.$t('wallet.processed')
           break
         case 3:
-          return 'Отменена'
+          return this.$t('wallet.canceled')
           break
         default:
           break
@@ -75,24 +81,24 @@ export default {
     transactionEvent(event) {
       switch (event) {
         case 1:
-          return 'Пополнение USDT'
+          return this.$t('wallet.topUp2')
           break
         case 2:
-          return 'Вывод USDT'
+          return this.$t('wallet.withdrawUSDT')
           break
         default:
           break
       }
     },
     statusColor(status) {
-      switch (this.transactionStatus(status)) {
-        case 'Выполнено':
+      switch (status) {
+        case 1:
           return '#48B190'
           break
-        case 'Обрабатывается':
+        case 2:
           return '#ED9F43'
           break
-        case 'Отменена':
+        case 3:
           return '#B31B11'
           break
       }

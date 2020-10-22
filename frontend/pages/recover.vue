@@ -1,7 +1,7 @@
 <template>
   <section class="auth-form">
     <header class="auth-form__header">
-      <h1 class="auth-form__title">Восстановление пароля</h1>
+      <h1 class="auth-form__title">{{ $t('signup.recoverPass') }}</h1>
     </header>
     <ValidationObserver v-slot="{ invalid }">
       <form class="auth-form__form">
@@ -12,7 +12,7 @@
         >
           <Input
             v-model="recoverForm.password"
-            placeholder="Новый пароль"
+            :placeholder="$t('signup.newPass')"
             icon="password"
             type="password"
           />
@@ -26,7 +26,7 @@
         >
           <Input
             v-model="recoverForm.repeat_password"
-            placeholder="Подтверждение пароля"
+            :placeholder="$t('signup.passApprove')"
             icon="password"
             type="password"
           />
@@ -35,7 +35,7 @@
       </form>
       <div class="auth-form__action">
         <Button @click.native="recover" :disabled="invalid" green
-          >Отправить</Button
+          >{{$t('signup.send')}}</Button
         >
       </div>
     </ValidationObserver>

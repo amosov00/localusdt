@@ -2,9 +2,9 @@
   <transition name="fade">
     <div class="modal-wrapper" v-show="show">
       <div class="modal">
-        <h1 class="modal__title">Ваше объявление успешно размещено!</h1>
+        <h1 class="modal__title">{{ $t('other.congrats') }}</h1>
         <p class="modal__subtitle">
-          Вы можете управлять им на странице покупки/продажи
+          {{ $t('other.control') }}
         </p>
         <Button @click.native="hideModal" class="modal__button" green lg
           >Ок</Button

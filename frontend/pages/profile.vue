@@ -9,19 +9,18 @@
       </div>
       <div class="profile__actions">
         <nuxt-link class="underline-link underline-link--grey" to="/change">
-          Изменить пароль
+          {{$t('profile.changePass')}}
         </nuxt-link>
-        <p class="underline-link red" @click="logout()">Выйти</p>
+        <p class="underline-link red" @click="logout()">{{$t('profile.logOut')}}</p>
       </div>
     </div>
     <div class="bio">
       <div class="bio__container">
-        <h2 class="bio__title">О себе</h2>
+        <h2 class="bio__title">{{$t('profile.about')}}</h2>
         <Textarea v-model="condition" />
         <Button @click.native="setCondition" class="mt-20" green>
-          Сохранить
-        </Button
-        >
+          {{$t('profile.save')}}
+        </Button>
       </div>
       <ProfileReferral />
     </div>
@@ -32,14 +31,14 @@
           @click="setTab(1)"
           :class="{ 'tab-nav__item--active': activeTab === 1 }"
         >
-          История сделок
+          {{$t('profile.history')}}
         </div>
         <div
           class="tab-nav__item"
           @click="setTab(2)"
           :class="{ 'tab-nav__item--active': activeTab === 2 }"
         >
-          Ваши объявления
+          {{$t('profile.orders')}}
         </div>
       </nav>
       <div class="tab-item" v-if="activeTab===1">
@@ -47,15 +46,18 @@
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
-            <td class="table__data" v-if="row.ads_type === 1">Продажа USDT</td>
-            <td class="table__data" v-else-if="row.ads_type === 2">Покупка USDT</td>
+            <td class="table__data" v-if="row.ads_type === 1">{{$t('profile.sellUSDT')}}</td>
+            <td class="table__data" v-else-if="row.ads_type === 2">{{$t('profile.buyUSDT')}}</td>
             <td class="table__data">
               {{ getUsername(row.seller_username, row.buyer_username)}}
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
             </td>
-            <td class="table__data">{{commaSplitting(row.amount_usdt)}} <span class="grey-dark fw-400">за
-              {{commaSplitting(row.amount)}} ₽</span></td>
+            <td class="table__data">{{commaSplitting(row.amount_usdt)}}
+              <span class="grey-dark fw-400">
+                {{$t('profile.for')}} {{commaSplitting(row.amount)}} ₽
+              </span>
+            </td>
             <td class="table__data" :style="{ color: statusColor(row.status) }">
               <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
             </td>
@@ -67,8 +69,8 @@
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
-            <td class="table__data" v-if="row.type === 1">Продажа USDT</td>
-            <td class="table__data" v-else-if="row.type === 2"> Покупка USDT</td>
+            <td class="table__data" v-if="row.type === 1">{{$t('profile.sellUSDT')}}</td>
+            <td class="table__data" v-else-if="row.type === 2">{{$t('profile.buyUSDT')}}</td>
             <td class="table__data">{{commaSplitting(row.price)}}</td>
             <td class="table__data">
               <span>
@@ -112,14 +114,20 @@ export default {
     return {
       activeTab: 1,
       orderHeaders: [
-        'Дата, время',
-        'Вид объявления',
-        'Курс продажи, покупки',
-        'Лимит',
-        'Оставшееся количество',
-        'Статус'
+        this.$t('profile.dateTime'),
+        this.$t('profile.type'),
+        this.$t('profile.course'),
+        this.$t('profile.limit'),
+        this.$t('profile.residue'),
+        this.$t('profile.status'),
       ],
-      headers: ['Дата, время', 'Вид сделки', 'Покупатель/продавец', 'Сумма', 'Статус']
+      headers: [
+        this.$t('profile.dateTime'),
+        this.$t('profile.orderType'),
+        this.$t('profile.buyerSeller'),
+        this.$t('profile.sum'),
+        this.$t('profile.status'),
+      ]
     }
   },
   created() {

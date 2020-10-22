@@ -2,11 +2,17 @@
   <transition name="fade">
   <div class="modal-wrapper" v-show="show">
     <div class="referral">
-      <h1 class="referral__title">Вы хотите отменить сделку?</h1>
-      <p class="fz-20"> Подтвердите отмену сделки с <span class="orange">{{userName}}</span></p>
+      <h1 class="referral__title">{{$t('other.cancelOrder')}}</h1>
+      <p class="fz-20"> {{$t('other.approveCancel')}}
+        <span class="orange">{{userName}}</span>
+      </p>
       <div class="invoice-confirm__actions"></div>
-      <Button @click.native="cancel" class="referral__button" red lg>отменить сделку</Button>
-      <Button @click.native="hideModal" class="referral__button" white lg>отмена</Button>
+      <Button @click.native="cancel" class="referral__button" red lg>
+        {{$t('other.cancelBtn')}}
+      </Button>
+      <Button @click.native="hideModal" class="referral__button" white lg>
+        {{$t('other.cancel')}}
+      </Button>
     </div>
   </div>
   </transition>

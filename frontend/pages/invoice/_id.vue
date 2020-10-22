@@ -2,50 +2,50 @@
   <section class="order">
     <header class="order__header">
       <h1 class="ad__title">Контакт № {{ invoice._id }}</h1>
-      <span class="opacity-50 fz-20" v-if="invoice.ads_type === 1"
-        >Покупка {{ commaSplitting(invoice.amount_usdt) }} USDT на
-        {{ commaSplitting(invoice.amount_rub) }} ₽</span
-      >
-      <span class="opacity-50 fz-20" v-else-if="invoice.ads_type === 2"
-        >Продажа {{ commaSplitting(invoice.amount_usdt) }} USDT на
-        {{ commaSplitting(invoice.amount_rub) }} ₽</span
-      >
-      {{userRole}}
-      <div class="ad__subtitle">
-        <p>
-          <span class="green">Статус сделки: </span>
-          {{ invoiceStatus(invoice.status) }}
-        </p>
-        <p
-          class="underline-link red"
-          v-if="
+      <div class="order__info">
+        <div>
+          <span class="opacity-50 fz-20">
+            <span>{{ roleAction }}</span>
+            <span>{{ commaSplitting(invoice.amount_usdt) }} USDT на</span>
+            <span>{{ commaSplitting(invoice.amount) }} ₽</span>
+          </span>
+          <div class="ad__subtitle">
+            <p>
+              <span class="green">Статус сделки: </span>
+              {{ invoiceStatus(invoice.status) }}
+            </p>
+            <p
+              class="underline-link red"
+              v-if="
             invoice.status === 'waiting_for_payment' && invoice.ads_type === 1
           "
-          @click="cancelModal = true"
-        >
-          Отменить сделку
-        </p>
+              @click="cancelModal = true"
+            >
+              Отменить сделку
+            </p>
+          </div>
+        </div>
+        <div v-if="showTimer" class="order__timer">{{time}}</div>
       </div>
     </header>
-    <OrderInfo :order="invoice" :role="userRole" />
+    <OrderInfo :order="invoice" />
     <div class="order__footer">
-      <Chat :invoice="invoice" />
-      <div v-if="invoice.ads_type === 1">
-        <SendMoneySteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice"  />
-        <SendUSDTSteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice" />
-      </div>
-      <div v-else-if="invoice.ads_type === 2">
-        <SendMoneySteps v-if="userRole === 'owner_sell' || userRole === 'customer_buy'" :invoice="invoice"  />
-        <SendUSDTSteps v-if="userRole === 'owner_buy' || userRole === 'customer_sell'" :invoice="invoice" />
-      </div>
+      <Chat :invoice="invoice" :name="roleUser" />
+      <SendMoneySteps v-if="role === 'Продавец'" :invoice="invoice" />
+      <SendUSDTSteps v-else-if="role === 'Покупатель'" :invoice="invoice" />
     </div>
-    <InvoiceCancelModal :show="cancelModal" @toggleModal="cancelModal = $event" :invoice="invoice" />
+    <InvoiceCancelModal
+      :show="cancelModal"
+      @toggleModal="cancelModal = $event"
+      :invoice="invoice"
+    />
   </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import formatCurrency from '~/mixins/formatCurrency'
+import formatDate from '~/mixins/formatDate'
 import invoiceStatuses from '~/mixins/invoiceStatuses'
 import Button from '~/components/app/Button'
 import OrderForm from '~/components/order/OrderForm'
@@ -54,9 +54,11 @@ import Chat from '~/components/app/Chat'
 import SendUSDTSteps from '~/components/invoice/SendUSDTSteps'
 import SendMoneySteps from '~/components/invoice/SendMoneySteps'
 import InvoiceCancelModal from '~/components/InvoiceCancelModal'
+import moment from 'moment'
+
 export default {
   name: 'invoice_by_id',
-  mixins: [formatCurrency, invoiceStatuses],
+  mixins: [formatCurrency, invoiceStatuses, formatDate],
   components: {
     Button,
     OrderForm,
@@ -64,41 +66,125 @@ export default {
     Chat,
     SendUSDTSteps,
     SendMoneySteps,
-    InvoiceCancelModal
+    InvoiceCancelModal,
   },
   data() {
     return {
-      cancelModal: false
+      cancelModal: false,
+      invoiceId: this.$route.params.id,
+      interval: null,
+      timer: null,
+      time: null
     }
   },
   computed: {
     ...mapGetters({
       invoice: 'invoice/invoiceById',
-      user: 'user'
+      user: 'user',
     }),
-    userRole() {
-      if(this.invoice.ads_type === 1 && this.user.username === this.invoice.buyer_username) {
-        return 'owner_buy'
-      } else if (this.invoice.ads_type === 1 && this.user.username === this.invoice.seller_username) {
-        return 'customer_buy'
+    roleAction() {
+      if (
+        (this.invoice.ads_type || this.invoice.type === 1) &&
+        this.invoice.seller_username === this.user.username
+      ) {
+        return 'Продажа'
+      } else if (
+        (this.invoice.ads_type || this.invoice.type === 2) &&
+        this.invoice.buyer_username === this.user.username
+      ) {
+        return 'Покупка'
       }
-
-      if(this.invoice.ads_type === 2 && this.user.username === this.invoice.buyer_username) {
-        return 'owner_sell'
-      } else if (this.invoice.ads_type === 2 && this.user.username === this.invoice.seller_username) {
-        return 'customer_sell'
+    },
+    role() {
+      if (
+        (this.invoice.ads_type || this.invoice.type === 1) &&
+        this.invoice.seller_username === this.user.username
+      ) {
+        return 'Покупатель'
+      } else if (
+        (this.invoice.ads_type || this.invoice.type === 2) &&
+        this.invoice.buyer_username === this.user.username
+      ) {
+        return 'Продавец'
       }
+    },
+    roleUser() {
+      switch (this.role) {
+        case 'Покупатель':
+          return this.invoice.buyer_username
+          break
+        case 'Продавец':
+          return this.invoice.username || this.invoice.seller_username
+          break
+        default:
+          break
+      }
+    },
+    showTimer() {
+      const { status } = this.invoice
+      const statuses = ['waiting_for_tokens', 'waiting_for_payment']
+      return statuses.includes(status)
+    },
+    timerDuration() {
+      const { status } = this.invoice
+      if (status === 'waiting_for_payment') {
+        return 90
+      }
+      return status === 'waiting_for_tokens' ? 30 : 0
     }
+  },
+  created() {
+    this.interval = setInterval(async() => {
+      await this.$store.dispatch('invoice/fetchInvoiceById', this.invoiceId)
+      if (this.invoice === 'waiting_for_tokens') {
+        clearInterval(this.interval)
+      }
+    }, 3000)
+  },
+  mounted() {
+    this.timer = setInterval(() => {
+      this.checkTime()
+    }, 1000)
+  },
+  methods: {
+    checkTime() {
+      this.diffDate(this.invoice.status_changed_at)
+    },
+    diffDate(date) {
+      const timeOffset = moment().utcOffset()
+      const startTime = moment(date)
+        .add(this.timerDuration, 'minutes')
+        .format('HH:mm:ss')
+      const endTime = moment()
+        .subtract(timeOffset, 'minutes')
+        .format('HH:mm:ss')
+      const seconds = moment(endTime, 'HH:mm:ss')
+        .diff(moment(startTime, 'HH:mm:ss'), 'seconds')
+      const duration = moment
+        .duration(seconds, 'seconds')
+      const time = `${duration.hours()}:${duration.minutes()}:${duration.seconds()}`
+      this.time = moment(time, 'HH:mm:ss')
+        .format('HH:mm:ss')
+    }
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
+    clearInterval(this.timer)
   },
   asyncData({ route, store }) {
     return store.dispatch('invoice/fetchInvoiceById', route.params.id)
-  }
+  },
 }
 </script>
 
 <style lang="scss">
 .order {
   margin-top: 50px;
+
+  &__timer {
+    padding: 10px 30px;
+    font-size: 30px;
+  }
 
   &__title {
     display: inline-block;
@@ -116,6 +202,11 @@ export default {
   &__footer {
     margin-top: 30px;
     margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__info {
     display: flex;
     justify-content: space-between;
   }

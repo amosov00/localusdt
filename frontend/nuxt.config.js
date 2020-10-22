@@ -28,10 +28,13 @@ export default {
   css: ['~/assets/scss/global.scss'],
 
   plugins: [
+    '~/plugins/perfect-scrollbar',
     '~/plugins/auth.js',
     '~/plugins/axios.js',
     '~/plugins/toast.js',
-    '~/plugins/vee-validate.js'
+    '~/plugins/vee-validate.js',
+    '~/plugins/vue-clipboard.js',
+    '~/plugins/vue-notification.js'
   ],
   modules: [
     '@nuxtjs/axios',
@@ -40,11 +43,14 @@ export default {
     'cookie-universal-nuxt',
     '@nuxtjs/style-resources'
   ],
+  router: {
+    middleware: ['checkRef']
+  },
   styleResources: {
     scss: ['~/assets/scss/variables.scss', '~/assets/scss/mixins.scss']
   },
   buildModules: ['@nuxtjs/dotenv'],
-  dotenv: !process.env.ENV
+  dotenv: 'local'
     ? {
         filename: '.env.local'
       }
@@ -52,10 +58,18 @@ export default {
   sentry: {
     initialize: true,
     config: {
-      environment: process.env.ENV
+      environment: 'local'
     }
   },
   build: {
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      config.module.rules.push({
+        test: /\.(ogg|mp3|wav|mpe?g)$/i,
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]'
+        }
+      })
+    }
   }
 }

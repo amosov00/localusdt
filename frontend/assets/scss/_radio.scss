@@ -1,0 +1,60 @@
+.radio {
+  display: inline-block;
+  cursor: pointer;
+  color: #11171D;
+  user-select: none;
+
+  > input {
+    width: 0;
+    height: 0;
+    position: absolute;
+    opacity: 0;
+
+    &:checked ~ .radio__check{
+      border: 2px solid #48B190;
+
+      &:after {
+        width: 14px;
+        height: 14px;
+        background-color: #48B190;
+      }
+    }
+  }
+
+  &:hover {
+    > input:not(:checked) ~ .radio__check{
+      border: 2px solid #48B190;
+      opacity: 0.7;
+    }
+  }
+
+  &__text {
+    font-size: 14px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+
+  &__check {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #888B8E;
+    border-radius: 99px;
+    position: relative;
+    margin-right: 9px;
+    vertical-align: middle;
+
+    &:after {
+      content: '';
+      width: 1px;
+      height: 1px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 99px;
+      background-color: transparent;
+      transition: 200ms all;
+    }
+  }
+}

@@ -47,7 +47,7 @@ class BaseMongoCRUD(object):
     @classmethod
     async def update_many(cls, query: dict, payload: dict, with_set_option: bool = True, **kwargs):
         payload = {"$set": payload} if with_set_option else payload
-        return [i async for i in cls.db[cls.collection].update_many(query, payload, **kwargs,)]
+        return await cls.db[cls.collection].update_many(query, payload, **kwargs, )
 
     @classmethod
     async def delete_one(cls, query: dict, **kwargs):

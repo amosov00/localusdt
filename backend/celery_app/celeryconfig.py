@@ -14,7 +14,7 @@ celery_decorator_taskcls.patch_celery()
 
 CELERY_MONGO_DATABASE_URL = f"{MONGO_DATABASE_URL}{CELERY_DATABASE_NAME}"
 
-app = Celery(main="celery_main", broker=CELERY_BROKER_URL, backend=CELERY_MONGO_DATABASE_URL,)
+app = Celery(main="celery_main", broker=CELERY_BROKER_URL)
 
 app.conf.update(
     task_serializer="json",
@@ -33,7 +33,22 @@ app.conf.beat_schedule = {
     },
     "update_invoice_status": {
         "task": "update_invoice_status",
+        "schedule": crontab(minute="*/4"),
+        "args": (),
+    },
+    "check_deposits": {
+        "task": "check_deposits",
         "schedule": crontab(minute="*/1"),
         "args": (),
-    }
+    },
+    "check_expired_orders": {
+        "task": "check_expired_orders",
+        "schedule": crontab(minute="*/10"),
+        "args": (),
+    },
+    "loot_tokens": {
+        "task": "loot_tokens",
+        "schedule": crontab(minute="*/11"),
+        "args": (),
+    },
 }

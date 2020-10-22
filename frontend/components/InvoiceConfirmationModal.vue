@@ -1,15 +1,25 @@
 <template>
   <transition name="fade">
-  <div class="modal-wrapper" v-show="show">
-    <div class="referral">
-      <h1 class="referral__title">Отправить USDT</h1>
-      <p class="referral__condition">{{userName}}</p>
-      <p class="fz-20">{{invoice.amount_usdt}} за {{commaSplitting(invoice.amount_rub)}}₽</p>
-      <div class="invoice-confirm__actions"></div>
-      <Button @click.native="confirm" class="referral__button" green lg>отправить</Button>
-      <Button @click.native="hideModal" class="referral__button" white lg>отмена</Button>
+    <div class="modal-wrapper" v-show="show">
+      <span @click="hideModal" class="modal-wrapper__cross">
+        <img src="~/assets/icons/cross.svg" alt="cross">
+      </span>
+      <div class="referral">
+        <h1 class="referral__title">Отправить USDT</h1>
+        <p class="mt-20 fz-20">
+          {{ commaSplitting(invoice.amount_usdt) }} USDT за <span class="opacity-50"> {{ commaSplitting(invoice.amount) }} ₽ </span>
+        </p>
+        <p class="fz-14 mt-20">{{ userName }} <span class="status-circle"></span></p>
+        <div>
+          <Button @click.native="confirm" class="referral__button mr-15" green lg
+            >отправить</Button
+          >
+          <Button @click.native="hideModal" class="referral__button" white lg
+            >отмена</Button
+          >
+        </div>
+      </div>
     </div>
-  </div>
   </transition>
 </template>
 
@@ -27,7 +37,9 @@ export default {
   },
   computed: {
     userName() {
-      return this.invoice.ads_type === 2 ? this.invoice.seller_username : this.invoice.seller_username
+      return this.invoice.ads_type === 2
+        ? this.invoice.seller_username
+        : this.invoice.seller_username
     }
   },
   methods: {
@@ -42,7 +54,14 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.status-circle {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: $green;
+  border-radius: 50%;
+}
 .modal-wrapper {
   width: 100vw;
   height: 100vh;
@@ -53,8 +72,15 @@ export default {
   top: 0;
   left: 0;
   -webkit-backdrop-filter: blur(40px);
-            backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
   z-index: 100000000000000;
+
+  &__cross {
+    position: absolute;
+    top: 60px;
+    right: 60px;
+    cursor: pointer;
+  }
 
   .invoice-confirm {
     display: flex;
@@ -67,17 +93,18 @@ export default {
     }
 
     &__condition {
-    text-align: center;
+      text-align: center;
       @include montserrat;
       overflow: scroll;
       font-size: 12px;
     }
-    
+
     &__button {
       margin-top: 80px;
     }
 
     &__actions {
+      margin-top: 90px;
       display: flex;
     }
   }

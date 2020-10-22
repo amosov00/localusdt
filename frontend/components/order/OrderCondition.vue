@@ -30,7 +30,8 @@ export default {
     margin-top: 30px;
     background: rgba(72, 177, 144, 0.05);
     border-radius: $border-radius;
-    padding: 30px 15px;
+    padding: 20px 30px;
+    white-space: pre-wrap;
   }
 }
 </style>

@@ -20,12 +20,14 @@ export default {
     halfLife() {
       setTimeout(() => {
         this.show = false
+        this.$toast.closeToast()
       }, 10000)
     }
   },
   created() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'toast/showMessage') {
+        this.$toast.openToast()
         this.message = state.toast.content
         this.red = state.toast.red
         this.green = state.toast.green
@@ -37,7 +39,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .toast {
   width: 100vw;
   height: 50px;
@@ -47,6 +49,7 @@ export default {
   position: sticky;
   top: 0;
   z-index: 1000000;
+  max-width: 100%;
 
   &__title {
     font-style: normal;
@@ -56,9 +59,11 @@ export default {
   }
 }
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+  transition: all .5s;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
+  transform: scaleY(-1);
+  height: 0;
 }
 </style>

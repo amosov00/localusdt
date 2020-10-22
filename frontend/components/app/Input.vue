@@ -9,7 +9,7 @@
       <span class="input__icon" v-if="type === 'password'" @click="toggleShowPassword">
         <InlineSvg :src="require(`~/assets/icons/${passwordIcon}.svg`)" />
       </span>
-      <span class="input__icon" v-else-if="endIcon">
+      <span class="input__icon" v-else-if="endIcon" :style="{'cursor': endIcon === 'copy' ? 'pointer' : 'default'}" @click="copy">
         <InlineSvg :src="require(`~/assets/icons/${endIcon}.svg`)" />
       </span>
     </div>
@@ -51,7 +51,11 @@ export default {
       default: ''
     },
     hint: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
+    toastText: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
@@ -77,6 +81,11 @@ export default {
   methods: {
     toggleShowPassword() {
       this.showPassword = !this.showPassword
+    },
+    copy() {
+      const text = this.toastText ? this.toastText : 'Адрес скопирован'
+      this.$clipboard(this.value)
+      this.$toast.showMessage({content: text, green: true})
     }
   }
 }

@@ -28,13 +28,13 @@
         v-model="searchForm.currency"
         :width="80"
         :options="currencyOptions"
-        :selectedOptionProp="outsideParams ? outsideParams.currency : ''"
+        :selectedOptionProp="outsideParams ? outsideParams.currency : '1'"
       />
       <Select
         v-model="searchForm.payment_method"
         :width="370"
         :options="paymentOptions"
-        :selectedOptionProp="outsideParams ? outsideParams.payment_method : ''"
+        :selectedOptionProp="outsideParams ? outsideParams.payment_method : '1'"
       />
       <Button green @click.native="searchOrders">Найти</Button>
     </div>
@@ -132,6 +132,7 @@ export default {
   width: 100%;
   margin-top: 50px;
   margin-bottom: 50px;
+  transition: all .5s;
 
   .tab-nav {
     display: flex;

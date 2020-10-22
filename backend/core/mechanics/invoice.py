@@ -39,26 +39,18 @@ class InvoiceMechanics:
         self.ads = ads
 
     async def validate_creation(self):
+        if self.ads.amount_usdt < self.invoice.amount_usdt:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "No such USDT on order")
         if self.ads.type == AdsType.BUY:
-            if self.ads.amount_usdt < self.invoice.amount_usdt:
-                raise HTTPException(HTTPStatus.BAD_REQUEST, "No such USDT on order")
             if self.seller.balance_usdt < self.invoice.amount_usdt:
                 raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough USDT on wallet")
             # validation section
 
-
-            # update section
-
             self.seller.balance_usdt -= self.invoice.amount_usdt
             self.seller.usdt_in_invoices += self.invoice.amount_usdt
-            self.ads.amount_usdt -= self.invoice.amount_usdt
 
-        elif self.ads.type == AdsType.SELL:
-            if self.ads.amount_usdt < self.invoice.amount_usdt:
-                raise HTTPException(HTTPStatus.BAD_REQUEST, "No such USDT on order")
-            # validation section
+        self.ads.amount_usdt -= self.invoice.amount_usdt
 
-            # update section
         return (
             self.seller.dict(),
             self.buyer.dict(),
@@ -70,10 +62,8 @@ class InvoiceMechanics:
 
             self.seller.usdt_in_invoices -= self.invoice.amount_usdt
             self.seller.balance_usdt += self.invoice.amount_usdt
-            self.ads.amount_usdt += self.invoice.amount_usdt
-        elif self.ads.type == AdsType.SELL:
-            self.ads.amount_usdt += self.invoice.amount_usdt
 
+        self.ads.amount_usdt += self.invoice.amount_usdt
         self.invoice.status = InvoiceStatus.CANCELLED
         self.invoice.finished_at = datetime.utcnow()
 

@@ -9,14 +9,16 @@
     </p>
     <div class="ma-0 pa-20">
       <p>
-        <span class="opacity-50"
-          >Не забудьте дать покупателю указания об оплате</span
-        >
+        <span class="opacity-50">
+          Не забудьте дать покупателю указания об оплате
+        </span>
       </p>
     </div>
-    <Button class="w-100 mt-20" green :disabled="invoice.status === 'completed'" @click.native="confirmationModal = true"
-      >отправить токены</Button
-    >
+    <Button class="w-100 mt-20" green
+            :disabled="sendTokenBtn"
+            @click.native="confirmationModal = true">
+      {{sendTokenBtnText}}
+    </Button>
     <InvoiceConfirmationModal
       @toggleModal="confirmationModal = $event"
       :invoice="invoice"
@@ -28,6 +30,7 @@
 <script>
 import Button from '~/components/app/Button'
 import InvoiceConfirmationModal from '~/components/InvoiceConfirmationModal'
+
 export default {
   props: {
     invoice: Object
@@ -39,6 +42,19 @@ export default {
   data() {
     return {
       confirmationModal: false
+    }
+  },
+  computed: {
+    sendTokenBtn() {
+      const { status } = this.invoice
+      return status === 'completed' || status === 'waiting_for_payment' || status === 'cancelled'
+    },
+    sendTokenBtnText() {
+      const { status } = this.invoice
+      if (status === 'cancelled') {
+        return 'сделка отменена'
+      }
+      return 'отправить токены'
     }
   },
   methods: {

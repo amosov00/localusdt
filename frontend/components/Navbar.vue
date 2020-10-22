@@ -20,6 +20,7 @@
         </ul>
       </nav>
       <div class="header__actions">
+        <NotificationCenter class="mr-15" v-if="$userIsLoggedIn()"></NotificationCenter>
         <div v-if="!$userIsLoggedIn()">
           <nuxt-link class="header__action disabled" to="/signup"
             >Регистрация</nuxt-link
@@ -45,10 +46,11 @@
 <script>
 import LangSwitcher from '~/components/app/LangSwitcher'
 import formatCurrency from '~/mixins/formatCurrency'
+import NotificationCenter from "~/components/app/NotificationCenter";
 export default {
   mixins: [formatCurrency],
   components: {
-    LangSwitcher
+    LangSwitcher, NotificationCenter
   },
   data() {
     return {
@@ -105,6 +107,8 @@ export default {
   }
 
   &__actions {
+    display: flex;
+    align-items: center;
     margin-left: auto;
   }
 

@@ -5,14 +5,17 @@ div.bid-type
     p.paragraph-1.bid-type__subtitle Выберите тип сделки
   div.bid-type__body
     nuxt-link.bid-type__link(to="/bid/sell/")
-      img(src="~/assets/icons/sell-bid.svg")
+      InlineSvg(:src="require('~/assets/icons/sell-bid.svg')")
     nuxt-link.bid-type__link(to="/bid/buy/")
-      img(src="~/assets/icons/buy-bid.svg")
+      InlineSvg(:src="require('~/assets/icons/buy-bid.svg')")
 </template>
 
 <script>
+import InlineSvg from 'vue-inline-svg'
+
 export default {
-  middleware: ['authRequired']
+  middleware: ['authRequired'],
+  components: { InlineSvg }
 }
 </script>
 

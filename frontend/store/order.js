@@ -1,11 +1,13 @@
 export const state = () => ({
   orders: [],
-  orderById: null
+  orderById: null,
+  ordersByUser: []
 })
 
 export const getters = {
   orders: s => s.orders,
   orderById: s => s.orderById,
+  ordersByUser: s => s.ordersByUser,
   buyOrders: s => s.orders.filter(order => order.type === 1),
   sellOrders: s =>
     s.orders
@@ -24,14 +26,15 @@ export const getters = {
 
 export const mutations = {
   setOrders: (state, payload) => (state.orders = payload),
-  setOrderById: (state, payload) => (state.orderById = payload)
+  setOrderById: (state, payload) => (state.orderById = payload),
+  setOrdersByUser: (state, payload) => (state.ordersByUser = payload)
 }
 
 export const actions = {
   async fetchOrders({ commit }, query) {
     const { data } = await this.$axios.get(
       `/order/?limit=${query.limit}&${
-        query.type ? `ad_type=${query.type}` : ''
+        query.type ? `order_type=${query.type}` : ''
       }&${query.currency ? `currency=${query.currency}` : ''}&${
         query.payment_method ? `payment_method=${query.payment_method}` : ''
       }&${query.price_bot ? `price_bot=${query.price_bot}` : ''}&${
@@ -44,12 +47,68 @@ export const actions = {
     const { data } = await this.$axios.get(`/order/${id}`)
     commit('setOrderById', data)
   },
+  async fetchOrdersByUser({ commit }) {
+    const { data } = await this.$axios.get(`/order/user/`)
+    commit('setOrdersByUser', data)
+  },
   async searchOrders({ commit }, params) {
     const { data } = await this.$axios.get(
-      `/order/?ad_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`
+      `/order/?order_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`
     )
     commit('setOrders', data)
   },
+
+  async setOrderStatus({}, payload) {
+    return await this.$axios
+      .put(`/order/${payload.id}/${payload.endpoint}/`)
+      .then(() => {
+        this.$toast.showMessage({
+          content: `Статус успешно обновлен — ${payload.endpoint.toUpperCase()}`,
+          green: true
+        })
+        return true
+      })
+      .catch(() => {
+        this.$toast.showMessage({
+          content: 'Ошибка: не удалось изменить статус',
+          red: true
+        })
+        return false
+      })
+  },
+
+  async updateOrder({}, payload) {
+    return await this.$axios
+      .put(`/order/${payload.id}/update/`, payload.data)
+      .then(() => true)
+      .catch(() => {
+        this.$toast.showMessage({
+          content: 'Ошибка: не удалось сохранить объявление',
+          red: true
+        })
+        return false
+      })
+  },
+
+  async removeOrder({}, orderId) {
+    return await this.$axios
+      .put(`/order/${orderId}/delete/`)
+      .then(() => {
+        this.$toast.showMessage({
+          content: 'Объявление успешно удалено!',
+          green: true
+        })
+        return true
+      })
+      .catch(() => {
+        this.$toast.showMessage({
+          content: 'Ошибка: не удалось удалить объявление',
+          red: true
+        })
+        return false
+      })
+  },
+
   async createOrder({}, adForm) {
     return await this.$axios
       .post('/order/', adForm)
@@ -57,10 +116,25 @@ export const actions = {
         return true
       })
       .catch(error => {
-        this.$toast.showMessage({
-          content: error.response.data[0].message,
-          red: true
-        })
+        switch (error.response.data[0].message) {
+          case 'Can\'t get currency rate.':
+            this.$toast.showMessage({
+              content: 'Невозможно получить актуальный курс USDT/RUB',
+              red: true
+            })
+            break;
+          case 'Not enough USDT':
+            this.$toast.showMessage({
+              content: 'Недостаточно USDT на аккаунте',
+              red: true
+            })
+            break;
+          default:
+            this.$toast.showMessage({
+              content: error.response.data[0].message,
+              red: true
+            })
+        }
         return false
       })
   }

@@ -1,16 +1,35 @@
 import _ from 'lodash'
 
+let cookieOpts = {
+  path: '/',
+  maxAge: 60 * 60 * 24 * 7
+}
+
+if(process.env.NODE_ENV === 'production') {
+  const additional = {
+    sameSite: 'none',
+    secure: true
+  }
+
+  cookieOpts = { ...additional }
+}
+
+
 export const state = () => ({
-  user: null
+  user: null,
+  currencyPrice: null
 })
 
 export const getters = {
-  user: s => s.user
+  user: s => s.user,
+  currencyPrice: s => s.currencyPrice
 }
 
 export const mutations = {
   setUser: (state, user) => (state.user = user),
-  deleteUser: state => (state.user = false)
+  deleteUser: state => (state.user = false),
+  setCurrencyPrice: (state, payload) =>
+    (state.currencyPrice = payload.current_rate)
 }
 
 export const actions = {
@@ -20,10 +39,7 @@ export const actions = {
       .post('/account/signup/', data)
       .then(resp => {
         this.$axios.setToken(resp.data.token, 'Bearer')
-        this.$cookies.set('token', resp.data.token, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
+        this.$cookies.set('token', resp.data.token, cookieOpts)
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
           content:
@@ -49,10 +65,8 @@ export const actions = {
       })
       .then(resp => {
         this.$axios.setToken(resp.data.token, 'Bearer')
-        this.$cookies.set('token', resp.data.token, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
+        this.$cookies.set('token', resp.data.token, cookieOpts)
+
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
           content: 'Успешный вход в систему!',
@@ -73,8 +87,8 @@ export const actions = {
     this.$cookies.remove('token')
     this.$router.push('/')
   },
-  async fetchUser({commit}) {
-    const {data} = await this.$axios.get('account/user/')
+  async fetchUser({ commit }) {
+    const { data } = await this.$axios.get('account/user/')
     commit('setUser', data)
   },
   async changeProfile({}, data) {
@@ -147,7 +161,7 @@ export const actions = {
         })
       })
   },
-  async changeCondition({dispatch}, condition) {
+  async changeCondition({ dispatch }, condition) {
     await this.$axios
       .put('/account/user/', {
         about_me: condition
@@ -162,6 +176,21 @@ export const actions = {
       .catch(error => {
         this.$toast.showMessage({
           content: error.response.data[0].message,
+          red: true
+        })
+      })
+  },
+  async fetchCurrencyPrice({ commit }) {
+    const { data } = await this.$axios.get('/currency/')
+    commit('setCurrencyPrice', data)
+  },
+  async fetchReferralInfo({}) {
+    return this.$axios.get('/account/referral_info/')
+      .then(res => res.data)
+      .catch((e) => {
+        console.log(e)
+        this.$toast.showMessage({
+          content: 'Ошибка загрузки реферальной ссылки',
           red: true
         })
       })

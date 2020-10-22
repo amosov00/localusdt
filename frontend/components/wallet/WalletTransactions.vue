@@ -1,90 +1,102 @@
 <template>
-<div>
-  <h2 class="fw-500 mt-50">История транзакций</h2>
-  <table class="table">
-    <thead class="table__header">
-      <tr class="table__row">
-        <th class="table__heade">Дата</th>
-        <th class="table__heade">Действие</th>
-        <th class="table__heade">Адрес</th>
-        <th class="table__heade">Сумма</th>
-        <th class="table__heade">Статус</th>
-      </tr>
-    </thead>
-    <tbody class="table__body">
-      <tr class="table__row">
-        <td class="table__data"></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+  <div>
+    <h2 class="fw-500 mt-50">История транзакций</h2>
+    <AppTable class="mb-80" :data="transactions" :headers="headers" pagination>
+      <template slot-scope="{ row }">
+        <td class="table__data">
+          {{regularDate(row.date)}}
+        </td>
+        <td class="table__data">{{ transactionEvent(row.event) }}</td>
+        <td class="table__data">
+            <span>
+              {{ row.address }}
+            </span>
+            <a
+              class="ml-15"
+              :href="`https://etherscan.io/address/${row.address}`"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InlineSvg :src="require('~/assets/icons/redirect.svg')" />
+            </a>
+          </td>
+          <td class="table__data fw-500">
+            {{ commaSplitting(row.amount_usdt) }} USDT
+          </td>
+          <td
+            class="table__data"
+            :style="{ color: statusColor(row.status) }"
+          >
+            {{ transactionStatus(row.status) }}
+          </td>
+      </template>
+    </AppTable>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import formatDate from '~/mixins/formatDate'
+import formatCurrency from '~/mixins/formatCurrency'
+import AppTable from '~/components/app/AppTable'
+import InlineSvg from 'vue-inline-svg'
 export default {
-
+  mixins: [formatDate, formatCurrency],
+  components: {
+    InlineSvg,
+    AppTable
+  },
+  data() {
+    return {
+      headers: ['Дата', 'Действие', 'Адрес', 'Сумма', 'Статус']
+    }
+  },
+  computed: {
+    ...mapGetters({
+      transactions: 'wallet/transactions'
+    })
+  },
+  methods: {
+    transactionStatus(status) {
+      switch (status) {
+        case 1:
+          return 'Выполнено'
+          break
+        case 2:
+          return 'Обрабатывается'
+          break
+        case 3:
+          return 'Отменена'
+          break
+        default:
+          break
+      }
+    },
+    transactionEvent(event) {
+      switch (event) {
+        case 1:
+          return 'Пополнение USDT'
+          break
+        case 2:
+          return 'Вывод USDT'
+          break
+        default:
+          break
+      }
+    },
+    statusColor(status) {
+      switch (this.transactionStatus(status)) {
+        case 'Выполнено':
+          return '#48B190'
+          break
+        case 'Обрабатывается':
+          return '#ED9F43'
+          break
+        case 'Отменена':
+          return '#B31B11'
+          break
+      }
+    }
+  }
 }
 </script>
-
-<style>
-.table {
-  max-width: 1230px;
-  width: 100%;
-  border-collapse: collapse;
-  margin: 25px 0;
-  text-align: center;
-  &__header {
-    .table__row {
-      color: #000;
-      opacity: 0.4;
-      text-transform: uppercase;
-      text-align: center;
-    }
-  }
-
-  &__head {
-    padding: 20px;
-    font-weight: 500;
-  }
-  &__body {
-    .table__row {
-      line-height: 70px;
-
-      &:nth-child(2n) {
-        background-color: #fdfdfd;
-      }
-
-      &:hover {
-        background-color: #fdfdfd;
-      }
-    }
-  }
-
-  &__data {
-    text-align: left;
-    padding-left: 30px;
-
-    .status {
-      display: inline-block;
-      height: 10px;
-      width: 10px;
-      border-radius: 50%;
-      margin-left: 6px;
-    }
-
-    .orders-count {
-      display: inline-block;
-      margin-left: 15px;
-      color: $grey-dark;
-    }
-
-    &:not(:last-child) {
-      border-right: 1px solid $grey;
-    }
-
-    &:nth-child(4) {
-      font-weight: 500;
-    }
-  }
-}
-</style>

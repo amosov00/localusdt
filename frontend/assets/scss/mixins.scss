@@ -22,3 +22,11 @@
     box-shadow: none;
   } 
 }
+
+@mixin reset-button {
+  background-color: $white;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}

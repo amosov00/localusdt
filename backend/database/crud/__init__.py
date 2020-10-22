@@ -2,3 +2,7 @@ from .user import UserCRUD
 from .currency import CurrencyCRUD
 from .ads import AdsCRUD
 from .invoice import InvoiceCRUD
+from .transaction import USDTTransactionCRUD
+from .ethereum_wallet import EthereumWalletCRUD
+from .referral import ReferralCRUD
+from .logging import LogCRUD

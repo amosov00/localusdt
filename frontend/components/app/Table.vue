@@ -6,29 +6,37 @@
           th.table__head Продавец
           th.table__head Способ оплаты
           th.table__head Лимит
+          th.table__head Количество
           th.table__head Цена за токен
       tbody.table__body
-        tr.table__row(v-for="order in tableData" :key="order._id")
+        tr.table__row(v-for="order in paginatedTableData" :key="order._id")
           td.table__data {{order.username}}
             span.status.green--bg
             span.orders-count (10+)
           td.table__data 
             span {{paymentMethod(order.payment_method)}}
-          td.table__data {{order.bot_limit}} - {{spaceSplitting(order.top_limit)}} ₽
+          td.table__data {{spaceSplitting(order.bot_limit)}} - {{spaceSplitting(order.top_limit)}} ₽
+          td.table__data
+            span {{spaceSplitting(order.amount_usdt)}} USDT
           td.table__data {{commaSplitting(order.price)}} ₽
           td.table__data
             nuxt-link(:to="`/order/${order._id}`" v-if="order.type === 1")
-              Button(rounded outlined green) Купить
+              Button(rounded outlined green) {{buttonName}}
             nuxt-link(:to="`/order/${order._id}`" v-else)
-              Button(rounded outlined green) Продать
+              Button(rounded outlined green) {{buttonName}}
     div.pagination(v-if="pagination")
       div.pagination__controller
-        span.pagination__arrow-button(@click="prevPage")
-          InlineSvg(:src="require('~/assets/icons/arrow-left.svg')")
-        span {{paginatedTableData}}
-        span.pagination__arrow-button(@click="nextPage")
-          InlineSvg(:src="require('~/assets/icons/arrow-right.svg')")
+        button.pagination__arrow-button(@click="prevPage")
+          InlineSvg.pagination__arrow-icon(:src="require('~/assets/icons/arrow-left.svg')")
+        p
+          button.pagination__page-button(v-for="page in pagesCount" :key="page" @click="goToPage(page)" :class="{'orange': currentPage === page}" ) {{page}}
+        button.pagination__arrow-button(@click="nextPage")
+          InlineSvg.pagination__arrow-icon(:src="require('~/assets/icons/arrow-right.svg')")
       div.pagination__quantity
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 15}" @click="setContentPerPage(15)" ) 15
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 25}" @click="setContentPerPage(25)" ) 25
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 50}" @click="setContentPerPage(50)" ) 50
+        button.pagination__quantity-button(:class="{'black': contentPerPage === 100}" @click="setContentPerPage(100)" ) 100
 </template>
 
 <script>
@@ -42,7 +50,8 @@ export default {
     pagination: {
       type: Boolean,
       default: false
-    }
+    },
+    buttonName: String
   },
   mixins: [formatCurreny, paymentMethod],
   components: {
@@ -52,40 +61,52 @@ export default {
   data() {
     return {
       currentPage: 1,
-      contentPerPage: 25,
-      tableContent: [],
-      paginatedTableData: []
-    }
-  },
-  watch: {
-    currentPage: function(val) {
-      let quantity = this.tableContent.slice(
-        val * this.contentPerPage,
-        this.contentPerPage
-      )
+      contentPerPage: 15
     }
   },
   computed: {
-    // paginatedTableData() {
-    //   return this.tableContent.slice(
-    //     this.currentPage * this.contentPerPage,
-    //     this.contentPerPage
-    //   )
-    // }
+    whichTable() {
+      switch (this.pagination) {
+        case true:
+          return 'paginatedTableData'
+          break
+        case false:
+          return 'tableData'
+          break
+
+        default:
+          break
+      }
+    },
+    paginatedTableData() {
+      return this.tableData.slice(
+        this.currentPage * this.contentPerPage - this.contentPerPage,
+        this.currentPage * this.contentPerPage
+      )
+    },
+    pagesCount() {
+      return Math.ceil(this.tableData.length / this.contentPerPage)
+    }
   },
   methods: {
     prevPage() {
+      if (this.currentPage <= 1) {
+        return
+      }
       this.currentPage -= 1
-      console.log(this.currentPage, this.currentPage * this.contentPerPage)
     },
     nextPage() {
+      if (this.paginatedTableData.length / this.contentPerPage < 1) {
+        return
+      }
       this.currentPage += 1
-      console.log(this.currentPage, this.currentPage * this.contentPerPage)
-    }
-  },
-  created() {
-    for (let i = 0; i < 300; i++) {
-      this.tableContent.push(i)
+    },
+    setContentPerPage(value) {
+      this.contentPerPage = value
+      this.currentPage = 1
+    },
+    goToPage(page) {
+      this.currentPage = page
     }
   }
 }
@@ -155,10 +176,12 @@ export default {
 }
 
 .pagination {
+  max-width: 1230px;
   width: 100%;
   height: 20px;
   display: flex;
   justify-content: center;
+  position: relative;
 
   &__controller {
     display: inline-block;
@@ -170,14 +193,43 @@ export default {
   }
 
   &__arrow-button {
-    cursor: pointer;
+    @include reset-button;
+  }
+
+  &__page-button {
+    color: $grey-dark;
+    @include reset-button;
+
+    &:not(:last-child) {
+      margin-right: 30px;
+    }
   }
 
   &__quantity {
-    justify-self: end;
+    position: absolute;
+    top: 0;
+    right: 0;
     display: inline-block;
-    width: 100px;
+    width: 115px;
     height: 20px;
+
+      &:not(:last-child) {
+        margin-right: 5px;
+      }
+  }
+
+  &__quantity-button {
+    @include reset-button;
+    transition: $interaction-transition;
+    color: $grey-dark;
+
+    &:hover {
+      color: $black;
+    }
+
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
   }
 }
 </style>

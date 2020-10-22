@@ -1,6 +1,7 @@
 import re
 from typing import Optional
 from datetime import datetime
+from enum import IntEnum
 
 from pydantic import Field, validator
 from passlib.context import CryptContext
@@ -21,6 +22,11 @@ __all__ = [
     "UserRecover",
     "UserRecoverLink",
     "UserUpdate",
+    "UserTransactionStatus",
+    "UserTransactionEvents",
+    "UserTransaction",
+    "UserMakeWithdraw",
+    "UserUpdateNotSafe"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -56,14 +62,23 @@ def validate_username(v: Optional[str], values: dict) -> str:
     return v
 
 
+def validate_withdraw_amount(v: Optional[float]) -> float:
+    if v >= 10000:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Too much usdt to withdraw")
+    if v <= 0:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong usdt format")
+
+    return v
+
+
 class BaseUser(BaseModel):
     pass
 
 
 class User(BaseModel):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
-    email: str = Field(...)
-    username: str = Field(...)
+    email: str = Field(default=None)
+    username: str = Field(default=None)
     balance_usdt: float = Field(default=0)
     usdt_in_invoices: float = Field(default=0)
     eth_address: Optional[str] = Field(default=None)
@@ -71,10 +86,14 @@ class User(BaseModel):
         default=None, description="1 - green, 2 - orange, 3 - red"
     )
     is_active: Optional[bool] = Field(default=True, description="User is active")
+    is_staff: Optional[bool] = Field(default=False, description="Moderator")
+    is_superuser: Optional[bool] = Field(default=False, description="Admin")
+    banned: Optional[bool] = Field(default=False, description="User banned or not")
     verification_code: Optional[str] = Field(default=None)
     recover_code: Optional[str] = Field(
         default=None, description="JWT token for password recover"
     )
+    last_active: Optional[datetime] = Field(default=None)
     created_at: Optional[datetime] = Field(default=None)
     about_me: str = Field(default="", description="About me field")
 
@@ -107,6 +126,7 @@ class UserCreationSafe(BaseModel):
     username: str = Field(...)
     repeat_password: str = Field(...)
     password: str = Field(...)
+    referral_id: Optional[str] = Field(default=None)
 
     _validate_email = validator("email", allow_reuse=True)(validate_email)
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)
@@ -120,8 +140,8 @@ class UserCreationNotSafe(BaseModel):
     repeat_password: Optional[str] = Field(default=None)
     password: Optional[str] = Field(default=None)
 
-    _validate_email = validator("email", pre=True, allow_reuse=True)(validate_email)
     _validate_passwords = validator("password", allow_reuse=True)(validate_password)
+    _validate_email = validator("email", pre=True, allow_reuse=True)(validate_email)
 
 
 class UserRecover(BaseModel):
@@ -138,3 +158,40 @@ class UserRecoverLink(BaseModel):
 
 class UserUpdate(BaseModel):
     about_me: str = Field(..., description="'About me' field")
+
+
+class UserUpdateNotSafe(BaseModel):
+    email: Optional[str] = Field(default=None)
+    username: Optional[str] = Field(default=None)
+    is_staff: Optional[bool] = Field(default=False, description="Moderator")
+    repeat_password: Optional[str] = Field(default=None)
+    password: Optional[str] = Field(default=None)
+
+    _validate_passwords = validator("password", allow_reuse=True)(validate_password)
+    _validate_email = validator("email", pre=True, allow_reuse=True)(validate_email)
+
+
+class UserTransactionEvents(IntEnum):
+    DEPOSIT = 1
+    WITHDRAW = 2
+
+
+class UserTransactionStatus(IntEnum):
+    IN_PROGRESS = 1
+    CANCELLED = 2
+    DONE = 3
+
+
+class UserTransaction(BaseModel):
+    date: datetime = Field(default=None)
+    event: UserTransactionEvents = Field(default=None, description="1 -- DEPOSIT, 2 -- WITHDRAW")
+    address: str = Field(default=None)
+    amount_usdt: float = Field(default=None)
+    status: UserTransactionStatus = Field(default=None, description="1 -- IN_PROGRESS, 2 -- CANCELLED, 3 -- DONE")
+
+
+class UserMakeWithdraw(BaseModel):
+    amount: float = Field(...)
+    to: str = Field(...)
+
+    _validate_withdraw_amount = validator("amount", allow_reuse=True)(validate_withdraw_amount)

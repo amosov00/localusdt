@@ -2,25 +2,31 @@ import asyncio
 from datetime import datetime
 from http import HTTPStatus
 from passlib import pwd
-from typing import Optional, Union
+from typing import Optional, List
 from datetime import timedelta
+from decimal import Decimal
 
 from fastapi.exceptions import HTTPException
 
 from .base import ObjectId
 from database.crud.base import BaseMongoCRUD
+from database.crud.ethereum_wallet import EthereumWalletCRUD
+from database.crud.transaction import USDTTransactionCRUD
+from core.integrations.crypto import USDTWrapper
 from core.utils.jwt import decode_jwt_token, encode_jwt_token
 from core.utils.email import MailGunEmail
-from core.utils import to_objectid
 from schemas.user import (
     User,
     UserCreationSafe,
     pwd_context,
     UserChangePassword,
-    UserVerify,
     UserRecover,
     UserRecoverLink,
-    UserUpdate
+    UserUpdate,
+    UserTransaction,
+    UserTransactionEvents,
+    UserTransactionStatus,
+    UserMakeWithdraw
 )
 
 __all__ = ["UserCRUD"]
@@ -104,6 +110,10 @@ class UserCRUD(BaseMongoCRUD):
                 HTTPStatus.BAD_REQUEST, "Пользователь с таким именем уже существует",
             )
 
+        eth_wallet, private_key, entropy = await USDTWrapper().create_wallet()
+        await EthereumWalletCRUD.create_wallet(eth_wallet.lower(), private_key, entropy)
+        # create ethereum wallet for user
+
         verification_code = pwd.genword()
 
         inserted_id = (
@@ -113,6 +123,11 @@ class UserCRUD(BaseMongoCRUD):
                     "created_at": datetime.now(),
                     "verification_code": verification_code,
                     "is_active": False,
+                    "eth_address": eth_wallet.lower(),
+                    "balance_usdt": 0.0,
+                    "usdt_in_invoices": 0.0,
+                    "is_staff": False,
+                    "is_superuser": False
                 }
             )
         ).inserted_id
@@ -121,7 +136,7 @@ class UserCRUD(BaseMongoCRUD):
             MailGunEmail().send_verification_code(user.email, verification_code)
         )
 
-        return True
+        return inserted_id
 
     @classmethod
     async def change_password(cls, user: User, payload: UserChangePassword) -> bool:
@@ -181,3 +196,43 @@ class UserCRUD(BaseMongoCRUD):
         )
         updated_user = await cls.find_by_id(user.id)
         return updated_user
+
+    @classmethod
+    async def get_transactions(cls, user: User) -> List[dict]:
+        if not user.eth_address:
+            return []
+        result = []
+        transactions = await USDTTransactionCRUD.get_transactions_by_address(user)
+        for transaction in transactions:
+            parsed_trans = {
+                "date": transaction.get("date"),
+                "event": transaction.get("event"),
+                "address": transaction.get("to_adr") if user.eth_address != transaction.get(
+                    "to_adr") else transaction.get("from_adr"),
+                "amount_usdt": float(transaction.get("usdt_amount").to_decimal()) * 0.000001,
+                "status": transaction.get("status")
+            }
+            result.append(parsed_trans)
+        return sorted(result, key=lambda i: i["date"], reverse=True)
+
+    @classmethod
+    async def set_online(cls, user: User) -> None:
+        await cls.update_one(
+            query={
+                "_id": user.id
+            },
+            payload={
+                "last_active": datetime.utcnow()
+            }
+        )
+
+    @classmethod
+    async def make_withdraw(cls, user: User, payload):
+        if user.balance_usdt < payload.amount:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Not enough for transaction")
+
+        await cls.update_one(
+            query={"_id": user.id},
+            payload={"balance_usdt": user.balance_usdt - payload.amount}
+        )
+        return await USDTWrapper().withdraw(user, payload.to, Decimal(payload.amount * 1000000))

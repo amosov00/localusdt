@@ -1,10 +1,13 @@
 from fastapi import FastAPI, exceptions, Request, responses
 from pydantic import ValidationError
 from starlette import status
+
 from starlette.middleware import cors, authentication
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from api.routes import api_router
+from core.mechanics.chat_manager import chat_manager
+from core.mechanics.notification_manager import notification_manager
 from core.utils import CustomJSONResponse, exception_handlers
 from core.middleware import JWTAuthBackend
 from database.init import mongo_client, mongo_db
@@ -20,7 +23,11 @@ docs_config = {
 app = FastAPI(
     title="LocalUSDT",
     exception_handlers=exception_handlers,
-    on_startup=[prepopulate_db],
+    on_startup=[
+        prepopulate_db,
+        chat_manager.init_manager,
+        notification_manager.init_manager
+    ],
     on_shutdown=[close_db_connection],
     **docs_config,
 )

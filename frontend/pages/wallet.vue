@@ -7,7 +7,7 @@
       <div class="wallet__balance">
         <p class="wallet__amount">{{commaSplitting(user.balance_usdt)}} USDT</p>
       <div class="wallet__avaible">
-        <p><span class="opacity-50">Доступно:</span> 200 USDT</p>
+        <p><span class="opacity-50">Всего:</span> {{commaSplitting(user.balance_usdt + user.usdt_in_invoices)}} USDT</p>
         <p><span class="opacity-50">В сделках:</span> {{commaSplitting(user.usdt_in_invoices)}} USDT</p>
       </div>
       </div>
@@ -34,6 +34,9 @@ export default {
     ...mapGetters({
       user: 'user'
     })
+  },
+  asyncData({store}) {
+    return store.dispatch('wallet/fetchTransactions')
   },
 }
 </script>

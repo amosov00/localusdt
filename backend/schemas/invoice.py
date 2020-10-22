@@ -6,13 +6,15 @@ from pydantic import Field, validator
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
 from schemas.ads import AdsType
+from schemas.currency import CurrencyType
 
 __all__ = [
     "Invoice",
     "InvoiceInDB",
     "InvoiceStatus",
     "InvoiceCreate",
-    "InvoiceInSearch"
+    "InvoiceInSearch",
+    "InvoiceWithAds"
 ]
 
 
@@ -22,15 +24,18 @@ class InvoiceStatus:
     WAITING_FOR_TOKENS = "waiting_for_tokens"  # Waiting 30 minutes for token
     COMPLETED = "completed"
     CANCELLED = "cancelled"
-
-    ALL = (WAITING_FOR_PAYMENT, WAITING_FOR_TOKENS, COMPLETED, CANCELLED, APPROVED)
+    FROZEN = "frozen"
+    ALL = (WAITING_FOR_PAYMENT, WAITING_FOR_TOKENS, COMPLETED, CANCELLED, APPROVED, FROZEN)
+    NOT_ACTIVE = (COMPLETED, CANCELLED)
+    ACTIVE = (APPROVED, WAITING_FOR_PAYMENT, WAITING_FOR_TOKENS)
 
 
 class Invoice(BaseModel):
     ads_id: ObjectIdPydantic = Field(...)
     seller_id: ObjectIdPydantic = Field(...)
     buyer_id: ObjectIdPydantic = Field(...)
-    amount_rub: float = Field(default=None)
+    currency: CurrencyType = Field(..., description="1 -- RUB, 2 -- BYN")
+    amount: float = Field(default=None)
     amount_usdt: float = Field(...)
     status: Literal[InvoiceStatus.ALL] = Field( # noqa
         ...,
@@ -57,6 +62,15 @@ class InvoiceInSearch(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
     ads_type: AdsType = Field(default=None)
+
+
+class InvoiceWithAds(InvoiceInDB):
+    seller_username: str = Field(default=None)
+    buyer_username: str = Field(default=None)
+    ads_type: AdsType = Field(default=None)
+    top_limit: int = Field(default=None)
+    bot_limit: int = Field(default=None)
+    condition: str = Field(default=None)
 
 
 class InvoiceCreate(BaseModel):

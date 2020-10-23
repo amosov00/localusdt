@@ -83,7 +83,7 @@ export default {
     },
     chatConnect() {
       //let token = this.$cookies.get('token')
-      this.ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`);
+      this.ws = new WebSocket(`${this.$store.state.wsUrl}invoice/ws/${this.invoice.chat_id}/`);
       this.ws.onopen = (e) => {
         this.chatConnected = true;
       }

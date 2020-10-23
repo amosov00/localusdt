@@ -61,7 +61,7 @@
 
       document.body.addEventListener('click', this.hide, false)
 
-      this.ws = new WebSocket(`${process.env.API_WS_URL}notification/ws/`);
+      this.ws = new WebSocket(`${this.$store.state.wsUrl}notification/ws/`);
       this.ws.onopen = (e) => {
         this.connected = true
       }

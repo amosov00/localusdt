@@ -27,6 +27,10 @@ export default {
 
   css: ['~/assets/scss/global.scss'],
 
+  env: {
+    API_WS_URL: process.env.API_WS_URL
+  },
+
   plugins: [
     '~/plugins/perfect-scrollbar',
     '~/plugins/auth.js',

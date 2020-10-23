@@ -8,6 +8,7 @@ ENV NUXT_PORT=3014
 ENV API_URL=https://localusdt-dev.elastoo.com/api/
 ENV API_URL_BROWSER=https://localusdt-dev.elastoo.com/api/
 ENV SENTRY_DSN=https://4a8f39ef9cfb40e98fd6af4278079093@sentry.elastoo.com/12
+ENV API_WS_URL=wss://localusdt-dev.elastoo.com/api/
 
 COPY ./frontend/ /app/
 WORKDIR /app/

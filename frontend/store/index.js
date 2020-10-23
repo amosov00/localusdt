@@ -22,7 +22,7 @@ export const state = () => ({
 
 export const getters = {
   user: s => s.user,
-  currencyPrice: s => s.currencyPrice
+  currencyPrice: s => s.currencyPrice,
 }
 
 export const mutations = {
@@ -194,5 +194,5 @@ export const actions = {
           red: true
         })
       })
-  }
+  },
 }

@@ -17,19 +17,21 @@ if(process.env.NODE_ENV === 'production') {
 
 export const state = () => ({
   user: null,
-  currencyPrice: null
+  currencyPrice: null,
+  wsUrl: 'wss://localusdt-dev.elastoo.com/api/'
 })
 
 export const getters = {
   user: s => s.user,
-  currencyPrice: s => s.currencyPrice
+  currencyPrice: s => s.currencyPrice,
 }
 
 export const mutations = {
   setUser: (state, user) => (state.user = user),
   deleteUser: state => (state.user = false),
   setCurrencyPrice: (state, payload) =>
-    (state.currencyPrice = payload.current_rate)
+    (state.currencyPrice = payload.current_rate),
+  setWsUrl: (state, data) => state.wsUrl = data
 }
 
 export const actions = {
@@ -194,5 +196,9 @@ export const actions = {
           red: true
         })
       })
+  },
+
+  nuxtServerInit ({ commit }, { req }) {
+    commit('setWsUrl', String(process.env.API_WS_URL))
   }
 }

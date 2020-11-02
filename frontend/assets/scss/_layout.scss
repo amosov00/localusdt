@@ -42,6 +42,13 @@
     // justify-content: space-evenly;
     margin-top: 70px;
     position: relative;
+
+    .extra-text {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 40px);
+      transform: translateY(-50%);
+    }
     &--select {
       position: absolute;
       top: 40%;

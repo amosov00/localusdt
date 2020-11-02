@@ -24,7 +24,7 @@
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.limits') }}</p>
       <p class="order-details__cell">
         <span>{{ spaceSplitting(orderDetails.bot_limit) }}</span> —
-        <span>{{ spaceSplitting(orderDetails.top_limit) }} ₽</span>
+        <span>{{ spaceSplitting(orderDetails.top_limit) }} USDT</span>
       </p>
     </div>
     <div class="order-details__row mt-10">

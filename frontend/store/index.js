@@ -5,7 +5,7 @@ let cookieOpts = {
   maxAge: 60 * 60 * 24 * 7
 }
 
-if(process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   const additional = {
     sameSite: 'none',
     secure: true
@@ -13,7 +13,6 @@ if(process.env.NODE_ENV === 'production') {
 
   cookieOpts = { ...additional }
 }
-
 
 export const state = () => ({
   user: null,
@@ -42,8 +41,7 @@ export const actions = {
         this.$cookies.set('token', resp.data.token, cookieOpts)
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
-          content:
-            'Вы успешно зарегистрировались, проверьте почту для активации аккаунта',
+          content: $nuxt.$t('store.register'),
           green: true
         })
         return this.$router.push('/')
@@ -69,7 +67,7 @@ export const actions = {
 
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
-          content: 'Успешный вход в систему!',
+          content: $nuxt.$t('store.login'),
           green: true
         })
         this.$router.push({ path: '/' })
@@ -105,7 +103,11 @@ export const actions = {
     return await this.$axios
       .post('/account/change_password/', data)
       .then(_ => {
-        this.$toast.showMessage({ content: 'Пароль изменен!', green: true })
+        this.$toast.showMessage(
+          {
+            content: $nuxt.$t('store.passChange'),
+            green: true
+          })
         this.$router.push('/profile')
       })
       .catch(error => {
@@ -130,7 +132,7 @@ export const actions = {
       .post('/account/recover/', data)
       .then(_ => {
         this.$toast.showMessage({
-          content: ' Проверьте свою почту!',
+          content: $nuxt.$t('store.checkEmail'),
           green: true
         })
         this.$router.push('/')
@@ -148,7 +150,7 @@ export const actions = {
       .put('/account/recover/', data)
       .then(_ => {
         this.$toast.showMessage({
-          content: ' Пароль успешно восстановлен!',
+          content: $nuxt.$t('store.passRecover'),
           green: true
         })
         this.$router.push('/login')
@@ -168,7 +170,7 @@ export const actions = {
       })
       .then(() => {
         this.$toast.showMessage({
-          content: ' Информация успешно изменена!',
+          content: $nuxt.$t('store.infoChange'),
           green: true
         })
         dispatch('fetchUser')
@@ -190,7 +192,7 @@ export const actions = {
       .catch((e) => {
         console.log(e)
         this.$toast.showMessage({
-          content: 'Ошибка загрузки реферальной ссылки',
+          content: $nuxt.$t('store.refError'),
           red: true
         })
       })

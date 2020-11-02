@@ -1,17 +1,24 @@
 <template>
-	<footer class="footer">
-		<div class="footer__container">
-			<nuxt-link to="/">
-				<img class="footer__logo" src="~/assets/icons/logo.svg" alt="Logo" />
-			</nuxt-link>
-			<nav class="footer__nav">
-				<ul class="nav">
-					<nuxt-link v-for="link in footerLinks" :key="link.title" :to="link.url" class="nav__item">{{link.title}}</nuxt-link>
-				</ul>
-			</nav>
+  <footer class="footer">
+    <div class="footer__container">
+      <nuxt-link to="/">
+        <img class="footer__logo" src="~/assets/icons/logo.svg" alt="Logo" />
+      </nuxt-link>
+      <nav class="footer__nav">
+        <ul class="nav">
+          <a
+            v-for="link in footerLinks"
+            :key="link.title"
+            :href="link.url"
+            class="nav__item"
+          >
+            {{link.title}}
+          </a>
+        </ul>
+      </nav>
       <p class="footer__copyright">{{$t('footer.right')}} © 2019 / 2020</p>
-		</div>
-	</footer>
+    </div>
+  </footer>
 </template>
 
 <script>
@@ -19,10 +26,10 @@ export default {
   data() {
     return {
       footerLinks: [
-        {title: this.$t('footer.support'), url: '/'},
-        {title: this.$t('footer.aboutUs'), url: '/'},
-        {title: this.$t('footer.order'), url: '/'},
-        {title: this.$t('footer.write'), url: '/'},
+        { title: this.$t('footer.support'), url: '/' },
+        { title: this.$t('footer.aboutUs'), url: '/' },
+        { title: this.$t('footer.order'), url: '/' },
+        { title: this.$t('footer.write'), url: this.$t('footer.writeUrl') },
       ]
     }
   },
@@ -31,41 +38,41 @@ export default {
 
 <style lang="scss">
 .footer {
-	height: 75px;
-	width: 100%;
-	border-top: 1px solid rgba(17, 23, 29, 0.2);
+  height: 75px;
+  width: 100%;
+  border-top: 1px solid rgba(17, 23, 29, 0.2);
 
-	&__container {
-		max-width: 1230px;
+  &__container {
+    max-width: 1230px;
     width: 100%;
     padding-right: 20px;
     padding-left: 20px;
-		height: inherit;
-		margin: auto;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
+    height: inherit;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-	&__nav {
-		.nav {
-			display: flex;
-			align-items: center;
-			height: 100%;
-			&__item {
-				margin-left: 40px;
+  &__nav {
+    .nav {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      &__item {
+        margin-left: 40px;
         list-style: none;
         opacity: 0.5;
         transition: $interaction-transition;
         &:hover {
           opacity: 1;
         }
-			}
-		}
-	}
+      }
+    }
+  }
 
-	&__copyright {
-		opacity: 0.5;
-	}
+  &__copyright {
+    opacity: 0.5;
+  }
 }
 </style>

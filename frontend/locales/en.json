@@ -228,7 +228,8 @@
     "support": "Help",
     "aboutUs": "About us",
     "order": "How to make a deal",
-    "write": "Contact support"
+    "write": "Contact support",
+    "writeUrl": "/"
   },
   "navbar": {
     "buy": "Buy Tether",

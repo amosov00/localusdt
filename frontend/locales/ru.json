@@ -228,7 +228,8 @@
     "support": "Помощь",
     "aboutUs": "О нас",
     "order": "Как провести сделку",
-    "write": "Обратиться в службу поддержки"
+    "write": "Обратиться в службу поддержки",
+    "writeUrl": "https://web.telegram.org/#/im?p=g438718650"
   },
   "navbar": {
     "buy": "Купить Tether",

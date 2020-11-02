@@ -55,7 +55,7 @@
             </td>
             <td class="table__data">{{commaSplitting(row.amount_usdt)}}
               <span class="grey-dark fw-400">
-                {{$t('profile.for')}} {{commaSplitting(row.amount)}} ₽
+                {{$t('profile.for')}} {{commaSplitting(row.amount)}} USDT
               </span>
             </td>
             <td class="table__data" :style="{ color: statusColor(row.status) }">
@@ -75,7 +75,7 @@
             <td class="table__data">
               <span>
                 {{spaceSplitting(row.bot_limit)}} -
-                {{spaceSplitting(row.top_limit)}} ₽
+                {{spaceSplitting(row.top_limit)}} USDT
               </span>
             </td>
             <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT</td>

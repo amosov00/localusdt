@@ -87,7 +87,7 @@
       to="/forgot"
       class="auth-form__forgot-password"
     >
-     {{$t('signup.remindPass')}}
+      {{$t('signup.remindPass')}}
     </nuxt-link>
   </section>
 </template>
@@ -96,6 +96,7 @@
 import Input from '~/components/app/Input'
 import Button from '~/components/app/Button'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { mapGetters } from 'vuex'
 
 export default {
   middleware: ['notAuthRequired'],
@@ -114,11 +115,16 @@ export default {
     referralId() {
       const { query } = this.$route
       return query.ref ? query.ref : ''
-    }
+    },
+    ...mapGetters({
+      LOCALE_ID: 'i18n/GET_LOCALE_ID'
+    })
   },
   methods: {
     signUp() {
       let preparedForm = this.registerForm
+      preparedForm.lang = this.LOCALE_ID
+
       if (this.referralId) {
         preparedForm.referral_id = this.referralId
       }

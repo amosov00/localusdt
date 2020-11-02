@@ -2,11 +2,13 @@ export const state = () => ({
   locales: [
     {
       code: 'ru',
-      name: 'RU'
+      name: 'RU',
+      id: 1
     },
     {
       code: 'en',
-      name: 'EN'
+      name: 'EN',
+      id: 2
     }
   ],
   locale: 'en'
@@ -23,5 +25,8 @@ export const mutations = {
 export const getters = {
   GET_LOCALE(state) {
     return state.locale
+  },
+  GET_LOCALE_ID(state) {
+    return state.locales.find(el => el.code === state.locale).id
   }
 }

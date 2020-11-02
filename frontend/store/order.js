@@ -63,14 +63,14 @@ export const actions = {
       .put(`/order/${payload.id}/${payload.endpoint}/`)
       .then(() => {
         this.$toast.showMessage({
-          content: `Статус успешно обновлен — ${payload.endpoint.toUpperCase()}`,
+          content: `${$nuxt.$t('store.statusChange')} ${payload.endpoint.toUpperCase()}`,
           green: true
         })
         return true
       })
       .catch(() => {
         this.$toast.showMessage({
-          content: 'Ошибка: не удалось изменить статус',
+          content: $nuxt.$t('store.statusChangeError'),
           red: true
         })
         return false
@@ -83,7 +83,7 @@ export const actions = {
       .then(() => true)
       .catch(() => {
         this.$toast.showMessage({
-          content: 'Ошибка: не удалось сохранить объявление',
+          content: $nuxt.$t('store.orderSaveError'),
           red: true
         })
         return false
@@ -95,14 +95,14 @@ export const actions = {
       .put(`/order/${orderId}/delete/`)
       .then(() => {
         this.$toast.showMessage({
-          content: 'Объявление успешно удалено!',
+          content: $nuxt.$t('store.orderDelete'),
           green: true
         })
         return true
       })
       .catch(() => {
         this.$toast.showMessage({
-          content: 'Ошибка: не удалось удалить объявление',
+          content: $nuxt.$t('store.orderDeleteError'),
           red: true
         })
         return false
@@ -119,13 +119,13 @@ export const actions = {
         switch (error.response.data[0].message) {
           case 'Can\'t get currency rate.':
             this.$toast.showMessage({
-              content: 'Невозможно получить актуальный курс USDT/RUB',
+              content: $nuxt.$t('store.courseError'),
               red: true
             })
             break;
           case 'Not enough USDT':
             this.$toast.showMessage({
-              content: 'Недостаточно USDT на аккаунте',
+              content: $nuxt.$t('store.statusError4'),
               red: true
             })
             break;

@@ -12,8 +12,6 @@ class USDTTransactionCRUD(BaseMongoCRUD):
     async def get_transactions_by_address(cls, user: User) -> List[dict]:
         return await cls.find_many(query={
             "$or": [
-                {"to_adr": user.eth_address},
-                {"from_adr": user.eth_address},
                 {"user_id": user.id}
             ]
         })

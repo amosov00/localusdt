@@ -48,7 +48,7 @@
             deserunt vitae pariatur delectus illo est, quibusdam culpa ut voluptatibus eos nihil corrupti rerum
             molestias quam odit sed at.</p>
         </div>
-        <Button @click.native="hideModal" class="referral__button" green lg>Ок</Button>
+        <Button @click.native="hideModal" class="referral__button" green lg>Ok</Button>
       </div>
     </div>
   </transition>

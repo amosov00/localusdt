@@ -97,7 +97,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.invoiceCancelError'),
           red: true
         })
       })
@@ -115,7 +115,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.invoiceConfirmError'),
           red: true
         })
       })
@@ -133,7 +133,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.invoiceTransferError'),
           red: true
         })
       })

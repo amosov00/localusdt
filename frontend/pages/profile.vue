@@ -69,8 +69,8 @@
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
-            <td class="table__data" v-if="row.type === 1">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data" v-else-if="row.type === 2">{{$t('profile.buyUSDT')}}</td>
+            <td class="table__data" v-if="row.type === 1">{{$t('profile.buyUSDT')}}</td>
+            <td class="table__data" v-else-if="row.type === 2">{{$t('profile.sellUSDT')}}</td>
             <td class="table__data">{{commaSplitting(row.price)}}</td>
             <td class="table__data">
               <span>

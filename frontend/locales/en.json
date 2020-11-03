@@ -22,7 +22,17 @@
     "orderSaveError": "Error: Failed to save ad",
     "orderDelete": "The ad was successfully deleted!",
     "orderDeleteError": "Error: Failed to delete ad",
-    "courseError": "Unable to get the current USDT/RUB rate"
+    "courseError": "Unable to get the current USDT/RUB rate",
+    "signInError": "Data entered incorrectly",
+    "signUpEmailError": "User with this email already exists",
+    "signUpError": "New user registration failed!",
+    "invoiceCancelError": "Error while canceling order!",
+    "invoiceConfirmError": "Error while confirming the request!",
+    "invoiceTransferError": "Error sending!",
+    "orderCreateError": "Error: Failed to create ad",
+    "changePassError": "Error: could not change password",
+    "recoverPassError": "Error: unable to recover password",
+    "infoChangeError": "Error: Failed to save new data"
   },
   "other": {
     "congrats": "Your ad was posted successfully!",
@@ -41,7 +51,13 @@
     "refTerms": "Terms of the referral program",
     "transactionProcessed": "Transaction being processed",
     "text1": "Depending on the network load, transactions are processed from 5 minutes to a day",
-    "activationEmail": "Mail activation"
+    "activationEmail": "Mail activation",
+    "activate": "Account is activated!",
+    "activated": "The account is already activated!",
+    "withdraw": "Withdraw",
+    "order": "Order",
+    "for": "for",
+    "new": "New"
   },
   "sendSteps": {
     "sendTokens": "Send tokens",

@@ -7,7 +7,10 @@
       <div class="referral">
         <h1 class="referral__title">{{$t('other.sendUSDT')}}</h1>
         <p class="mt-20 fz-20">
-          {{ commaSplitting(invoice.amount_usdt) }} USDT за <span class="opacity-50"> {{ commaSplitting(invoice.amount) }} ₽ </span>
+          {{ commaSplitting(invoice.amount_usdt) }} USDT {{ $t('other.for') }}
+          <span class="opacity-50">
+            {{ commaSplitting(invoice.amount) }} ₽
+          </span>
         </p>
         <p class="fz-14 mt-20">{{ userName }} <span class="status-circle"></span></p>
         <div>
@@ -26,6 +29,7 @@
 <script>
 import Button from '~/components/app/Button'
 import formatCurrency from '~/mixins/formatCurrency'
+
 export default {
   props: {
     show: Boolean,

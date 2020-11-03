@@ -21,13 +21,13 @@ export default {
         maxAge: 60 * 60 * 24 * 7
       })
       this.$toast.showMessage({
-        content: 'Учетная запись активирована!',
+        content: this.$t('other.activate'),
         green: true
 			})
 			this.$router.push('/profile')
     } else {
       this.$toast.showMessage({
-        content: 'Учетная запись уже активирована!',
+        content: this.$t('other.activated'),
         red: true
       })
       this.$router.push('/')

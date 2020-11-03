@@ -4,12 +4,12 @@
       <n-link :to="'/invoice/' + props.item.data.invoice_id" :class="['localusd-toast', props.item.type]">
         <div class="localusd-toast__header">
           <div class="localusd-toast__title-wrapper">
-            <span>Сделка — </span>
+            <span>{{ $t('other.order') }} — </span>
             <div class="title" v-if="props.item.title">
               {{props.item.title}}
             </div>
             <div v-else class="title title--blue">
-              New
+              {{ $t('other.new') }}
             </div>
           </div>
           <span class="close" @click.prevent.stop="props.close">

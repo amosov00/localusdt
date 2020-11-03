@@ -47,10 +47,19 @@ export const actions = {
         return this.$router.push('/')
       })
       .catch(error => {
-        this.$toast.showMessage({
-          content: error.response.data.detail[0].msg,
-          red: true
-        })
+        switch (error.response.data[0].message) {
+          case 'Пользователь с таким email уже существует':
+            this.$toast.showMessage({
+              content: $nuxt.$t('store.signUpEmailError'),
+              red: true
+            })
+            break
+          default:
+            this.$toast.showMessage({
+            content: $nuxt.$t('store.signUpError'),
+            red: true
+          })
+        }
       })
   },
   async logIn({ commit }, data) {
@@ -74,7 +83,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.signInError'),
           red: true
         })
       })
@@ -112,7 +121,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.changePassError'),
           red: true
         })
       })
@@ -140,7 +149,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.recoverPassError'),
           red: true
         })
       })
@@ -158,7 +167,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.recoverPassError'),
           red: true
         })
       })
@@ -177,7 +186,7 @@ export const actions = {
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.infoChangeError'),
           red: true
         })
       })

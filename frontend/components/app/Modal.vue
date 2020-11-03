@@ -7,7 +7,7 @@
           {{ $t('other.control') }}
         </p>
         <Button @click.native="hideModal" class="modal__button" green lg
-          >Ок</Button
+          >Ok</Button
         >
       </div>
     </div>

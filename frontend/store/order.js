@@ -131,7 +131,7 @@ export const actions = {
             break;
           default:
             this.$toast.showMessage({
-              content: error.response.data[0].message,
+              content: $nuxt.$t('store.orderCreateError'),
               red: true
             })
         }

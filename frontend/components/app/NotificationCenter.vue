@@ -21,7 +21,7 @@
             div(v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
-                  span Вывод
+                  span {{ $t('other.withdraw') }}
                   span.notify-center__amount(:class="{ 'notify-center__amount': msg.new_status === 1 }") {{ Number(msg.amount).toFixed(2) }} USDT
                   span(v-if="msg.new_status")
                     = ': '
@@ -31,7 +31,7 @@
                   div.notify-center__msg-time {{ formatDate(msg.created_at) }}
               div(v-else)
                 div.notify-center__msg-title
-                  span Сделка
+                  span {{ $t('other.order') }}
                   span(v-if="msg.new_status")
                     = ': '
                   span.color-green {{ msg.new_status }}
@@ -169,7 +169,7 @@
   opacity: 1;
   transition: all .2s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+.fade-enter, .fade-leave-to {
   opacity: 0;
   transform: translateY(20px);
 }

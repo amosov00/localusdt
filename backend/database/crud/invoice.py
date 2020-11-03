@@ -126,9 +126,9 @@ class InvoiceCRUD(BaseMongoCRUD):
             amount=ads["price"] * payload.amount_usdt,
         )
 
-        if invoice.amount < ads.get("bot_limit"):
+        if payload.amount_usdt < ads.get("bot_limit"):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "You have exceeded the lower limit")
-        if invoice.amount > ads.get("top_limit"):
+        if payload.amount_usdt > ads.get("top_limit"):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "You have exceeded the upper limit")
 
         seller_db = await UserCRUD.find_by_id(seller_id)

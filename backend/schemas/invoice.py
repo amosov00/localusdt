@@ -68,8 +68,8 @@ class InvoiceWithAds(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
     ads_type: AdsType = Field(default=None)
-    top_limit: int = Field(default=None)
-    bot_limit: int = Field(default=None)
+    top_limit: float = Field(default=None)
+    bot_limit: float = Field(default=None)
     condition: str = Field(default=None)
 
 

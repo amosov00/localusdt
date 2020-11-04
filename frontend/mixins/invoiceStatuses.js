@@ -15,7 +15,8 @@ export default {
           return this.$t('status.completed')
           break
         case 'cancelled':
-          return this.$t('status.canceled')
+        case 'frozen':
+          return this.$t('status.cancelled')
           break
       }
     },
@@ -31,9 +32,10 @@ export default {
           return this.$t('status.small_waiting_for_tokens')
           break
         case 'completed':
-          return this.$t('status.small_waiting_for_tokens')
+          return this.$t('status.small_completed')
           break
         case 'cancelled':
+        case 'frozen':
           return this.$t('status.cancelled')
           break
       }
@@ -49,6 +51,7 @@ export default {
           return '#ED9F43'
           break
         case 'cancelled':
+        case 'frozen':
           return '#B31B11'
           break
       }

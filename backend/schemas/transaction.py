@@ -24,7 +24,7 @@ class USDTTransactionEvents(IntEnum):
     DEPOSIT = 1
     WITHDRAW = 2
     DEPOSIT_LOOT_TOKENS = 3
-    DEPOSIT_LOOT_ETHER = 3
+    DEPOSIT_LOOT_ETHER = 4
 
 
 class USDTTransaction(BaseModel):

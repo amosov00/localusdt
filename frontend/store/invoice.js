@@ -24,7 +24,7 @@ export const actions = {
       .catch((e) => {
         console.log(e)
         this.$toast.showMessage({
-          content: 'Ошибка загрузки чата!',
+          content: $nuxt.$t('store.chatError'),
           red: true
         })
       })
@@ -36,7 +36,7 @@ export const actions = {
       .then(res => {
         this.$router.push(`/invoice/${res.data._id}`)
         this.$toast.showMessage({
-          content: 'Заявка успешно создана!',
+          content: $nuxt.$t('store.invoiceCreate'),
           green: true
         })
         dispatch('fetchInvoices')
@@ -46,31 +46,31 @@ export const actions = {
         switch (error.response.data[0].message) {
           case 'You have exceeded the lower limit':
             this.$toast.showMessage({
-              content: 'Вы превысили нижний лимит объявления',
+              content: $nuxt.$t('store.statusError1'),
               red: true
             })
             break
           case 'You have exceeded the upper limit':
             this.$toast.showMessage({
-              content: 'Вы превысили верхний лимит объявления',
+              content: $nuxt.$t('store.statusError2'),
               red: true
             })
             break
           case 'No such USDT on order':
             this.$toast.showMessage({
-              content: 'Нет такого количества USDT в объявлении',
+              content: $nuxt.$t('store.statusError3'),
               red: true
             })
             break
           case 'Not enough USDT on wallet':
             this.$toast.showMessage({
-              content: 'Недостаточно USDT на вашем кошельке',
+              content: $nuxt.$t('store.statusError4'),
               red: true
             })
             break
           case 'Wrong user role or invoice status':
             this.$toast.showMessage({
-              content: 'Неправильный статус объявления',
+              content: $nuxt.$t('store.statusError5'),
               red: true
             })
             break
@@ -91,13 +91,13 @@ export const actions = {
       .then(() => {
         this.$router.push('/')
         this.$toast.showMessage({
-          content: 'Заявка отменена!',
+          content: $nuxt.$t('store.invoiceCancel'),
           green: true
         })
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.invoiceCancelError'),
           red: true
         })
       })
@@ -109,13 +109,13 @@ export const actions = {
         dispatch('fetchInvoiceById', id)
         dispatch('fetchUser', null, { root: true })
         this.$toast.showMessage({
-          content: 'Ожидайте получения токенов',
+          content: $nuxt.$t('store.waitToken'),
           green: true
         })
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.invoiceConfirmError'),
           red: true
         })
       })
@@ -127,13 +127,13 @@ export const actions = {
         dispatch('fetchInvoiceById', id)
         dispatch('fetchUser', null, { root: true })
         this.$toast.showMessage({
-          content: 'Сделка завершена',
+          content: $nuxt.$t('store.invoiceEnd'),
           green: true
         })
       })
       .catch(error => {
         this.$toast.showMessage({
-          content: error.response.data[0].message,
+          content: $nuxt.$t('store.invoiceTransferError'),
           red: true
         })
       })

@@ -107,8 +107,10 @@ class USDTWrapper:
             transactions = self.w3.eth.getBlock(block_number, full_transactions=True).get("transactions")
             for transaction in transactions:
                 try:
-
-                    if not transaction.get("to") or transaction.get("to").lower() != self.contract_address.lower():
+                    try:
+                        if not transaction.get("to") or transaction.get("to").lower() != self.contract_address.lower():
+                            continue
+                    except AttributeError:
                         continue
                     input_field = self.contract.decode_function_input(transaction.get("input"))
 

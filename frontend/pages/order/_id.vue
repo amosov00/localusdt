@@ -1,8 +1,8 @@
 <template>
   <section class="order">
     <header class="order__header">
-      <h1 v-if="order.type === 1" class="order__title" >{{$t('profile.sellUSDT')}}</h1>
-      <h1 v-else class="order__title">{{$t('profile.buyUSDT')}}</h1>
+      <h1 v-if="order.type === 1" class="order__title" >{{$t('profile.buyUSDT')}}</h1>
+      <h1 v-else class="order__title">{{$t('profile.sellUSDT')}}</h1>
       <!--<div>{{ order }}</div>-->
       <div class="order__header-additional">
         <div class="order__subtitle flex-1">{{$t('main.bankTransfer')}} {{$t('main.sberbank')}}</div>
@@ -40,7 +40,7 @@
     <Confirm :title="$t('order.question')" :show="showModal" @toggleModal="showModal = $event">
       <template v-slot:actions>
         <Button red class="mr-15" @click.native="removeOrder(order._id)">{{$t('order.deleteAd')}}</Button>
-        <Button white @click.native="showModal = false">Отмена</Button>
+        <Button white @click.native="showModal = false">{{$t('other.cancel')}}</Button>
       </template>
     </Confirm>
   </section>

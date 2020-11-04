@@ -15,7 +15,7 @@
         </td>
         <td class="table__data">
           {{ spaceSplitting(row.bot_limit) }} -
-          {{ spaceSplitting(row.top_limit) }} ₽
+          {{ spaceSplitting(row.top_limit) }} USDT
         </td>
         <td class="table__data">{{ commaSplitting(row.amount_usdt) }} USDT</td>
         <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>

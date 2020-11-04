@@ -1,4 +1,39 @@
 {
+  "store": {
+    "login": "Successful login!",
+    "register": "You have successfully registered, check your email to activate your account",
+    "passChange": "Password changed!",
+    "checkEmail": "Check your mail!",
+    "passRecover": "Password recovered successfully!",
+    "infoChange": "Information changed successfully!",
+    "refError": "Error loading referral link",
+    "chatError": "Error loading chat!",
+    "invoiceCreate": "Bid has been successfully created!",
+    "statusError1": "You have exceeded the ad limit",
+    "statusError2": "You have exceeded the upper ad limit",
+    "statusError3": "There is no such amount of USDT in the ad",
+    "statusError4": "Not enough USDT in your wallet",
+    "statusError5": "Invalid ad status",
+    "invoiceCancel": "Bid canceled!",
+    "waitToken": "Wait for tokens to be received",
+    "invoiceEnd": "Deal completed",
+    "statusChange": "Status updated successfully -",
+    "statusChangeError": "Error: Failed to change status",
+    "orderSaveError": "Error: Failed to save ad",
+    "orderDelete": "The ad was successfully deleted!",
+    "orderDeleteError": "Error: Failed to delete ad",
+    "courseError": "Unable to get the current USDT/RUB rate",
+    "signInError": "Data entered incorrectly",
+    "signUpEmailError": "User with this email already exists",
+    "signUpError": "New user registration failed!",
+    "invoiceCancelError": "Error while canceling order!",
+    "invoiceConfirmError": "Error while confirming the request!",
+    "invoiceTransferError": "Error sending!",
+    "orderCreateError": "Error: Failed to create ad",
+    "changePassError": "Error: could not change password",
+    "recoverPassError": "Error: unable to recover password",
+    "infoChangeError": "Error: Failed to save new data"
+  },
   "other": {
     "congrats": "Your ad was posted successfully!",
     "control": "You can control it on the buy / sell page",
@@ -16,7 +51,14 @@
     "refTerms": "Terms of the referral program",
     "transactionProcessed": "Transaction being processed",
     "text1": "Depending on the network load, transactions are processed from 5 minutes to a day",
-    "activationEmail": "Mail activation"
+    "activationEmail": "Mail activation",
+    "activate": "Account is activated!",
+    "activated": "The account is already activated!",
+    "withdraw": "Withdraw",
+    "order": "Order",
+    "for": "for",
+    "new": "New",
+    "replenishment": "Replenishment"
   },
   "sendSteps": {
     "sendTokens": "Send tokens",
@@ -138,7 +180,7 @@
     "buy": "Buy"
   },
   "status": {
-    "canceled": "Canceled",
+    "cancelled": "Canceled",
     "waiting_for_payment": "Waiting for confirmation of payment by the buyer",
     "approved": "Approved",
     "waiting_for_tokens": "Waiting for tokens to be sent",
@@ -203,7 +245,8 @@
     "support": "Help",
     "aboutUs": "About us",
     "order": "How to make a deal",
-    "write": "Contact support"
+    "write": "Contact support",
+    "writeUrl": "/"
   },
   "navbar": {
     "buy": "Buy Tether",

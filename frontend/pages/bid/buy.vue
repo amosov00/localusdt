@@ -87,7 +87,7 @@
         :width="250"
         type="number"
         :header="$t('bid.maxLimit')")
-        //- Select.create-order__gap--select(:options="currencyOptions" v-model="adForm.currency" :width="80")
+        span.extra-text USDT
       Textarea.create-order__conditions(
       v-model="adForm.condition"
       :placeholder="$t('bid.writeTerms')")

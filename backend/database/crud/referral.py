@@ -66,6 +66,13 @@ class ReferralCRUD(BaseMongoCRUD):
         referral = await cls.find_one(query={"user_id": user_id})
         percent = 0.005
         while referral is not None and percent > 0:
+            if referral.get("user_id") == user_id:
+                referral = (
+                    await cls.find_one(query={"_id": referral.get("parent_id")})
+                    if referral.get("parent_id") is not None
+                    else None
+                )
+                continue
             await cls.update_one(
                 query={"_id": referral.get("_id")},
                 payload={

@@ -55,7 +55,7 @@
             </td>
             <td class="table__data">{{commaSplitting(row.amount_usdt)}}
               <span class="grey-dark fw-400">
-                {{$t('profile.for')}} {{commaSplitting(row.amount)}} ₽
+                {{$t('profile.for')}} {{commaSplitting(row.amount)}} USDT
               </span>
             </td>
             <td class="table__data" :style="{ color: statusColor(row.status) }">
@@ -69,13 +69,13 @@
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
-            <td class="table__data" v-if="row.type === 1">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data" v-else-if="row.type === 2">{{$t('profile.buyUSDT')}}</td>
+            <td class="table__data" v-if="row.type === 1">{{$t('profile.buyUSDT')}}</td>
+            <td class="table__data" v-else-if="row.type === 2">{{$t('profile.sellUSDT')}}</td>
             <td class="table__data">{{commaSplitting(row.price)}}</td>
             <td class="table__data">
               <span>
                 {{spaceSplitting(row.bot_limit)}} -
-                {{spaceSplitting(row.top_limit)}} ₽
+                {{spaceSplitting(row.top_limit)}} USDT
               </span>
             </td>
             <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT</td>

@@ -21,7 +21,8 @@
             div(v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
-                  span {{ $t('other.withdraw') }}
+                  span(v-if="msg.type === 2") {{ $t('other.replenishment') }}
+                  span(v-if="msg.type === 3") {{ $t('other.withdraw') }}
                   span.notify-center__amount(:class="{ 'notify-center__amount': msg.new_status === 1 }") {{ Number(msg.amount).toFixed(2) }} USDT
                   span(v-if="msg.new_status")
                     = ': '
@@ -104,15 +105,10 @@
       },
 
       toggle() {
-        if(!this.showMessages) {
-          //await this.loadNotifictions()
-          this.showMessages = true
-        } else {
-          this.showMessages = false
-        }
+        this.showMessages = !this.showMessages;
       },
 
-      hide(e) {
+      hide() {
         this.showMessages = false
       },
 

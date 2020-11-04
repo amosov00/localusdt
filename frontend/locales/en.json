@@ -57,7 +57,8 @@
     "withdraw": "Withdraw",
     "order": "Order",
     "for": "for",
-    "new": "New"
+    "new": "New",
+    "replenishment": "Replenishment"
   },
   "sendSteps": {
     "sendTokens": "Send tokens",
@@ -179,7 +180,7 @@
     "buy": "Buy"
   },
   "status": {
-    "canceled": "Canceled",
+    "cancelled": "Canceled",
     "waiting_for_payment": "Waiting for confirmation of payment by the buyer",
     "approved": "Approved",
     "waiting_for_tokens": "Waiting for tokens to be sent",

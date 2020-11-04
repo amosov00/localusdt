@@ -57,7 +57,8 @@
     "withdraw": "Вывод",
     "order": "Сделка",
     "for": "за",
-    "new": "Новый"
+    "new": "Новый",
+    "replenishment": "Пополнение"
   },
   "sendSteps": {
     "sendTokens": "Отправить токены",

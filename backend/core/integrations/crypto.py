@@ -131,7 +131,7 @@ class USDTWrapper:
                             "usdt_amount": Decimal(input_field[1].get("_value"))
                         }
                         transactions_to_proceed.append(parsed_trans)
-                except ValueError:
+                except Exception:
                     pass
 
         return transactions_to_proceed

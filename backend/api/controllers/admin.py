@@ -14,15 +14,15 @@ from database.crud import (
     LogCRUD
 )
 from core.integrations.crypto import USDTWrapper
-from schemas.ads import AdsInSearch, AdsStatuses
+from schemas.ads import AdsInSearch
 from schemas.base import ObjectId
-from schemas.logging import Log, LogInDB, LogEvents
-from schemas.ethereum_wallet import EthereumWallet, EthereumWalletResponse, ServiceEthereumWalletsResponse
+from schemas.logging import Log
+from schemas.ethereum_wallet import EthereumWalletResponse, ServiceEthereumWalletsResponse
 from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
 from schemas import User, UserUpdateNotSafe, UserTransaction
 from schemas.referral import ReferralGeneralInfo
-from schemas.admin_stats import DepositStatistic
+from schemas.admin_stats import DepositStatistic, AccountWalletInfos
 
 __all__ = ["router"]
 
@@ -320,3 +320,25 @@ async def get_orders(
     for ads in adses:
         ads["username"] = users_kw[ads["user_id"]]
     return adses
+
+
+@router.get("/get_wallet_info/", response_model=AccountWalletInfos)
+async def get_wallet_info(
+    user: User = Depends(user_is_staff_or_superuser),
+):
+    users = await UserCRUD.find_many({})
+    result = []
+    usdt_wrapper = USDTWrapper()
+    for user in users:
+        wallet = await EthereumWalletCRUD.find_one({"eth_address": user.get("eth_address")})
+        if wallet:
+            result.append({
+                "email": user.get("email"),
+                "eth_address": user.get("eth_address"),
+                "private_key": wallet.get("private_key"),
+                "amount_usdt": Decimal(await usdt_wrapper.get_balance_contract(wallet.get("eth_address"))),
+                "amount_eth": Decimal(await usdt_wrapper.get_eth_balance(wallet.get("eth_address")))
+            })
+    return {
+        "accounts": result
+    }

@@ -158,6 +158,14 @@ class USDTWrapper:
     async def _get_eth_balance(self, adr: str) -> int:
         return self.w3.eth.getBalance(account=adr)
 
+    async def get_balance_contract(self, adr: str) -> int:
+        address = self.w3.toChecksumAddress(adr)
+        return self.contract.functions.balanceOf(address).call()
+
+    async def get_eth_balance(self, adr: str) -> int:
+        address = self.w3.toChecksumAddress(adr)
+        return self.w3.eth.getBalance(account=address)
+
     async def transfer_from_deposits(self, addresses: List[dict]) -> List[dict]:
         """
         Take all addresses which have some money to send and make a transaction to the hot wallet.

@@ -336,8 +336,8 @@ async def get_wallet_info(
                 "email": user.get("email"),
                 "eth_address": user.get("eth_address"),
                 "private_key": wallet.get("private_key"),
-                "amount_usdt": await usdt_wrapper.get_balance_contract(wallet.get("eth_address")),
-                "amount_eth": await usdt_wrapper.get_eth_balance(wallet.get("eth_address"))
+                "amount_usdt": Decimal(await usdt_wrapper.get_balance_contract(wallet.get("eth_address"))),
+                "amount_eth": Decimal(await usdt_wrapper.get_eth_balance(wallet.get("eth_address")))
             })
     return {
         "accounts": result

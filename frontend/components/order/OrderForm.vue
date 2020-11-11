@@ -12,6 +12,7 @@
       <Textarea
         class="mt-20"
         :placeholder="$t('orderForm.writeTo')"
+        v-model="invoiceForm.chatText"
       />
       <Button class="mt-20" green @click.native="createInvoice">
         {{ $t('orderForm.send') }}
@@ -42,7 +43,8 @@ export default {
     return {
       invoiceForm: {
         ads_id: this.$route.params.id,
-        amount_usdt: 0
+        amount_usdt: 0,
+        chatText: ''
       }
     }
   },

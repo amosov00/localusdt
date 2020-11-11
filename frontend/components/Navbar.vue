@@ -12,7 +12,8 @@
             :to="link.url"
             @click.native="forceReload(link.url)"
             class="nav__item"
-            >{{ link.title }}</nuxt-link
+          >{{ link.title }}
+          </nuxt-link
           >
           <nuxt-link class="nav__item" to="/bid" v-if="$userIsLoggedIn()">
             {{ $t('navbar.newOrder')}}
@@ -23,17 +24,20 @@
         <NotificationCenter class="mr-15" v-if="$userIsLoggedIn()"></NotificationCenter>
         <div v-if="!$userIsLoggedIn()">
           <nuxt-link class="header__action disabled" to="/signup"
-            >{{$t('navbar.reg')}}</nuxt-link
+          >{{$t('navbar.reg')}}
+          </nuxt-link
           >
           <nuxt-link class="header__action" to="/login">{{$t('navbar.signIn')}}</nuxt-link>
         </div>
         <div class="header__user" v-else>
           <nuxt-link to="/wallet" class="header__balance"
-            >{{ commaSplitting(user.balance_usdt) }} USDT</nuxt-link
+          >{{ commaSplitting(user.balance_usdt) }} USDT
+          </nuxt-link
           >
           <nuxt-link class="header__action" to="/profile">{{
             user.username
-          }}</nuxt-link>
+            }}
+          </nuxt-link>
         </div>
       </div>
       <div class="header__lang">
@@ -46,7 +50,8 @@
 <script>
 import LangSwitcher from '~/components/app/LangSwitcher'
 import formatCurrency from '~/mixins/formatCurrency'
-import NotificationCenter from "~/components/app/NotificationCenter";
+import NotificationCenter from '~/components/app/NotificationCenter'
+
 export default {
   mixins: [formatCurrency],
   components: {
@@ -54,6 +59,7 @@ export default {
   },
   data() {
     return {
+      interval: null,
       footerLinks: [
         { title: this.$t('navbar.buy'), url: '/buy' },
         { title: this.$t('navbar.sell'), url: '/sell' }
@@ -71,7 +77,17 @@ export default {
         window.location.reload()
       }
     }
-  }
+  },
+  mounted() {
+    this.interval = setInterval(async() => {
+      if (this.user) {
+        await this.$store.dispatch('fetchBalance')
+      }
+    }, 5000)
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
 }
 </script>
 

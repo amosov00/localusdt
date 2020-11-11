@@ -26,7 +26,7 @@
                   span.notify-center__amount(:class="{ 'notify-center__amount': msg.new_status === 1 }") {{ Number(msg.amount).toFixed(2) }} USDT
                   span(v-if="msg.new_status")
                     = ': '
-                  span.color-green {{ msg.new_status }}
+                  span.color-green {{ invoiceStatusShort(msg.new_status) }}
                 div.notify-center__msg-body
                   div.notify-center__msg-content {{ msg.invoice_id }}
                   div.notify-center__msg-time {{ formatDate(msg.created_at) }}
@@ -35,111 +35,112 @@
                   span {{ $t('other.order') }}
                   span(v-if="msg.new_status")
                     = ': '
-                  span.color-green {{ msg.new_status }}
+                  span.color-green {{invoiceStatusShort(msg.new_status) }}
                 div.notify-center__msg-body
                   div.notify-center__msg-content {{ msg.invoice_id }}
                   div.notify-center__msg-time {{ formatDate(msg.created_at) }}
 </template>
 
 <script>
-  import InlineSvg from 'vue-inline-svg';
+import InlineSvg from 'vue-inline-svg'
 
-  import formatDate from "~/mixins/formatDate";
-  import formatCurrency from "~/mixins/formatCurrency";
+import formatDate from '~/mixins/formatDate'
+import invoiceStatuses from '~/mixins/invoiceStatuses'
+import formatCurrency from '~/mixins/formatCurrency'
 
-  export default {
-    components: {InlineSvg},
-    mixins: [formatDate, formatCurrency],
-    data: () => ({
-      connected: false,
-      showMessages: false,
-      notif_list: [],
-      ws: null,
-      audio: null
-    }),
-    mounted() {
-      this.loadNotifictions();
+export default {
+  components: { InlineSvg },
+  mixins: [formatDate, formatCurrency, invoiceStatuses],
+  data: () => ({
+    connected: false,
+    showMessages: false,
+    notif_list: [],
+    ws: null,
+    audio: null
+  }),
+  mounted() {
+    this.loadNotifictions()
 
-      document.body.addEventListener('click', this.hide, false)
+    document.body.addEventListener('click', this.hide, false)
 
-      this.ws = new WebSocket(`${process.env.API_WS_URL}notification/ws/`);
-      this.ws.onopen = (e) => {
-        this.connected = true
-      }
-      this.ws.onerror = (e) => {
-        this.connected = false
-      }
-      this.ws.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        this.notif_list.unshift(data);
-        this.notify(data)
-      }
-    },
-
-    beforeDestroy() {
-      document.body.removeEventListener('click', this.hide)
-    },
-
-    computed: {
-      showBadge() {
-        return this.notif_list.findIndex(el => el.watched === false) !== -1;
-      }
-    },
-
-    methods: {
-      async markAllRead() {
-        this.$axios.get('/notification/watch/')
-          .then(async () => {
-            await this.loadNotifictions();
-          }).catch(() => {
-          })
-      },
-
-      async loadNotifictions() {
-        this.$axios.get('/notification/')
-          .then(res => {
-            this.notif_list = res.data;
-          }).catch(() => {
-          this.$toast.showMessage({content: this.$t('other.notesError'), red: true})
-        })
-      },
-
-      toggle() {
-        this.showMessages = !this.showMessages;
-      },
-
-      hide() {
-        this.showMessages = false
-      },
-
-      notify(data) {
-        const title = data.new_status
-        const text = `${data.invoice_id}<div class="time">${this.formatDate(data.created_at)}</div>`
-
-        this.$notify({
-          group: 'app',
-          title,
-          text,
-          duration: 60000,
-          closeOnClick: true,
-          speed: 200,
-          data: {
-            invoice_id: data.invoice_id
-          }
-        });
-        this.playSound('notification-1.mp3')
-      },
-      playSound(filename) {
-        if (this.audio instanceof Audio) {
-          this.audio.pause()
-          this.audio.currentTime = 0;
-        }
-
-        this.audio = new Audio(require(`~/assets/sounds/${filename}`));
-        this.audio.play()
-      },
+    this.ws = new WebSocket(`${process.env.API_WS_URL}notification/ws/`)
+    this.ws.onopen = (e) => {
+      this.connected = true
     }
+    this.ws.onerror = (e) => {
+      this.connected = false
+    }
+    this.ws.onmessage = (e) => {
+      const data = JSON.parse(e.data)
+      this.notif_list.unshift(data)
+      this.notify(data)
+    }
+  },
+
+  beforeDestroy() {
+    document.body.removeEventListener('click', this.hide)
+  },
+
+  computed: {
+    showBadge() {
+      return this.notif_list.findIndex(el => el.watched === false) !== -1
+    }
+  },
+
+  methods: {
+    async markAllRead() {
+      this.$axios.get('/notification/watch/')
+        .then(async() => {
+          await this.loadNotifictions()
+        }).catch(() => {
+      })
+    },
+
+    async loadNotifictions() {
+      this.$axios.get('/notification/')
+        .then(res => {
+          this.notif_list = res.data
+        }).catch(() => {
+        this.$toast.showMessage({ content: this.$t('other.notesError'), red: true })
+      })
+    },
+
+    toggle() {
+      this.showMessages = !this.showMessages
+    },
+
+    hide() {
+      this.showMessages = false
+    },
+
+    notify(data) {
+      const title = this.invoiceStatusShort(data.new_status)
+      const text = `${data.invoice_id}<div class="time">${this.formatDate(data.created_at)}</div>`
+
+      this.$notify({
+        group: 'app',
+        title,
+        text,
+        duration: 60000,
+        closeOnClick: true,
+        speed: 200,
+        data: {
+          invoice_id: data.invoice_id
+        }
+      })
+      this.playSound('notification-1.mp3')
+    },
+    playSound(filename) {
+      if (this.audio instanceof Audio) {
+        this.audio.pause()
+        this.audio.currentTime = 0
+      }
+
+      this.audio = new Audio(require(`~/assets/sounds/${filename}`))
+      this.audio.play()
+    },
   }
+}
 </script>
 
 <style lang="scss" scoped>

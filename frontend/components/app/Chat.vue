@@ -5,10 +5,8 @@
       span.orange {{ name }}
     Textarea(v-model="textArea" class="w-100 mt-20"
       :placeholder="$t('chat.placeholder')"
-      @keydown.enter.native="sendMessage" ref="chatText" :disabled="!chatConnected")
-    Button(green @click.native="sendMessage" :disabled="!chatConnected").mt-20.mr-15 {{ $t('chat.send') }}
-    span(v-if="chatConnected") {{ $t('chat.connected') }}
-    span(v-else) {{ $t('chat.disconnected') }}
+      @keydown.enter.native="sendMessage" ref="chatText")
+    Button(green @click.native="sendMessage").mt-20.mr-15 {{ $t('chat.send') }}
     main.chat__box
       div(v-if="chatMessages.length <= 0").mt-20.mb-15.text-center.chat__empty {{ $t('chat.empty') }}
       PerfectScrollbar(
@@ -41,7 +39,6 @@ export default {
   },
   data: () => ({
     chatMessages: [],
-    chatConnected: false,
     textArea: '',
     ws: null,
     audio: null
@@ -86,10 +83,8 @@ export default {
 
       this.ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`);
       this.ws.onopen = (e) => {
-        this.chatConnected = true;
       }
       this.ws.onerror = (e) => {
-        this.chatConnected = false;
       }
       this.ws.onmessage = (e) => {
         const data = JSON.parse(e.data);

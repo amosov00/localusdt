@@ -26,6 +26,7 @@ export const getters = {
 
 export const mutations = {
   setUser: (state, user) => (state.user = user),
+  setBalance: (state, balance) => (state.user.balance_usdt = balance),
   deleteUser: state => (state.user = false),
   setCurrencyPrice: (state, payload) =>
     (state.currencyPrice = payload.current_rate)
@@ -97,6 +98,10 @@ export const actions = {
   async fetchUser({ commit }) {
     const { data } = await this.$axios.get('account/user/')
     commit('setUser', data)
+  },
+  async fetchBalance({ commit }) {
+    const { data } = await this.$axios.get('account/user/', { progress: false })
+    commit('setBalance', data.balance_usdt)
   },
   async changeProfile({}, data) {
     return await this.$axios

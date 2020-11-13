@@ -35,7 +35,8 @@ from config import (
     HOT_WALLET_PRIVATE_KEY_TESTNET,
     ETH_MAX_GAS_PRICE_GWEI,
     ETH_MAX_GAS,
-    ETH_MAX_GAS_DEPOSIT_LOOT
+    ETH_MAX_GAS_DEPOSIT_LOOT,
+    ETH_MAX_GAS_ETH_SEND
 )
 
 
@@ -218,7 +219,7 @@ class USDTWrapper:
         :param addresses:
         :return:
         """
-        value = await self.get_actual_gasprice() * ETH_MAX_GAS_DEPOSIT_LOOT
+        value = await self.get_actual_gasprice() * ETH_MAX_GAS_ETH_SEND
         balance = await self._get_eth_balance(self.hot_wallet_addr)
         for address in addresses:
             if balance < value:

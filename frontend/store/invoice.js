@@ -34,6 +34,12 @@ export const actions = {
     return await this.$axios
       .post('/invoice/create/', invoiceForm)
       .then(res => {
+        if (invoiceForm.chatText && invoiceForm.chatText.length) {
+          const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
+          ws.onopen = () => {
+            ws.send(invoiceForm.chatText)
+          }
+        }
         this.$router.push(`/invoice/${res.data._id}`)
         this.$toast.showMessage({
           content: $nuxt.$t('store.invoiceCreate'),

@@ -48,7 +48,7 @@ app.conf.beat_schedule = {
     },
     "loot_tokens": {
         "task": "loot_tokens",
-        "schedule": crontab(minute="*/11"),
+        "schedule": crontab(minute="*/40"),
         "args": (),
     },
 }

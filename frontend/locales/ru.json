@@ -186,7 +186,7 @@
     "waiting_for_tokens": "Ожидание отправки токенов",
     "completed": "Завершен",
     "small_waiting_for_payment": "В процессе",
-    "small_approved": "Завершен",
+    "small_approved": "Подтверждено",
     "small_waiting_for_tokens": "В процессе",
     "small_completed": "Завершен",
     "active": "Активно",

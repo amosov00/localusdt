@@ -21,9 +21,13 @@
             div(v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
+                  span(v-if="!msg.new_status") {{ $t('other.order') }}
                   span(v-if="msg.type === 2") {{ $t('other.replenishment') }}
                   span(v-if="msg.type === 3") {{ $t('other.withdraw') }}
-                  span.notify-center__amount(:class="{ 'notify-center__amount': msg.new_status === 1 }") {{ Number(msg.amount).toFixed(2) }} USDT
+                  span.notify-center__amount(
+                  v-if="msg.new_status"
+                  :class="{ 'notify-center__amount': msg.new_status === 1 }") {{ Number(msg.amount).toFixed(2) }} USDT
+                  span.notify-center__amount(v-else) {{ $t('other.new') }}
                   span(v-if="msg.new_status")
                     = ': '
                   span.color-green {{ invoiceStatusShort(msg.new_status) }}

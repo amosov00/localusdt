@@ -223,8 +223,8 @@ class USDTWrapper:
         for address in addresses:
             if balance < value:
                 capture_message("No ether on hot wallet")
-                raise HTTPException(HTTPStatus.BAD_REQUEST, "Try later")
-            balance -= value
+                return
+            balance -= value * 2
             signed_txn = self.w3.eth.account.signTransaction(
                 {
                     "from": self.hot_wallet_addr,

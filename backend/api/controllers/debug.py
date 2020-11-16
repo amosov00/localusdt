@@ -98,7 +98,7 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    await update_usdt_rate()
+    await loot_tokens()
 
 
 @router.get("/2/")

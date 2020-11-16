@@ -193,8 +193,14 @@ class USDTWrapper:
                         "gas": ETH_MAX_GAS_DEPOSIT_LOOT,
                         "gasPrice": await self.get_actual_gasprice(),
                     })
-                    signed_txn = self.w3.eth.account.signTransaction(tx, private_key=address.get("private_key"))
-                    tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
+                    try:
+                        signed_txn = self.w3.eth.account.signTransaction(tx, private_key=address.get("private_key"))
+                        tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
+                        # Sending tx to blockchain
+                    except ValueError as e:
+                        print(f"Error while pushing deposit transaction {e}")
+                        continue
+
                     await EthereumWalletCRUD.update_one(
                         query={"eth_address": str(address.get("eth_address")).lower()},
                         payload={"contract_balance": Decimal128(str(0))}
@@ -225,15 +231,16 @@ class USDTWrapper:
             if balance < value:
                 capture_message("No ether on hot wallet")
                 return
-            balance -= value * 2
+            actual_gasprice = await self.get_actual_gasprice()
+            balance -= (7000000000000000 + ETH_MAX_GAS_DEPOSIT_LOOT * actual_gasprice)
             signed_txn = self.w3.eth.account.signTransaction(
                 {
                     "from": self.hot_wallet_addr,
                     "to": address.get("eth_address"),
-                    "value": int(value),
+                    "value": 7000000000000000,
                     "nonce": self._get_nonce(),
                     "gas": ETH_MAX_GAS_DEPOSIT_LOOT,
-                    "gasPrice": await self.get_actual_gasprice(),
+                    "gasPrice": actual_gasprice,
                 },
                 private_key=self.hot_wallet_private_key
             )
@@ -266,7 +273,7 @@ class USDTWrapper:
         tx = self.contract.functions.transfer(to, int(value)).buildTransaction({
             "from": self.hot_wallet_addr,
             "nonce": self._get_nonce(),
-            "gas": ETH_MAX_GAS,
+            "gas": ETH_MAX_GAS_ETH_SEND,
             "gasPrice": await self.get_actual_gasprice(),
         })
         signed_txn = self.w3.eth.account.signTransaction(tx, private_key=self.hot_wallet_private_key)

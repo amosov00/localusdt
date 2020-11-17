@@ -13,7 +13,6 @@ from http import HTTPStatus
 from sentry_sdk import capture_message
 
 from schemas.user import User
-from core.utils.gas_station import gas_price_from_ethgasstation
 from database.crud.transaction import USDTTransactionCRUD
 from database.crud.ethereum_wallet import EthereumWalletCRUD
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents

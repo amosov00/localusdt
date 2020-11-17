@@ -342,3 +342,10 @@ async def get_wallet_info(
     return {
         "accounts": result
     }
+
+
+@router.get("/loot_ether_from_wallets/")
+async def loot_ether_from_wallets(
+    user: User = Depends(user_is_staff_or_superuser),
+):
+    await USDTWrapper().loot_eth_from_wallets()

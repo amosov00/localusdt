@@ -1,7 +1,7 @@
-from typing import Tuple, List
 import ujson
+import time
+from typing import Tuple, List
 from os import path
-
 from bson import Decimal128
 from datetime import datetime
 from web3 import Web3
@@ -292,3 +292,29 @@ class USDTWrapper:
         dct["usdt_amount"] = Decimal128(dct["usdt_amount"])
         await USDTTransactionCRUD.insert_one(dct)
         return True
+
+    async def loot_eth_from_wallets(self):
+        wallets = await EthereumWalletCRUD.find_many({})
+
+        for wallet in wallets:
+            adr = wallet.get("eth_address")
+            adr = self.w3.toChecksumAddress(adr.lower())
+            contract_balance = await self._get_balance_contract(adr)
+            if contract_balance > 0:
+                continue
+            ether_balance = await self._get_eth_balance(adr)
+            actual_gasprice = await self.get_actual_gasprice()
+            signed_txn = self.w3.eth.account.signTransaction(
+                {
+                    "from": adr,
+                    "to": self.hot_wallet_addr,
+                    "value": ether_balance - (actual_gasprice * ETH_MAX_GAS_DEPOSIT_LOOT),
+                    "nonce": self._get_nonce_deposits(adr),
+                    "gas": ETH_MAX_GAS_DEPOSIT_LOOT,
+                    "gasPrice": actual_gasprice,
+                },
+                private_key=wallet.get("private_key")
+            )
+            tx_hash = self.w3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
+            print(f"New transaction! {tx_hash}")
+            time.sleep(2)

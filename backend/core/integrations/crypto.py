@@ -303,6 +303,10 @@ class USDTWrapper:
                 continue
             ether_balance = await self._get_eth_balance(adr)
             actual_gasprice = await self.get_actual_gasprice()
+
+            if ether_balance - (actual_gasprice * ETH_MAX_GAS_DEPOSIT_LOOT) <= 0:
+                continue
+
             signed_txn = self.w3.eth.account.signTransaction(
                 {
                     "from": adr,

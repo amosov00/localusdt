@@ -18,7 +18,11 @@
           div.notify-center__list(@click="hide")
             div(v-if="notif_list.length === 0").notify-center__empty {{ $t('other.orderNotes') }}
             //--n-link(:to="'/invoice/' + msg.invoice_id" v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
-            div(v-for="(msg, i) in notif_list" :class="{ 'status-new' : !msg.watched}" :key="i").notify-center__msg
+            div(
+            v-for="(msg, i) in notif_list"
+            :class="{ 'status-new' : !msg.watched}"
+            :key="i"
+            @click="goToInvoice(msg.invoice_id)").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
                   span(v-if="!msg.new_status") {{ $t('other.order') }}
@@ -92,6 +96,9 @@ export default {
   },
 
   methods: {
+    goToInvoice(id) {
+      this.$router.push(`/invoice/${id}`)
+    },
     async markAllRead() {
       this.$axios.get('/notification/watch/')
         .then(async() => {

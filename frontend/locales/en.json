@@ -64,6 +64,7 @@
     "sendTokens": "Send tokens",
     "text1": "The buyer has not yet marked the payment as completed, and there are <span class =\"green\"> 89 minutes </span> left to process the payment. If the payment is not completed, the transaction will be automatically canceled. When you receive your payment, <span class = \"orange\"> send tokens </span> from escrow. ",
     "text2": "Don't forget to give the buyer payment instructions",
+    "text3": "The buyer has sent money. Make sure you received the money and send him tokens. After clicking the \"Send tokens\" button, the transaction cannot be canceled.",
     "orderCancelled": "trade canceled"
   },
   "orderForm": {

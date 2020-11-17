@@ -1,7 +1,7 @@
 <template>
   <div class="steps">
     <p class="fz-20">{{ $t('sendSteps.sendTokens') }}</p>
-    <p v-html="$t('sendSteps.text1')">
+    <p v-html="mainText">
     </p>
     <div class="ma-0 pa-20">
       <p>
@@ -51,6 +51,13 @@ export default {
         return this.$t('sendSteps.orderCancelled')
       }
       return this.$t('sendSteps.sendTokens')
+    },
+    mainText() {
+      const { status } = this.invoice
+      if(status === 'waiting_for_tokens' || status === 'completed') {
+        return this.$t('sendSteps.text3')
+      }
+      return this.$t('sendSteps.text1')
     }
   },
   methods: {

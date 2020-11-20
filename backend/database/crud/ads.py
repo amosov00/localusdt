@@ -78,9 +78,10 @@ class AdsCRUD(BaseMongoCRUD):
 
     @classmethod
     async def find_with_filters(cls, filters: AdsFilters):
-        print(filters)
+
         query = {
-            "status": AdsStatuses.ACTIVE
+            "status": AdsStatuses.ACTIVE,
+            "amount_usdt": {"$gt": 0.0}
         }
         if filters.currency:
             query["currency"] = filters.currency
@@ -96,7 +97,6 @@ class AdsCRUD(BaseMongoCRUD):
                 query["price"] = {"$lte": filters.price_top}
             else:
                 query["price"]["$lte"] = filters.price_top
-        print(query)
         result = await cls.find_many(query=query, limit=filters.limit, sort=[("price", filters.sort)])
         users = await UserCRUD.find_many(query={})
         users_kw = {}
@@ -105,7 +105,6 @@ class AdsCRUD(BaseMongoCRUD):
                 users_kw[user["_id"]] = user["username"]
         for ads in result:
             ads["username"] = users_kw[ads["user_id"]]
-        print(result)
         return result
 
     @classmethod

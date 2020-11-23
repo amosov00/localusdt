@@ -253,6 +253,8 @@ class InvoiceCRUD(BaseMongoCRUD):
             user_id=ObjectId(user.id),
             invoice_id=invoice.get("_id")
         )
+        seller = await UserCRUD.find_by_id(invoice.get("seller_id"))
+        await MailGunEmail().send_invoice_notification_to_seller(seller.get("email"), str(invoice.get("_id")))
 
         return True
 

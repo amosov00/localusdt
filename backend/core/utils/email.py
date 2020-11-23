@@ -145,7 +145,6 @@ class MailGunEmail:
                 )
             except Exception as e:
                 capture_exception(e)
-                print(e)
                 raise HTTPException(HTTPStatus.BAD_REQUEST, f"Error while sending email, {e}")
 
         if email_send and email_send.json().get("message") != "Queued. Thank you.":
@@ -198,6 +197,21 @@ class MailGunEmail:
             msg_body,
             msg_body,
             "notification"
+        )
+
+        await self._send_message(msg)
+
+        return None
+
+    async def send_invoice_notification_to_seller(self, to: str, invoice_id: str) -> None:
+        link = MailGunEmail._get_link(invoice_id=invoice_id, method="notification")
+        msg_body = self._get_template_body('notification_invoice_seller', link=link, to=to)
+
+        msg = self.create_message(
+            to,
+            msg_body,
+            msg_body,
+            "invoice notification"
         )
 
         await self._send_message(msg)

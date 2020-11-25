@@ -13,6 +13,7 @@ from schemas.ads import (
     AdsType,
     AdsUpdate
 )
+from schemas.currency import CurrencyType
 from schemas.user import (
     User,
 )
@@ -202,3 +203,27 @@ class AdsCRUD(BaseMongoCRUD):
         ads = await cls.find_by_id(ads_id)
         ads["username"] = user.username
         return ads
+
+    @classmethod
+    async def update_currency(cls, currency_type: CurrencyType, currency_value: float):
+        await cls.db[cls.collection].update_many(
+            {
+                "fixed_price": False,
+                "currency": currency_type
+            },
+            [  # noqa
+                {
+                    "$set": {
+                        "price": {
+                            "$trunc": [{
+                                "$multiply": [
+                                    {"$add": [{"$multiply": ["$profit", 0.01]}, 1]},
+                                    currency_value,
+                                ]},
+                                2]
+                            }
+                        }
+                    }
+            ],
+        )
+

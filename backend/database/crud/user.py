@@ -23,10 +23,7 @@ from schemas.user import (
     UserRecover,
     UserRecoverLink,
     UserUpdate,
-    UserTransaction,
-    UserTransactionEvents,
-    UserTransactionStatus,
-    UserMakeWithdraw
+    UserLanguage
 )
 
 __all__ = ["UserCRUD"]
@@ -48,7 +45,7 @@ class UserCRUD(BaseMongoCRUD):
         )
 
     @classmethod
-    async def authenticate(cls, email: str, password: str) -> dict:
+    async def authenticate(cls, email: str, password: str, language: UserLanguage) -> dict:
         email = email.lower()
 
         user = await super().find_one(query={"email": email})
@@ -57,6 +54,7 @@ class UserCRUD(BaseMongoCRUD):
             token = encode_jwt_token({"id": str(user["_id"])})
             if not user.get("is_active"):
                 raise HTTPException(HTTPStatus.BAD_REQUEST, "Активируйте аккаунт через email для входа в аккаунт")
+            await cls.update_one({"_id": user.get("_id")}, {"language": language})
             return {"token": token, "user": User(**user).dict()}
         else:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Неправильно введены данные")
@@ -133,7 +131,7 @@ class UserCRUD(BaseMongoCRUD):
         ).inserted_id
 
         asyncio.create_task(
-            MailGunEmail().send_verification_code(user.email, verification_code)
+            MailGunEmail(user.language).send_verification_code(user.email, verification_code)
         )
 
         return inserted_id
@@ -161,7 +159,7 @@ class UserCRUD(BaseMongoCRUD):
         recover_code = encode_jwt_token({"_id": user["_id"]}, timedelta(hours=3))
 
         await cls.update_one({"_id": user["_id"]}, {"recover_code": recover_code})
-        asyncio.create_task(MailGunEmail().send_recover_code(user["email"], recover_code))
+        asyncio.create_task(MailGunEmail(user.get("language")).send_recover_code(user["email"], recover_code))
         return True
 
     @classmethod

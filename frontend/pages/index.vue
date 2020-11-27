@@ -5,7 +5,7 @@
     <div v-if="buyTab">
       <section class="table-section mt-330">
         <h1 class="table-section__title">{{ $t('main.buyUSDT') }}</h1>
-        <AppTable :data="sellOrdersWithLimit" :headers="headers">
+        <AppTable :data="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -39,7 +39,7 @@
       </section>
       <section class="table-section">
         <h1 class="table-section__title">{{ $t('main.sellUSDT') }}</h1>
-        <AppTable :data="buyOrdersWithLimit" :headers="headers">
+        <AppTable :data="buyOrdersWithLimit" :headers="[$t('main.buyer'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -75,7 +75,7 @@
     <div v-else>
       <section class="table-section mt-330">
         <h1 class="table-section__title">{{ $t('main.sellUSDT') }}</h1>
-        <AppTable :data="buyOrdersWithLimit" :headers="headers">
+        <AppTable :data="buyOrdersWithLimit" :headers="[$t('main.buyer'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -109,7 +109,7 @@
       </section>
       <section class="table-section">
         <h1 class="table-section__title">{{ $t('main.buyUSDT') }}</h1>
-        <AppTable :data="sellOrdersWithLimit" :headers="headers">
+        <AppTable :data="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -163,7 +163,6 @@ export default {
       buyTab: true,
       sellTab: false,
       headers: [
-        this.$t('main.seller'),
         this.$t('main.payType'),
         this.$t('main.limit'),
         this.$t('main.quantity'),

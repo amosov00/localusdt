@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       headers: [
-        this.$t('main.seller'),
+        this.$t('main.buyer'),
         this.$t('main.payType'),
         this.$t('main.limit'),
         this.$t('main.quantity'),

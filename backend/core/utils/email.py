@@ -1,13 +1,14 @@
 import smtplib
+import httpx
+
+from typing import Optional
 from http import HTTPStatus
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from urllib.parse import urlencode
 from jinja2 import Environment, select_autoescape, FileSystemLoader
-
 from fastapi import HTTPException
 from sentry_sdk import capture_message, capture_exception
-import httpx
 
 from config import (
     EMAIL_LOGIN,
@@ -19,6 +20,7 @@ from config import (
     MAILGUN_DOMAIN_NAME,
     MAILGUN_API_KEY
 )
+from schemas.user import UserLanguage
 
 
 __all__ = [
@@ -28,12 +30,13 @@ __all__ = [
 
 
 class Email:
-    def __init__(self):
+    def __init__(self, language: UserLanguage):
         self.email_from = EMAIL_LOGIN
         self.password = EMAIL_PASSWORD
         self.port = EMAIL_PORT
         self.server = EMAIL_SERVER
         self.mailserver = smtplib.SMTP_SSL(self.server, self.port)
+        self.language: UserLanguage = language
 
     @staticmethod
     def _get_link(code: str, email: str, method: str) -> str:
@@ -97,7 +100,7 @@ class Email:
 
 
 class MailGunEmail:
-    def __init__(self):
+    def __init__(self, language: UserLanguage):
         self.api_key = MAILGUN_API_KEY
         self.domain = MAILGUN_DOMAIN_NAME
         self.send_message_link = MAILGUN_MESSAGE_LINK
@@ -106,6 +109,7 @@ class MailGunEmail:
             loader=FileSystemLoader('templates/'),
             autoescape=select_autoescape(['html'])
         )
+        self.language: UserLanguage = language
 
     @staticmethod
     def _get_link(**kwargs) -> str:
@@ -121,6 +125,12 @@ class MailGunEmail:
             return f"{HOST_URL}recover?{urlencode(params)}"
         if method == "notification":
             return f"{HOST_URL}invoice/{kwargs.get('invoice_id')}"
+
+    def _get_template_name(self, file_name: str) -> Optional[str]:
+        if self.language == UserLanguage.RU:
+            return file_name + '_ru'
+        elif self.language == UserLanguage.ENG:
+            return file_name + "_en"
 
     def create_message(self, to: str, body_html: str, body: str, method: str) -> dict:
         msg = {
@@ -154,7 +164,7 @@ class MailGunEmail:
         return None
 
     def _get_template_body(self, msg_type: str, **kwargs):
-        return self.template_env.get_template(f"{msg_type}.html").render(
+        return self.template_env.get_template(f"{self._get_template_name(msg_type)}.html").render(
             **kwargs
         )
 

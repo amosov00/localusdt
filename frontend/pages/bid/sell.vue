@@ -3,7 +3,7 @@
     p.create-order__token-price {{$t('bid.actualCourse')}}
       =' '
       span.green {{commaSplitting(currencyPrice)}}
-      span ₽/USDT
+      span {{ returnCurrency }} /USDT
     header.create-order__navigation
       h1 {{$t('bid.sellUSDT')}}
     hr
@@ -139,9 +139,10 @@ export default {
         price: 0
       },
       currencyOptions: [
-        { name: 'RUB', value: 1 }
-        // { name: 'USD', value: 2 },
-        // { name: 'EUR', value: 3 }
+         { name: 'RUB', value: 1 },
+        { name: 'BYN', value: 2 },
+        { name: 'USD', value: 3 },
+        { name: 'EUR', value: 4 }
       ],
       paymentOptions: [
         { name: this.$t('main.sberTransfer'), value: 1 },
@@ -174,8 +175,25 @@ export default {
   computed: {
     ...mapGetters({
       user: 'user',
-      currencyPrice: 'currencyPrice'
+      currencyPrice: 'currencyPrice',
+      currencyFullData: 'currencyFullData'
     }),
+    returnCurrency(){
+      switch(this.currencyFullData.type){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     equation() {
       let currencyName = this.currencyOptions.find(currency => {
         return currency.value === this.adForm.currency

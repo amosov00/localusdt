@@ -191,7 +191,7 @@ export default {
   },
   methods: {
      returnCurrency(row){
-      switch(row.amount_usdt){
+      switch(row.currency){
         case 1:
          return '₽'
         break

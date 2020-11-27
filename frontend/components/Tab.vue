@@ -88,9 +88,9 @@ export default {
   computed: {
     routePath() {
       if (this.type === 1 || this.firstTab) {
-        return '/buy'
-      } else {
         return '/sell'
+      } else {
+        return '/buy'
       }
     },
     queries() {
@@ -107,9 +107,10 @@ export default {
   mounted(){
     console.log(this.$route.path);
     if(this.$route.path == '/') return
-    if(this.$route.path == '/buy') this.firstTab = true
+    if(this.$route.path == '/buy') this.firstTab = false
     if(this.$route.path == '/sell'){
-      this.firstTab = false
+      this.firstTab = true
+      console.log(this.type);
     }
   },
   methods: {
@@ -129,6 +130,7 @@ export default {
         ...this.searchForm,
         ad_type: this.adType
       })
+      console.log('1111',this.routePath);
       this.$router.push(this.routePath + this.queries)
     }
   }

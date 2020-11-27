@@ -88,7 +88,7 @@ export default {
       }
       this.ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
-
+        
         if(this.user.username !== data.sender) {
           this.playSound('soft_notification.mp3');
         } else {

@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1 class="table-section__title mt-330">{{$t('main.sellUSDT')}}</h1>
-    <Tab :nav="false" :outsideParams="$route.query" :type="1" />
+    <Tab :nav="false" :outsideParams="$route.query" :type="2" />
     <AppTable class="mb-80" :data="orders" :headers="headers" pagination>
       <template slot-scope="header"></template>
       <template slot-scope="{ row }">
@@ -66,14 +66,14 @@ export default {
     if (isQuery) {
       return store.dispatch('order/fetchOrders', {
         limit: 1000,
-        type: 1,
+        type: 2,
         sort: -1,
         ...query
       })
     }
     return store.dispatch('order/fetchOrders', {
       limit: 1000,
-      type: 1,
+      type: 2,
       sort: -1
     })
   }

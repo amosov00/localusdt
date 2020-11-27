@@ -64,17 +64,18 @@ export default {
   data() {
     return {
       searchForm: {
-        payment_method: this.outsideParams ? (this.outsideParams.payment_method * 1) : 1,
-        currency: this.outsideParams ? (this.outsideParams.currency * 1) : 1,
-        bot_limit: this.outsideParams ? this.outsideParams.price_bot : 0,
-        top_limit: this.outsideParams ? this.outsideParams.price_top : 0,
+        payment_method: this.outsideParams &&  this.outsideParams.payment_method !== undefined ? (this.outsideParams.payment_method) : 1,
+        currency: this.outsideParams &&  this.outsideParams.currency !== undefined ? (this.outsideParams.currency) : 1,
+        bot_limit: this.outsideParams &&  this.outsideParams.price_bot !== undefined ? this.outsideParams.price_bot : 0,
+        top_limit: this.outsideParams &&  this.outsideParams.price_top !== undefined ? this.outsideParams.price_top : 0,
       },
       firstTab: true,
       secondTab: false,
       currencyOptions: [
         { name: 'RUB', value: 1 },
-        { name: 'USD', value: 2, selected: true },
-        { name: 'EUR', value: 3 }
+        { name: 'BYN', value: 2 },
+        { name: 'USD', value: 3 },
+        { name: 'EUR', value: 4 }
       ],
       paymentOptions: [
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`, value: 1 },
@@ -103,6 +104,14 @@ export default {
       }
     }
   },
+  mounted(){
+    console.log(this.$route.path);
+    if(this.$route.path == '/') return
+    if(this.$route.path == '/buy') this.firstTab = true
+    if(this.$route.path == '/sell'){
+      this.firstTab = false
+    }
+  },
   methods: {
     selectTab() {
       if (this.firstTab) {
@@ -115,6 +124,7 @@ export default {
       this.$emit('selectedTab', { buy: this.firstTab, sell: this.secondTab })
     },
     searchOrders() {
+      console.log(this.firstTab);
       this.$store.dispatch('order/searchOrders', {
         ...this.searchForm,
         ad_type: this.adType

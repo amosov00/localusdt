@@ -61,6 +61,7 @@ export default {
     selectOption(option) {
       this.selected = option
       this.areOptionsVisible = false
+      this.$store.dispatch('fetchCurrencyPrice', option.value)
       this.$emit('input', option.value)
     },
     hideSelect() {

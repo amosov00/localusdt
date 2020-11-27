@@ -3,7 +3,8 @@
     p.create-order__token-price {{$t('bid.actualCourse')}}
       =' '
       span.green {{commaSplitting(currencyPrice)}}
-      span ₽/USDT
+      span {{ returnCurrency }}/USDT
+      span
     header.create-order__navigation
       h1 {{$t('bid.buyUSDT')}}
     hr
@@ -22,7 +23,6 @@
         :width="80"
         :header="$t('bid.currency')"
         hideArrow)
-
       Input.create-order__input(
       v-if="yourVersion"
       v-model="adForm.bank_title"
@@ -57,7 +57,6 @@
       :header="$t('bid.price')"
       :placeholder="$t('bid.price')"
       v-if="adForm.fixed_price")
-
       Input.create-order__input(
       v-model="adForm.profit"
       :header="$t('bid.profit')"
@@ -133,9 +132,10 @@ export default {
         price: 0
       },
       currencyOptions: [
-        { name: 'RUB', value: 1 }
-        // { name: 'USD', value: 2 },
-        // { name: 'EUR', value: 3 }
+        { name: 'RUB', value: 1 },
+        { name: 'BYN', value: 2 },
+        { name: 'USD', value: 3 },
+        { name: 'EUR', value: 4 }
       ],
       paymentOptions: [
         { name: this.$t('main.sberTransfer'), value: 1 },
@@ -168,8 +168,25 @@ export default {
   computed: {
     ...mapGetters({
       user: 'user',
-      currencyPrice: 'currencyPrice'
+      currencyPrice: 'currencyPrice',
+      currencyFullData: 'currencyFullData'
     }),
+    returnCurrency(){
+      switch(this.currencyFullData.type){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     equation() {
       let currencyName = this.currencyOptions.find(currency => {
         return currency.value === this.adForm.currency
@@ -236,10 +253,6 @@ export default {
     }
   },
   async asyncData({ store, query }) {
-
-    await store.dispatch('fetchCurrencyPrice')
-
-    let res = null
     let adForm = {
       type: 1,
       bot_limit: null,
@@ -252,7 +265,12 @@ export default {
       profit: 0,
       fixed_price: false,
       price: 0
-    } // default adForm
+    }
+
+    await store.dispatch('fetchCurrencyPrice' , adForm.currency)
+
+    let res = null
+     // default adForm
 
     // Если в URL есть параметр edit, выполнить запрос на /order/<id>, заполнить дефолтный adform выше и вернуть
     if (query.hasOwnProperty('edit')) {

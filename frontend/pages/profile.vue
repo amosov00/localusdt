@@ -53,7 +53,7 @@
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
             </td>
-            <td class="table__data">{{commaSplitting(row.amount_usdt)}}
+            <td class="table__data">{{commaSplitting(row.amount_usdt)}}{{returnCurrency(row)}}
               <span class="grey-dark fw-400">
                 {{$t('profile.for')}} {{commaSplitting(row.amount)}} USDT
               </span>
@@ -78,7 +78,7 @@
                 {{spaceSplitting(row.top_limit)}} USDT
               </span>
             </td>
-            <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT</td>
+            <td class="table__data">{{spaceSplitting(row.amount_usdt)}}{{returnCurrency(row)}} USDT </td>
             <td class="table__data" :style="{ color: orderStatusColor(row.status) }">
               <nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
             </td>
@@ -138,6 +138,7 @@ export default {
       return { ...this.$store.getters.user }
     },
     invoices() {
+      console.log(this.$store.getters['invoice/invoices']);
       return this.$store.getters['invoice/invoices']
     },
     orders() {
@@ -153,6 +154,22 @@ export default {
     }
   },
   methods: {
+     returnCurrency(row){
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     getUsername(seller, buyer) {
       const { username } = this.user
       return username === seller ? buyer : seller

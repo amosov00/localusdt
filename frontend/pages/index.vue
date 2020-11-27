@@ -57,7 +57,7 @@
             <td class="table__data">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
                 <Button rounded outlined green>{{ $t('main.sell') }}</Button>
@@ -93,7 +93,7 @@
             <td class="table__data">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data fw-500">{{ commaSplitting(row.price) }}₽</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
                 <Button rounded outlined green>{{ $t('main.sell') }}</Button>
@@ -180,7 +180,8 @@ export default {
       return this.isToastActive ? top + 50 : top
     },
     buyOrdersWithLimit() {
-      return this.$store.getters['order/buyOrdersWithLimit'](5)
+      
+      return this.$store.getters['order/buyOrdersWithLimit'](5);
     },
     sellOrdersWithLimit() {
       return this.$store.getters['order/sellOrdersWithLimit'](5)
@@ -190,6 +191,22 @@ export default {
     }
   },
   methods: {
+     returnCurrency(row){
+      switch(row.amount_usdt){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     selectedOption(option) {
       this.selected = option.name
     },

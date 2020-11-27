@@ -17,6 +17,7 @@
         >
           {{ option.name }}
         </div>
+        
       </div>
     </div>
   </div>
@@ -43,15 +44,23 @@ export default {
   data() {
     return {
       areOptionsVisible: false,
-      selected: this.options.find(option => option.value === (this.selectedOptionProp * 1))
+      selected:'',
       // selected: this.options[0]
     }
   },
+  watch:{
+    selectedOptionProp(){
+      this.selected = this.options.find(option => option.value == (this.selectedOptionProp * 1))
+    }
+  },  
   computed: {
     filteredOptions() {
       return this.options.filter(option => {
         return option.name !== this.selected.name
       })
+    },
+    selectedComputed(){
+     this.selected = this.options.find(option => option.value == (this.selectedOptionProp * 1))
     }
   },
   methods: {
@@ -70,6 +79,7 @@ export default {
   },
   mounted() {
     document.addEventListener('click', this.hideSelect, { capture: false })
+    this.selected = this.options.find(option => option.value == (this.selectedOptionProp * 1))
   },
   beforeDestroy() {
     document.removeEventListener('click', this.hideSelect)

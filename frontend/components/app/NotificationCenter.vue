@@ -64,16 +64,21 @@ export default {
     showMessages: false,
     notif_list: [],
     ws: null,
-    audio: null
+    audio: null,
+    socketPing:null
   }),
   mounted() {
     this.loadNotifictions()
-
     document.body.addEventListener('click', this.hide, false)
 
     this.ws = new WebSocket(`${process.env.API_WS_URL}notification/ws/`)
     this.ws.onopen = (e) => {
       this.connected = true
+      this.socketPing = setInterval(() => {
+          // console.log('Ping');
+          console.log('SOCKET');
+          this.ws.send('{}'); 
+        }, 30000);
     }
     this.ws.onerror = (e) => {
       this.connected = false
@@ -83,7 +88,11 @@ export default {
       this.notif_list.unshift(data)
       this.notify(data)
     }
+    this.ws.onclose = async (event) => {
+      clearInterval(this.socketPing);
+    }
   },
+
 
   beforeDestroy() {
     document.body.removeEventListener('click', this.hide)

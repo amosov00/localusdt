@@ -59,7 +59,7 @@ export default {
   methods:{
     returnCurrency(row){
       console.log(row);
-      switch(row.setCurrency){
+      switch(row.currency){
         case 1:
          return '₽'
         break

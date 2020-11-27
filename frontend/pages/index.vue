@@ -215,7 +215,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('order/fetchOrders', { limit: 1000 })
+    this.$store.dispatch('order/fetchOrders', { limit: 1000, })
   }
 }
 </script>

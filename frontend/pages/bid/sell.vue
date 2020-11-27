@@ -2,7 +2,7 @@
   div.create-order
     p.create-order__token-price {{$t('bid.actualCourse')}}
       =' '
-      span.green {{commaSplitting(currencyPrice)}}
+      span.green {{currencyPrice ? commaSplitting(currencyPrice) : null}}
       span {{ returnCurrency }} /USDT
     header.create-order__navigation
       h1 {{$t('bid.sellUSDT')}}
@@ -18,10 +18,11 @@
         )
         Select(
         :options="currencyOptions"
+         :selectedOptionProp="adForm.currency"
         v-model="adForm.currency"
         :width="80"
         :header="$t('bid.currency')"
-        hideArrow)
+        )
       Input.create-order__input(
       v-if="yourVersion"
       v-model="adForm.bank_title"
@@ -99,7 +100,6 @@
       green
       @click.native="createAd(false)"
       v-if="!editMode") {{$t('bid.createAd')}}
-
       div(v-else).create-order__action
         Button(green @click.native="createAd(true)").mr-15 {{$t('bid.save')}}
         Button(white @click.native="$nuxt.context.redirect(`/order/${$route.query.edit}`)") {{$t('bid.cancel')}}
@@ -179,7 +179,9 @@ export default {
       currencyFullData: 'currencyFullData'
     }),
     returnCurrency(){
-      switch(this.currencyFullData.type){
+      console.log(this.adForm);
+      if(this.adForm){
+         switch(this.adForm.currency){
         case 1:
          return '₽'
         break
@@ -192,6 +194,7 @@ export default {
         case 4:
           return '€'
         break 
+      }
       }
     },
     equation() {
@@ -268,10 +271,7 @@ export default {
   /*asyncData({ store }) {
     return store.dispatch('fetchCurrencyPrice')
   }*/
-  async asyncData({ store, query }) {
-
-    await store.dispatch('fetchCurrencyPrice')
-
+  async fetch() {
     let res = null
     let adForm = {
       type: 2,
@@ -280,17 +280,16 @@ export default {
       amount_usdt: null,
       payment_method: 1,
       bank_title: '',
-      currency: 1,
+      currency:1,
       condition: '',
       profit: 0,
       fixed_price: false,
       price: 0
     }
-
-    if (query.hasOwnProperty('edit')) {
-      if (query.edit.length > 0) {
-        res = await store.$axios.get(`/order/${query.edit}`)
-
+    if (this.$route.query['edit']) {
+      if (this.$route.query['edit'].length > 0) {
+       res = await this.$axios.get(`/order/${this.$route.query['edit']}`)
+        console.log(res.data);
         for (const key in adForm) {
           adForm[key] = res.data[key]
         }
@@ -300,12 +299,9 @@ export default {
         if (adForm.fixed_price) {
           profitMode = 'fixed'
         }
-
-        return {
-          profitMode,
-          editMode: true,
-          adForm
-        }
+        this.adForm = adForm
+        
+        await this.$store.dispatch('fetchCurrencyPrice', this.adForm.currency)
       }
     }
 

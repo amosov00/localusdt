@@ -57,9 +57,18 @@ export default {
       },
     }
   },
+
+  computed: {
+    ...mapGetters({
+      localeId: 'i18n/GET_LOCALE_ID'
+    })
+  },
+
   methods: {
-    login() {
-      this.$store.dispatch('logIn', this.loginForm)
+    async login() {
+      await this.$store.dispatch('logIn', this.loginForm)
+
+      await this.$store.dispatch('changeProfile', { language: this.localeId })
     },
   },
 }

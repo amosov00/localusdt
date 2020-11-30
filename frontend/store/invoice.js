@@ -41,7 +41,7 @@ export const actions = {
             console.log('SOCKET');
             ws.send(invoiceForm.chatText)
             socketPing = setInterval(() => {
-              this.socket.send('{}');
+              this.socket.send('');
             }, 50000);
           }
 

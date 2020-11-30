@@ -14,7 +14,7 @@
             <span class="opacity-50">{{$t('sendMoney.sum')}} </span>
           </p>
           <p class="steps-list--left">
-            <span>{{ commaSplitting(invoice.amount) }} ₽</span>
+            <span>{{ commaSplitting(invoice.amount) }} {{returnCurrency(invoice)}}</span>
           </p>
         </div>
         <div class="steps-list__row">
@@ -60,6 +60,22 @@ export default {
     Button
   },
   methods: {
+    returnCurrency(row){
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     paid() {
       this.$store.dispatch('invoice/confirmInvoice', this.invoice._id)
     }

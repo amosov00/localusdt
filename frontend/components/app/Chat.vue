@@ -87,7 +87,7 @@ export default {
          this.socketPing = setInterval(() => {
           // console.log('Ping');
           console.log('SOCKET');
-          this.ws.send('{}'); 
+          this.ws.send(''); 
         }, 50000);
       }
       this.ws.onerror = (e) => {

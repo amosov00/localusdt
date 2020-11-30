@@ -92,7 +92,8 @@ export default {
     return store.dispatch('order/fetchOrders', {
       limit: 1000,
       type: 1,
-      sort: -1
+      sort: -1,
+      currency:1
     })
   }
 }

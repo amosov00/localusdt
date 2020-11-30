@@ -77,6 +77,8 @@ async def websocket_endpoint(
                 "is_service": False,
                 "created_at": datetime.utcnow()
             }
+            if not f"data":
+                continue
             await ChatMessageCRUD.insert_one({
                 **message,
                 "chatroom_id": ObjectId(chatroom_id)

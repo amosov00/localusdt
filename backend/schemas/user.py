@@ -165,8 +165,8 @@ class UserRecoverLink(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    about_me: str = Field(..., description="'About me' field")
-    language: UserLanguage = Field(default=UserLanguage.RU, example="1", description="It's enum, 1 -- RU, 2 -- ENG")
+    about_me: str = Field(default=None, description="'About me' field")
+    language: UserLanguage = Field(default=None, example="1", description="It's enum, 1 -- RU, 2 -- ENG")
 
 
 class UserUpdateNotSafe(BaseModel):

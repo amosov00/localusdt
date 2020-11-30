@@ -68,19 +68,21 @@ export const actions = {
         }
       })
   },
-  async logIn({ commit }, data) {
+  async logIn({ commit }, { email, userName, password, passwordRepeat }) {
     return await this.$axios
       .post('/account/login/', {
-        email: data.email,
-        username: data.userName,
-        password: data.password,
-        repeat_password: data.passwordRepeat
+        email,
+        password,
+        username: userName,
+        repeat_password: passwordRepeat
       })
-      .then(resp => {
-        this.$axios.setToken(resp.data.token, 'Bearer')
-        this.$cookies.set('token', resp.data.token, cookieOpts)
+      .then(({ data }) => {
+        const { token, user } = data;
 
-        commit('setUser', resp.data.user)
+        this.$axios.setToken(token, 'Bearer')
+        this.$cookies.set('token', token, cookieOpts)
+
+        commit('setUser', user)
         this.$toast.showMessage({
           content: $nuxt.$t('store.login'),
           green: true

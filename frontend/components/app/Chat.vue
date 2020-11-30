@@ -94,6 +94,7 @@ export default {
       this.ws.onerror = (e) => {
       }
       this.ws.onmessage = (e) => {
+        console.log(e.data);
         const data = JSON.parse(e.data);
         
         if(this.user.username !== data.sender) {
@@ -119,8 +120,10 @@ export default {
       }
   },
   async mounted() {
-    let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);
+   setTimeout(async () => {
+      let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);
     this.chatMessages = messages;
+    console.log(this.chatMessages);
 
     let container = this.$refs.chatScroll.$el;
     let scrollAtEnd = container.scrollHeight - container.scrollTop === container.clientHeight;
@@ -130,6 +133,7 @@ export default {
       })
     }
     this.chatConnect()
+   }, 1000);
   }
 }
 </script>

@@ -31,6 +31,7 @@
     <OrderInfo :order="invoice" />
     <div class="order__footer">
     <Chat :invoice="invoice" :name="roleUser" />
+    {{invoice}}
     <SendMoneySteps v-if="role === 'seller'" :invoice="invoice" />
     <SendUSDTSteps v-else-if="role === 'bayer'" :invoice="invoice" />
     </div>

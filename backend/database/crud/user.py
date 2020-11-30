@@ -188,7 +188,7 @@ class UserCRUD(BaseMongoCRUD):
                 "_id": user.id
             },
             payload={
-                **payload.dict()
+                **payload.dict(exclude_unset=True, exclude_none=True)
             }
         )
         updated_user = await cls.find_by_id(user.id)

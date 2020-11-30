@@ -32,6 +32,7 @@
 import Input from '~/components/app/Input'
 import Button from '~/components/app/Button'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { mapGetters } from 'vuex'
 export default {
   name: 'forgot',
   components: { Input, Button, ValidationObserver, ValidationProvider },
@@ -42,9 +43,16 @@ export default {
       }
     }
   },
+
+  computed: {
+    ...mapGetters({
+      LOCALE_ID: 'i18n/GET_LOCALE_ID'
+    })
+  },
+
   methods: {
     startRecover() {
-      this.$store.dispatch('startRecover', this.forgotForm)
+      this.$store.dispatch('startRecover', {...this.forgotForm, lanag: this.LOCALE_ID })
     }
   }
 }

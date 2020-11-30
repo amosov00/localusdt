@@ -9,12 +9,21 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters({
-      locale: 'i18n/GET_LOCALE'
+      locale: 'i18n/GET_LOCALE',
+      user: 'user',
+      getLocaleIdByCode: 'i18n/GET_LOCALE_ID_BY_CODE'
     })
   },
   methods: {
-    switchLang(locale) {
+    async switchLang(locale) {
       localStorage.setItem('locale', locale)
+
+      if (this.user) {
+        const localeId = this.getLocaleIdByCode(locale)
+        await this.$store.dispatch('changeProfile', { language: localeId })
+
+      }
+
       location.reload()
     }
   }

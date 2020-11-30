@@ -2,7 +2,7 @@
   <div>
     <NonAuthorizedHero v-if="!$userIsLoggedIn()" />
     <Tab :top="top" @selectedTab="selectedOrders($event)" />
-    <div v-if="buyTab">
+    <div v-if="!buyTab">
       <section class="table-section mt-330">
         <h1 class="table-section__title">{{ $t('main.buyUSDT') }}</h1>
         <AppTable :data="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">

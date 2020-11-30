@@ -27,7 +27,7 @@ app.conf.update(
 
 app.conf.beat_schedule = {
     "update_usdt_rate": {
-        "task": "update_usdt_rate",
+        "task": "update_currency_rate",
         "schedule": crontab(minute="*/5"),
         "args": (),
     },

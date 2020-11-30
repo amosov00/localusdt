@@ -36,7 +36,7 @@ const messages = {
    - Your name does not contain underscores - neither at the beginning nor at the end. <br>
    - Your name does not contain specials. characters. <br>
    - Your name consists only of latin characters. <br> `,
-    userLength2: "Username must be greater than or equal to 6 and less than or equal to 20 characters and not contain special characters",
+    userLength2: "Username must contain 6-20 symbols. Disallowed any number, nor special characters. Only Latin letters are allowed.",
     user: "Username cannot contain double underscores, nor can it contain underscores at the beginning or end."
   },
   ru: {
@@ -54,7 +54,7 @@ const messages = {
   — Ваше имя не содержит нижние подчеркивания — ни в начале, ни в конце. <br>
   — Ваше имя не содержит спец. символов. <br>
   — Ваше имя состоит только из латинских символов. <br>`,
-    userLength2: "Имя пользователя должно быть больше или равно 6 и меньше или равно 20 символам и не содержать спец. символов",
+    userLength2: "Имя пользователя должно быть больше или равно 6 и меньше или равно 20 символам и не содержать спец. символов. Допускаются только латинские буквы",
     user: "Имя пользователя не может содержать двойное нижнее подчеркивание, так же не может содержать нижнее подчеркивание в начале или конце"
   }
 }

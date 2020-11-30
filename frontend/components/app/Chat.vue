@@ -41,7 +41,8 @@ export default {
     chatMessages: [],
     textArea: '',
     ws: null,
-    audio: null
+    audio: null,
+    socketPing: null,
   }),
   computed: {
     user() {
@@ -82,13 +83,18 @@ export default {
       //let token = this.$cookies.get('token')
 
       this.ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`);
-      this.ws.onopen = (e) => {
+      this.ws.onopen = async (e) => {
+         this.socketPing = setInterval(() => {
+          // console.log('Ping');
+          console.log('SOCKET');
+          this.ws.send(''); 
+        }, 50000);
       }
       this.ws.onerror = (e) => {
       }
       this.ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
-
+        
         if(this.user.username !== data.sender) {
           this.playSound('soft_notification.mp3');
         } else {
@@ -105,8 +111,11 @@ export default {
             chatContent.scrollTop = 1000000
           })
         }
+      },
+      this.ws.onclose = async (event) => {
+        clearInterval(this.socketPing);
       }
-    }
+      }
   },
   async mounted() {
     let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);

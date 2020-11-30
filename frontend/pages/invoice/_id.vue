@@ -1,45 +1,45 @@
 <template>
-  <section class="order">
+<section class="order">
     <header class="order__header">
-      <h1 class="ad__title">{{$t('invoice.contact')}} № {{ invoice._id }}</h1>
-      <div class="order__info">
+    <h1 class="ad__title">{{$t('invoice.contact')}} № {{ invoice._id }}</h1>
+    <div class="order__info">
         <div>
-          <span class="opacity-50 fz-20">
+        <span class="opacity-50 fz-20">
             <span>{{ roleAction }}</span>
             <span>{{ commaSplitting(invoice.amount_usdt) }} USDT {{$t('invoice.for')}}</span>
-            <span>{{ commaSplitting(invoice.amount) }} ₽</span>
-          </span>
-          <div class="ad__subtitle">
+            <span>{{ commaSplitting(invoice.amount) }} {{returnCurrency(invoice)}} </span>
+        </span>
+        <div class="ad__subtitle">
             <p>
-              <span class="green">{{$t('invoice.status')}}</span>
-              {{ invoiceStatus(invoice.status) }}
+            <span class="green">{{$t('invoice.status')}}</span>
+            {{ invoiceStatus(invoice.status) }}
             </p>
             <p
-              class="underline-link red"
-              v-if="
+            class="underline-link red"
+            v-if="
             invoice.status === 'waiting_for_payment' && invoice.ads_type === 1
-          "
-              @click="cancelModal = true"
+        "
+            @click="cancelModal = true"
             >
-              {{$t('invoice.cancel')}}
+            {{$t('invoice.cancel')}}
             </p>
-          </div>
+        </div>
         </div>
         <div v-if="showTimer" class="order__timer">{{time}}</div>
-      </div>
+    </div>
     </header>
     <OrderInfo :order="invoice" />
     <div class="order__footer">
-      <Chat :invoice="invoice" :name="roleUser" />
-      <SendMoneySteps v-if="role === 'seller'" :invoice="invoice" />
-      <SendUSDTSteps v-else-if="role === 'bayer'" :invoice="invoice" />
+    <Chat :invoice="invoice" :name="roleUser" />
+    <SendMoneySteps v-if="role === 'seller'" :invoice="invoice" />
+    <SendUSDTSteps v-else-if="role === 'bayer'" :invoice="invoice" />
     </div>
     <InvoiceCancelModal
-      :show="cancelModal"
-      @toggleModal="cancelModal = $event"
-      :invoice="invoice"
+    :show="cancelModal"
+    @toggleModal="cancelModal = $event"
+    :invoice="invoice"
     />
-  </section>
+</section>
 </template>
 
 <script>
@@ -57,9 +57,9 @@ import InvoiceCancelModal from '~/components/InvoiceCancelModal'
 import moment from 'moment'
 
 export default {
-  name: 'invoice_by_id',
-  mixins: [formatCurrency, invoiceStatuses, formatDate],
-  components: {
+name: 'invoice_by_id',
+mixins: [formatCurrency, invoiceStatuses, formatDate],
+components: {
     Button,
     OrderForm,
     OrderInfo,
@@ -67,151 +67,167 @@ export default {
     SendUSDTSteps,
     SendMoneySteps,
     InvoiceCancelModal,
-  },
-  data() {
+},
+data() {
     return {
-      cancelModal: false,
-      invoiceId: this.$route.params.id,
-      interval: null,
-      timer: null,
-      time: null
+    cancelModal: false,
+    invoiceId: this.$route.params.id,
+    interval: null,
+    timer: null,
+    time: null
     }
-  },
-  computed: {
+},
+computed: {
     ...mapGetters({
-      invoice: 'invoice/invoiceById',
-      user: 'user',
+    invoice: 'invoice/invoiceById',
+    user: 'user',
     }),
     roleAction() {
-      if (
+    if (
         (this.invoice.ads_type || this.invoice.type === 1) &&
         this.invoice.seller_username === this.user.username
-      ) {
+    ) {
         return this.$t('invoice.sell')
-      } else if (
+    } else if (
         (this.invoice.ads_type || this.invoice.type === 2) &&
         this.invoice.buyer_username === this.user.username
-      ) {
+    ) {
         return this.$t('invoice.buy')
-      }
+    }
     },
     role() {
-      if (
+    if (
         (this.invoice.ads_type || this.invoice.type === 1) &&
         this.invoice.seller_username === this.user.username
-      ) {
+    ) {
         return 'bayer'
-      } else if (
+    } else if (
         (this.invoice.ads_type || this.invoice.type === 2) &&
         this.invoice.buyer_username === this.user.username
-      ) {
+    ) {
         return 'seller'
-      }
+    }
     },
     roleUser() {
-      switch (this.role) {
+    switch (this.role) {
         case 'bayer':
-          return this.invoice.buyer_username
-          break
+        return this.invoice.buyer_username
+        break
         case 'seller':
-          return this.invoice.username || this.invoice.seller_username
-          break
+        return this.invoice.username || this.invoice.seller_username
+        break
         default:
-          break
-      }
+        break
+    }
     },
     showTimer() {
-      const { status } = this.invoice
-      const statuses = ['waiting_for_tokens', 'waiting_for_payment']
-      return statuses.includes(status)
+    const { status } = this.invoice
+    const statuses = ['waiting_for_tokens', 'waiting_for_payment']
+    return statuses.includes(status)
     },
     timerDuration() {
-      const { status } = this.invoice
-      if (status === 'waiting_for_payment') {
+    const { status } = this.invoice
+    if (status === 'waiting_for_payment') {
         return 90
-      }
-      return status === 'waiting_for_tokens' ? 30 : 0
     }
-  },
-  created() {
+    return status === 'waiting_for_tokens' ? 30 : 0
+    }
+},
+created() {
     this.interval = setInterval(async() => {
-      await this.$store.dispatch('invoice/fetchInvoiceById', this.invoiceId)
-      if (this.invoice === 'waiting_for_tokens') {
+    await this.$store.dispatch('invoice/fetchInvoiceById', this.invoiceId)
+    if (this.invoice === 'waiting_for_tokens') {
         clearInterval(this.interval)
-      }
+    }
     }, 3000)
-  },
-  mounted() {
+},
+mounted() {
     this.timer = setInterval(() => {
-      this.checkTime()
+    this.checkTime()
     }, 1000)
-  },
-  methods: {
+},
+methods: {
+    returnCurrency(row){
+    switch(row.currency){
+        case 1:
+        return '₽'
+        break
+        case 2:
+        return 'Br'
+        break 
+        case 3:
+        return '$'
+        break 
+        case 4:
+        return '€'
+        break 
+    }
+    },
     checkTime() {
-      this.diffDate(this.invoice.status_changed_at)
+    this.diffDate(this.invoice.status_changed_at)
     },
     diffDate(date) {
-      const timeOffset = moment().utcOffset()
-      const startTime = moment(date)
+    const timeOffset = moment().utcOffset()
+    const startTime = moment(date)
         .add(this.timerDuration, 'minutes')
         .format('HH:mm:ss')
-      const endTime = moment()
+    const endTime = moment()
         .subtract(timeOffset, 'minutes')
         .format('HH:mm:ss')
-      const seconds = moment(endTime, 'HH:mm:ss')
+    const seconds = moment(endTime, 'HH:mm:ss')
         .diff(moment(startTime, 'HH:mm:ss'), 'seconds')
-      const duration = moment
+    const duration = moment
         .duration(seconds, 'seconds')
-      const time = `${duration.hours()}:${duration.minutes()}:${duration.seconds()}`
-      this.time = moment(time, 'HH:mm:ss')
+    const time = `${duration.hours()}:${duration.minutes()}:${duration.seconds()}`
+    this.time = moment(time, 'HH:mm:ss')
         .format('HH:mm:ss')
     }
-  },
-  beforeDestroy() {
+},
+beforeDestroy() {
     clearInterval(this.interval)
     clearInterval(this.timer)
-  },
-  asyncData({ route, store }) {
+},
+asyncData({ route, store }) {
     return store.dispatch('invoice/fetchInvoiceById', route.params.id)
-  },
+},
 }
 </script>
 
 <style lang="scss">
 .order {
-  margin-top: 50px;
+margin-top: 50px;
 
-  &__timer {
+&__timer {
     padding: 10px 30px;
     font-size: 30px;
-  }
+}
 
-  &__title {
+&__title {
     display: inline-block;
-  }
+}
 
-  &__subtitle {
+&__subtitle {
     display: flex;
     justify-content: space-between;
-  }
+}
 
-  &__payment-method {
+&__payment-method {
     margin-top: 20px;
-  }
+}
 
-  &__footer {
+&__footer {
     margin-top: 30px;
     margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
-  }
+}
 
-  &__info {
+&__info {
     display: flex;
     justify-content: space-between;
-  }
+}
 
-  .body {
+.body {
     margin-top: 10px;
     height: 100%;
     // background-color: $orange;
@@ -224,36 +240,36 @@ export default {
     justify-content: space-between;
 
     &__info {
-      // background-color: $red;
-      min-width: 200px;
-      max-width: 450px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
+    // background-color: $red;
+    min-width: 200px;
+    max-width: 450px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 
-      .box {
+    .box {
         display: flex;
         justify-content: space-between;
 
         & > * {
-          font-size: 14px;
-          margin-bottom: 15px;
+        font-size: 14px;
+        margin-bottom: 15px;
         }
-      }
+    }
     }
 
     .condition {
-      min-width: 350px;
-      max-width: 500px;
-      width: 100%;
+    min-width: 350px;
+    max-width: 500px;
+    width: 100%;
 
-      &__box {
+    &__box {
         margin-top: 30px;
         background: rgba(72, 177, 144, 0.05);
         border-radius: $border-radius;
         padding: 30px 15px;
-      }
     }
-  }
+    }
+}
 }
 </style>

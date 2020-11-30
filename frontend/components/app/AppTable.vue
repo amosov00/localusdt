@@ -68,7 +68,7 @@ export default {
           return this.paginatedTableData
           break
         case false:
-          return this.data
+           return this.data
           break
         default:
           break

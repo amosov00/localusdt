@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1 class="table-section__title mt-330">{{$t('main.buyUSDT')}}</h1>
-    <Tab :nav="false" :outsideParams="$route.query" :type="1" />
+    <Tab :nav="false" :outsideParams="$route.query" :type="2" />
     <AppTable class="mb-80" :data="orders" :headers="headers" pagination>
       <template slot-scope="header"></template>
       <template slot-scope="{ row }">
@@ -18,7 +18,7 @@
           {{ spaceSplitting(row.top_limit) }} USDT
         </td>
         <td class="table__data">{{ commaSplitting(row.amount_usdt) }} USDT</td>
-        <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+        <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
         <td class="table__data">
           <nuxt-link :to="`/order/${row._id}`">
             <Button rounded outlined green>{{$t('main.buy')}}</Button>
@@ -56,12 +56,32 @@ export default {
       ]
     }
   },
+  methods:{
+    returnCurrency(row){
+      console.log(row);
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
+  },
   computed: {
     ...mapGetters({
       orders: 'order/orders'
     })
   },
   asyncData({ store, query }) {
+
     const isQuery = Boolean(Object.keys(query).length)
     if (isQuery) {
       return store.dispatch('order/fetchOrders', {
@@ -74,8 +94,10 @@ export default {
     return store.dispatch('order/fetchOrders', {
       limit: 1000,
       type: 2,
-      sort: 1
+      sort: -1,
+      currency:1,
     })
+  
   }
 }
 </script>

@@ -29,7 +29,7 @@ class CurrencyCRUD(BaseMongoCRUD):
     @classmethod
     async def update(cls, cur_type: CurrencyType, new_currency: Optional[float]) -> None:
         if not new_currency:
-            capture_message("ERROR WHILE UPDATE USDT RATE, USING OLD ONE")
+            capture_message(f"ERROR WHILE UPDATE {cur_type.name} RATE, USING OLD ONE")
             return None
         current_rate = await cls.find_last(cur_type)
         if not current_rate:

@@ -2,8 +2,8 @@
   div.create-order
     p.create-order__token-price {{$t('bid.actualCourse')}}
       =' '
-      span.green {{commaSplitting(currencyPrice)}}
-      span ₽/USDT
+      span.green {{currencyPrice ? commaSplitting(currencyPrice) : null}}
+      span {{ returnCurrency }} /USDT
     header.create-order__navigation
       h1 {{$t('bid.sellUSDT')}}
     hr
@@ -18,10 +18,11 @@
         )
         Select(
         :options="currencyOptions"
+         :selectedOptionProp="adForm.currency"
         v-model="adForm.currency"
         :width="80"
         :header="$t('bid.currency')"
-        hideArrow)
+        )
       Input.create-order__input(
       v-if="yourVersion"
       v-model="adForm.bank_title"
@@ -99,7 +100,6 @@
       green
       @click.native="createAd(false)"
       v-if="!editMode") {{$t('bid.createAd')}}
-
       div(v-else).create-order__action
         Button(green @click.native="createAd(true)").mr-15 {{$t('bid.save')}}
         Button(white @click.native="$nuxt.context.redirect(`/order/${$route.query.edit}`)") {{$t('bid.cancel')}}
@@ -139,9 +139,10 @@ export default {
         price: 0
       },
       currencyOptions: [
-        { name: 'RUB', value: 1 }
-        // { name: 'USD', value: 2 },
-        // { name: 'EUR', value: 3 }
+         { name: 'RUB', value: 1 },
+        { name: 'BYN', value: 2 },
+        { name: 'USD', value: 3 },
+        { name: 'EUR', value: 4 }
       ],
       paymentOptions: [
         { name: this.$t('main.sberTransfer'), value: 1 },
@@ -174,8 +175,28 @@ export default {
   computed: {
     ...mapGetters({
       user: 'user',
-      currencyPrice: 'currencyPrice'
+      currencyPrice: 'currencyPrice',
+      currencyFullData: 'currencyFullData'
     }),
+    returnCurrency(){
+      console.log(this.adForm);
+      if(this.adForm){
+         switch(this.adForm.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+      }
+    },
     equation() {
       let currencyName = this.currencyOptions.find(currency => {
         return currency.value === this.adForm.currency
@@ -250,10 +271,7 @@ export default {
   /*asyncData({ store }) {
     return store.dispatch('fetchCurrencyPrice')
   }*/
-  async asyncData({ store, query }) {
-
-    await store.dispatch('fetchCurrencyPrice')
-
+  async fetch() {
     let res = null
     let adForm = {
       type: 2,
@@ -262,17 +280,16 @@ export default {
       amount_usdt: null,
       payment_method: 1,
       bank_title: '',
-      currency: 1,
+      currency:1,
       condition: '',
       profit: 0,
       fixed_price: false,
       price: 0
     }
-
-    if (query.hasOwnProperty('edit')) {
-      if (query.edit.length > 0) {
-        res = await store.$axios.get(`/order/${query.edit}`)
-
+    if (this.$route.query['edit']) {
+      if (this.$route.query['edit'].length > 0) {
+       res = await this.$axios.get(`/order/${this.$route.query['edit']}`)
+        console.log(res.data);
         for (const key in adForm) {
           adForm[key] = res.data[key]
         }
@@ -282,12 +299,9 @@ export default {
         if (adForm.fixed_price) {
           profitMode = 'fixed'
         }
-
-        return {
-          profitMode,
-          editMode: true,
-          adForm
-        }
+        this.adForm = adForm
+        
+        await this.$store.dispatch('fetchCurrencyPrice', this.adForm.currency)
       }
     }
 

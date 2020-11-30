@@ -23,10 +23,7 @@ from schemas.user import (
     UserRecover,
     UserRecoverLink,
     UserUpdate,
-    UserTransaction,
-    UserTransactionEvents,
-    UserTransactionStatus,
-    UserMakeWithdraw
+    UserLanguage
 )
 
 __all__ = ["UserCRUD"]
@@ -133,7 +130,7 @@ class UserCRUD(BaseMongoCRUD):
         ).inserted_id
 
         asyncio.create_task(
-            MailGunEmail().send_verification_code(user.email, verification_code)
+            MailGunEmail(user.language).send_verification_code(user.email, verification_code)
         )
 
         return inserted_id
@@ -161,7 +158,7 @@ class UserCRUD(BaseMongoCRUD):
         recover_code = encode_jwt_token({"_id": user["_id"]}, timedelta(hours=3))
 
         await cls.update_one({"_id": user["_id"]}, {"recover_code": recover_code})
-        asyncio.create_task(MailGunEmail().send_recover_code(user["email"], recover_code))
+        asyncio.create_task(MailGunEmail(user.get("language")).send_recover_code(user["email"], recover_code))
         return True
 
     @classmethod
@@ -191,7 +188,7 @@ class UserCRUD(BaseMongoCRUD):
                 "_id": user.id
             },
             payload={
-                **payload.dict()
+                **payload.dict(exclude_unset=True, exclude_none=True)
             }
         )
         updated_user = await cls.find_by_id(user.id)

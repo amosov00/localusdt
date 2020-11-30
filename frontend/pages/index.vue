@@ -2,10 +2,10 @@
   <div>
     <NonAuthorizedHero v-if="!$userIsLoggedIn()" />
     <Tab :top="top" @selectedTab="selectedOrders($event)" />
-    <div v-if="buyTab">
+    <div v-if="!buyTab">
       <section class="table-section mt-330">
         <h1 class="table-section__title">{{ $t('main.buyUSDT') }}</h1>
-        <AppTable :data="sellOrdersWithLimit" :headers="headers">
+        <AppTable :data="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -39,7 +39,7 @@
       </section>
       <section class="table-section">
         <h1 class="table-section__title">{{ $t('main.sellUSDT') }}</h1>
-        <AppTable :data="buyOrdersWithLimit" :headers="headers">
+        <AppTable :data="buyOrdersWithLimit" :headers="[$t('main.buyer'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -57,7 +57,7 @@
             <td class="table__data">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
                 <Button rounded outlined green>{{ $t('main.sell') }}</Button>
@@ -75,7 +75,7 @@
     <div v-else>
       <section class="table-section mt-330">
         <h1 class="table-section__title">{{ $t('main.sellUSDT') }}</h1>
-        <AppTable :data="buyOrdersWithLimit" :headers="headers">
+        <AppTable :data="buyOrdersWithLimit" :headers="[$t('main.buyer'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -93,7 +93,7 @@
             <td class="table__data">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data fw-500">{{ commaSplitting(row.price) }}₽</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
                 <Button rounded outlined green>{{ $t('main.sell') }}</Button>
@@ -109,7 +109,7 @@
       </section>
       <section class="table-section">
         <h1 class="table-section__title">{{ $t('main.buyUSDT') }}</h1>
-        <AppTable :data="sellOrdersWithLimit" :headers="headers">
+        <AppTable :data="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">
@@ -163,7 +163,6 @@ export default {
       buyTab: true,
       sellTab: false,
       headers: [
-        this.$t('main.seller'),
         this.$t('main.payType'),
         this.$t('main.limit'),
         this.$t('main.quantity'),
@@ -180,7 +179,8 @@ export default {
       return this.isToastActive ? top + 50 : top
     },
     buyOrdersWithLimit() {
-      return this.$store.getters['order/buyOrdersWithLimit'](5)
+      
+      return this.$store.getters['order/buyOrdersWithLimit'](5);
     },
     sellOrdersWithLimit() {
       return this.$store.getters['order/sellOrdersWithLimit'](5)
@@ -190,6 +190,22 @@ export default {
     }
   },
   methods: {
+     returnCurrency(row){
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     selectedOption(option) {
       this.selected = option.name
     },
@@ -199,7 +215,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('order/fetchOrders', { limit: 1000 })
+    this.$store.dispatch('order/fetchOrders', { limit: 1000, })
   }
 }
 </script>

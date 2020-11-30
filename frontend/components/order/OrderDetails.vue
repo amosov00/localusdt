@@ -4,7 +4,8 @@
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.price') }}</p>
       <p class="order-details__cell">
         {{ commaSplitting(orderDetails.price || orderDetails.amount) }}
-        ₽/USDT
+        
+        {{returnCurrency(orderDetails)}}/USDT
       </p>
     </div>
     <div class="order-details__row" v-if="role && roleUser">
@@ -94,6 +95,24 @@ export default {
           break
         default:
           break
+      }
+    },
+  },
+  methods:{
+     returnCurrency(row){
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
       }
     },
   },

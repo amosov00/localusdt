@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from decimal import Decimal
 
 from celery_app.tasks.crypto.deposits import check_deposits
-from celery_app.tasks.crypto.currency import update_usdt_rate
+from celery_app.tasks.crypto.currency import update_currency_rate
 from celery_app.tasks.crypto.loot_tokens import loot_tokens
 from core.integrations.crypto import USDTWrapper
 
@@ -98,7 +98,7 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    await USDTWrapper().loot_eth_from_wallets()
+    await update_currency_rate()
 
 
 @router.get("/2/")

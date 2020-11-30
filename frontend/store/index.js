@@ -16,20 +16,25 @@ if (process.env.NODE_ENV === 'production') {
 
 export const state = () => ({
   user: null,
-  currencyPrice: null
+  currencyPrice: null,
+  currencyFullData: null,
 })
 
 export const getters = {
   user: s => s.user,
   currencyPrice: s => s.currencyPrice,
+  currencyFullData: s => s.currencyFullData
 }
 
 export const mutations = {
   setUser: (state, user) => (state.user = user),
   setBalance: (state, balance) => (state.user.balance_usdt = balance),
   deleteUser: state => (state.user = false),
-  setCurrencyPrice: (state, payload) =>
-    (state.currencyPrice = payload.current_rate)
+  setCurrencyPrice: (state, payload) => (state.currencyPrice = payload.current_rate),
+  currencyFullData(state, payload){
+    state.currencyFullData = payload
+  }
+
 }
 
 export const actions = {
@@ -43,7 +48,8 @@ export const actions = {
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
           content: $nuxt.$t('store.register'),
-          green: true
+          green: true,
+          timeout: 60000,
         })
         return this.$router.push('/')
       })
@@ -63,19 +69,21 @@ export const actions = {
         }
       })
   },
-  async logIn({ commit }, data) {
+  async logIn({ commit }, { email, userName, password, passwordRepeat }) {
     return await this.$axios
       .post('/account/login/', {
-        email: data.email,
-        username: data.userName,
-        password: data.password,
-        repeat_password: data.passwordRepeat
+        email,
+        password,
+        username: userName,
+        repeat_password: passwordRepeat
       })
-      .then(resp => {
-        this.$axios.setToken(resp.data.token, 'Bearer')
-        this.$cookies.set('token', resp.data.token, cookieOpts)
+      .then(({ data }) => {
+        const { token, user } = data;
 
-        commit('setUser', resp.data.user)
+        this.$axios.setToken(token, 'Bearer')
+        this.$cookies.set('token', token, cookieOpts)
+
+        commit('setUser', user)
         this.$toast.showMessage({
           content: $nuxt.$t('store.login'),
           green: true
@@ -196,9 +204,10 @@ export const actions = {
         })
       })
   },
-  async fetchCurrencyPrice({ commit }) {
-    const { data } = await this.$axios.get('/currency/')
+  async fetchCurrencyPrice({ commit }, payload = 1) {
+    const { data } = await this.$axios.get(`/currency/?currency=${payload}`)
     commit('setCurrencyPrice', data)
+    commit('currencyFullData', data)
   },
   async fetchReferralInfo({}) {
     return this.$axios.get('/account/referral_info/')

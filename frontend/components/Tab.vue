@@ -3,14 +3,14 @@
     <nav v-if="nav" class="tab-nav">
       <div
         class="tab-nav__item"
-        :class="{ 'tab-nav__item--active': firstTab }"
+        :class="{ 'tab-nav__item--active':  secondTab  }"
         @click="selectTab"
       >
         {{ $t('main.fastBuy') }}
       </div>
       <div
         class="tab-nav__item"
-        :class="{ 'tab-nav__item--active': secondTab }"
+        :class="{ 'tab-nav__item--active': firstTab }"
         @click="selectTab"
       >
         {{ $t('main.fastSell') }}
@@ -64,17 +64,18 @@ export default {
   data() {
     return {
       searchForm: {
-        payment_method: this.outsideParams ? (this.outsideParams.payment_method * 1) : 1,
-        currency: this.outsideParams ? (this.outsideParams.currency * 1) : 1,
-        bot_limit: this.outsideParams ? this.outsideParams.price_bot : 0,
-        top_limit: this.outsideParams ? this.outsideParams.price_top : 0,
+        payment_method: this.outsideParams &&  this.outsideParams.payment_method !== undefined ? (this.outsideParams.payment_method) : 1,
+        currency: this.outsideParams &&  this.outsideParams.currency !== undefined ? (this.outsideParams.currency) : 1,
+        bot_limit: this.outsideParams &&  this.outsideParams.price_bot !== undefined ? this.outsideParams.price_bot : 0,
+        top_limit: this.outsideParams &&  this.outsideParams.price_top !== undefined ? this.outsideParams.price_top : 0,
       },
       firstTab: true,
       secondTab: false,
       currencyOptions: [
         { name: 'RUB', value: 1 },
-        { name: 'USD', value: 2, selected: true },
-        { name: 'EUR', value: 3 }
+        { name: 'BYN', value: 2 },
+        { name: 'USD', value: 3 },
+        { name: 'EUR', value: 4 }
       ],
       paymentOptions: [
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`, value: 1 },
@@ -87,9 +88,9 @@ export default {
   computed: {
     routePath() {
       if (this.type === 1 || this.firstTab) {
-        return '/buy'
-      } else {
         return '/sell'
+      } else {
+        return '/buy'
       }
     },
     queries() {
@@ -101,6 +102,15 @@ export default {
       } else {
         return 2
       }
+    }
+  },
+  mounted(){
+    console.log(this.$route.path);
+    if(this.$route.path == '/') return
+    if(this.$route.path == '/buy') this.firstTab = false
+    if(this.$route.path == '/sell'){
+      this.firstTab = true
+      console.log(this.type);
     }
   },
   methods: {
@@ -115,10 +125,12 @@ export default {
       this.$emit('selectedTab', { buy: this.firstTab, sell: this.secondTab })
     },
     searchOrders() {
+      console.log(this.firstTab);
       this.$store.dispatch('order/searchOrders', {
         ...this.searchForm,
         ad_type: this.adType
       })
+      console.log('1111',this.routePath);
       this.$router.push(this.routePath + this.queries)
     }
   }

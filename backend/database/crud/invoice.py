@@ -16,7 +16,7 @@ from schemas.base import ObjectId
 from core.mechanics.logging import LogMechanics
 from schemas.logging import LogEvents
 
-from schemas.user import User
+from schemas.user import User, UserLanguage
 
 from schemas.invoice import InvoiceCreate, Invoice, InvoiceStatus
 
@@ -139,9 +139,9 @@ class InvoiceCRUD(BaseMongoCRUD):
         await cls.update_all(seller=seller, buyer=buyer, ads=ads)
 
         inserted_id = (await cls.insert_one(payload={**invoice.dict()})).inserted_id
-        owner_email = (await UserCRUD.find_by_id(ads["user_id"])).get("email")
+        owner = await UserCRUD.find_by_id(ads["user_id"])
         asyncio.create_task(
-            MailGunEmail().send_invoice_notification(to=owner_email, invoice_id=inserted_id)
+            MailGunEmail(owner.get("language") if owner.get("language") else UserLanguage.RU).send_invoice_notification(to=owner.get("email"), invoice_id=inserted_id)
         )
         invoice_in_db = await cls.find_one(query={"_id": inserted_id})
         await NotificationSender.send_new_invoice(
@@ -253,6 +253,8 @@ class InvoiceCRUD(BaseMongoCRUD):
             user_id=ObjectId(user.id),
             invoice_id=invoice.get("_id")
         )
+        seller = await UserCRUD.find_by_id(invoice.get("seller_id"))
+        await MailGunEmail(seller.get("language") if seller.get("language") else UserLanguage.RU).send_invoice_notification_to_seller(seller.get("email"), str(invoice.get("_id")))
 
         return True
 

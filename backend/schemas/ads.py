@@ -68,7 +68,7 @@ class Ads(BaseModel):
     # Extra info
     payment_method: PaymentMethod = Field(default=None)
     other_payment_method: str = Field(default=None)
-    currency: CurrencyType = Field(default=None)
+    currency: CurrencyType = Field(default=None, description="1 -- RUB, 2 -- BYN, 3 -- USD, 4 -- EUR")
     condition: str = Field(default=None, description="Condition of the Ads")
 
     # Datetimes
@@ -105,7 +105,7 @@ class AdsCreate(BaseModel):
         description="Payment method, 1 = Sberbank, 2 = Tinkoff, 3 = Alfa-bank, 4 = Other"
     )
     other_payment_method: str = Field(default=None)
-    currency: CurrencyType = Field(default=CurrencyType.RUB, description='1 -- RUB, 2 -- BYN')
+    currency: CurrencyType = Field(default=CurrencyType.RUB, description='1 -- RUB, 2 -- BYN, 3 -- USD, 4 -- EUR')
     condition: str = Field(default="", description="Condition of the Ads")
 
     profit: int = Field(default=0)

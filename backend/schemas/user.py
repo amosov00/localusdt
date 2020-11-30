@@ -26,7 +26,8 @@ __all__ = [
     "UserTransactionEvents",
     "UserTransaction",
     "UserMakeWithdraw",
-    "UserUpdateNotSafe"
+    "UserUpdateNotSafe",
+    "UserLanguage"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -75,6 +76,11 @@ class BaseUser(BaseModel):
     pass
 
 
+class UserLanguage(IntEnum):
+    RU = 1
+    ENG = 2
+
+
 class User(BaseModel):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
     email: str = Field(default=None)
@@ -94,6 +100,7 @@ class User(BaseModel):
         default=None, description="JWT token for password recover"
     )
     last_active: Optional[datetime] = Field(default=None)
+    language: Optional[UserLanguage] = Field(default=None, description="1 -- RU, 2 -- ENG")
     created_at: Optional[datetime] = Field(default=None)
     about_me: str = Field(default="", description="About me field")
 
@@ -126,6 +133,7 @@ class UserCreationSafe(BaseModel):
     username: str = Field(...)
     repeat_password: str = Field(...)
     password: str = Field(...)
+    language: UserLanguage = Field(default=UserLanguage.RU, example="1", description="It's enum, 1 -- RU, 2 -- ENG")
     referral_id: Optional[str] = Field(default=None)
 
     _validate_email = validator("email", allow_reuse=True)(validate_email)
@@ -157,7 +165,8 @@ class UserRecoverLink(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    about_me: str = Field(..., description="'About me' field")
+    about_me: str = Field(default=None, description="'About me' field")
+    language: UserLanguage = Field(default=None, example="1", description="It's enum, 1 -- RU, 2 -- ENG")
 
 
 class UserUpdateNotSafe(BaseModel):

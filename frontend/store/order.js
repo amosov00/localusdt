@@ -14,11 +14,11 @@ export const getters = {
       .filter(order => order.type === 2)
       .sort((a, b) => b.price - a.price),
   buyOrdersWithLimit: s => limit => {
-    return s.orders.filter(order => order.type === 1).slice(0, limit)
+    return s.orders.filter(order => order.amount_usdt === 1).slice(0, limit)
   },
   sellOrdersWithLimit: s => limit => {
     return s.orders
-      .filter(order => order.type === 2)
+      .filter(order => order.type === 2 && order.currency == 1)
       .sort((a, b) => b.price - a.price)
       .slice(0, limit)
   }
@@ -32,7 +32,7 @@ export const mutations = {
 
 export const actions = {
   async fetchOrders({ commit }, query) {
-    const { data } = await this.$axios.get(
+    let data = await this.$axios.get(
       `/order/?limit=${query.limit}&${
         query.type ? `order_type=${query.type}` : ''
       }&${query.currency ? `currency=${query.currency}` : ''}&${
@@ -41,7 +41,7 @@ export const actions = {
         query.price_top ? `price_top=${query.price_top}` : ''
       }&${query.sort ? `sort=${query.sort}` : ''}`
     )
-    commit('setOrders', data)
+    commit('setOrders', data.data)
   },
   async fetchOrderById({ commit }, id) {
     const { data } = await this.$axios.get(`/order/${id}`)
@@ -55,6 +55,10 @@ export const actions = {
     const { data } = await this.$axios.get(
       `/order/?order_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`
     )
+    data.forEach(e => {
+      e.setCurrency = params.currency
+    });
+    console.log(data);
     commit('setOrders', data)
   },
 

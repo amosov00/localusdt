@@ -2,6 +2,7 @@ export const state = () => ({
   invoices: [],
   invoiceById: null
 })
+let socketPing = null
 
 export const getters = {
   invoices: s => s.invoices,
@@ -34,11 +35,22 @@ export const actions = {
     return await this.$axios
       .post('/invoice/create/', invoiceForm)
       .then(res => {
-        if (invoiceForm.chatText && invoiceForm.chatText.length) {
+        if (invoiceForm.chatText) {
           const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
           ws.onopen = () => {
+            console.log('SOCKET');
             ws.send(invoiceForm.chatText)
+            setTimeout(() => {
+              socketPing = setInterval(() => {
+                this.socket.send('');
+              }, 50000);
+            }, 2000);
           }
+
+          ws.onclose = async (event) => {
+            clearInterval(socketPing);
+          };
+          
         }
         this.$router.push(`/invoice/${res.data._id}`)
         this.$toast.showMessage({

@@ -59,9 +59,12 @@
 import Input from '~/components/app/Input'
 import Button from '~/components/app/Button'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { mapGetters } from 'vuex';
 export default {
   name: 'change',
+
   components: { Input, Button, ValidationObserver, ValidationProvider },
+
   data() {
     return {
       changeForm: {
@@ -71,9 +74,16 @@ export default {
       }
     }
   },
+
+  computed: {
+    ...mapGetters({
+      localeId: 'i18n/GET_LOCALE_ID'
+    })
+  },
+
   methods: {
     change() {
-      this.$store.dispatch('changePassword', this.changeForm)
+      this.$store.dispatch('changePassword', {...this.changeForm, language: this.localeId })
     }
   }
 }

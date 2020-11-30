@@ -18,7 +18,7 @@
           {{ spaceSplitting(row.top_limit) }} USDT
         </td>
         <td class="table__data">{{ commaSplitting(row.amount_usdt) }} USDT</td>
-        <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+        <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
         <td class="table__data">
           <nuxt-link :to="`/order/${row._id}`">
             <Button rounded outlined green>{{$t('main.sell')}}</Button>
@@ -48,13 +48,31 @@ export default {
   data() {
     return {
       headers: [
-        this.$t('main.seller'),
+        this.$t('main.buyer'),
         this.$t('main.payType'),
         this.$t('main.limit'),
         this.$t('main.quantity'),
         this.$t('main.cost'),
       ]
     }
+  },
+  methods:{
+    returnCurrency(row){
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
   },
   computed: {
     ...mapGetters({
@@ -74,7 +92,8 @@ export default {
     return store.dispatch('order/fetchOrders', {
       limit: 1000,
       type: 1,
-      sort: -1
+      sort: -1,
+      currency:1
     })
   }
 }

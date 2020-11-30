@@ -53,10 +53,12 @@
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
             </td>
-            <td class="table__data">{{commaSplitting(row.amount_usdt)}}
-              <span class="grey-dark fw-400">
-                {{$t('profile.for')}} {{commaSplitting(row.amount)}} USDT
+            <td class="table__data">
+               <span class="grey-dark fw-400">
+                {{commaSplitting(row.amount)}} USDT {{$t('profile.for')}}
               </span>
+                {{commaSplitting(row.amount_usdt)}}{{returnCurrency(row)}}
+             
             </td>
             <td class="table__data" :style="{ color: statusColor(row.status) }">
               <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
@@ -78,7 +80,7 @@
                 {{spaceSplitting(row.top_limit)}} USDT
               </span>
             </td>
-            <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT</td>
+            <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT </td>
             <td class="table__data" :style="{ color: orderStatusColor(row.status) }">
               <nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
             </td>
@@ -138,6 +140,7 @@ export default {
       return { ...this.$store.getters.user }
     },
     invoices() {
+      console.log(this.$store.getters['invoice/invoices']);
       return this.$store.getters['invoice/invoices']
     },
     orders() {
@@ -153,6 +156,22 @@ export default {
     }
   },
   methods: {
+     returnCurrency(row){
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     getUsername(seller, buyer) {
       const { username } = this.user
       return username === seller ? buyer : seller

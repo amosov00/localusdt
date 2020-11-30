@@ -113,7 +113,6 @@ class UserVerify(BaseModel):
 class UserLogin(BaseModel):
     email: str = Field(..., example="email")
     password: str = Field(..., example="password")
-    language: UserLanguage = Field(default=UserLanguage.RU, example="1", description="It's enum, 1 -- RU, 2 -- ENG")
 
 
 class UserLoginResponse(BaseModel):
@@ -134,7 +133,7 @@ class UserCreationSafe(BaseModel):
     username: str = Field(...)
     repeat_password: str = Field(...)
     password: str = Field(...)
-    language: UserLanguage = Field(default=UserLanguage.RU)
+    language: UserLanguage = Field(default=UserLanguage.RU, example="1", description="It's enum, 1 -- RU, 2 -- ENG")
     referral_id: Optional[str] = Field(default=None)
 
     _validate_email = validator("email", allow_reuse=True)(validate_email)
@@ -167,6 +166,7 @@ class UserRecoverLink(BaseModel):
 
 class UserUpdate(BaseModel):
     about_me: str = Field(..., description="'About me' field")
+    language: UserLanguage = Field(default=UserLanguage.RU, example="1", description="It's enum, 1 -- RU, 2 -- ENG")
 
 
 class UserUpdateNotSafe(BaseModel):

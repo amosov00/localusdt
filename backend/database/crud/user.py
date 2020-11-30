@@ -45,7 +45,7 @@ class UserCRUD(BaseMongoCRUD):
         )
 
     @classmethod
-    async def authenticate(cls, email: str, password: str, language: UserLanguage) -> dict:
+    async def authenticate(cls, email: str, password: str) -> dict:
         email = email.lower()
 
         user = await super().find_one(query={"email": email})
@@ -54,7 +54,6 @@ class UserCRUD(BaseMongoCRUD):
             token = encode_jwt_token({"id": str(user["_id"])})
             if not user.get("is_active"):
                 raise HTTPException(HTTPStatus.BAD_REQUEST, "Активируйте аккаунт через email для входа в аккаунт")
-            await cls.update_one({"_id": user.get("_id")}, {"language": language})
             return {"token": token, "user": User(**user).dict()}
         else:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Неправильно введены данные")

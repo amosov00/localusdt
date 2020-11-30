@@ -7,14 +7,21 @@ export const state = () => ({
 })
 
 export const mutations = {
-  showMessage (state, payload) {
-    state.content = payload.content
-    state.color = payload.color
-    state.red = payload.red
-    state.green = payload.green
+  showMessage (state, { content, color, red, green, timeout }) {
+    state.content = content
+    state.color = color
+    state.red = red
+    state.green = green
+    state.timeout = timeout
   },
-  closeToast(s){s.active = false},
-  openToast(s){s.active = true}
+
+  closeToast(s) {
+    s.active = false
+  },
+
+  openToast(s){
+    s.active = true
+  }
 }
 export const getters = {
   isActive(s) {

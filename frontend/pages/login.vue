@@ -45,6 +45,7 @@
 import Input from '~/components/app/Input'
 import Button from '~/components/app/Button'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { mapGetters } from 'vuex';
 export default {
   name: 'login',
   components: { Input, Button, ValidationObserver, ValidationProvider },

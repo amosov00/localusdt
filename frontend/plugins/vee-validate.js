@@ -36,7 +36,7 @@ const messages = {
    - Your name does not contain underscores - neither at the beginning nor at the end. <br>
    - Your name does not contain specials. characters. <br>
    - Your name consists only of latin characters. <br> `,
-    userLength2: "Username must contain 6-20 symbols. Disallowed any number, nor special characters",
+    userLength2: "Username must contain 6-20 symbols. Disallowed any number, nor special characters. Only Latin letters are allowed.",
     user: "Username cannot contain double underscores, nor can it contain underscores at the beginning or end."
   },
   ru: {

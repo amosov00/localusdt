@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 let cookieOpts = {
   path: '/',
-  maxAge: 60 * 60 * 24 * 7
+  maxAge: 60 * 60 * 24 * 7,
 }
 
 if (process.env.NODE_ENV === 'production') {

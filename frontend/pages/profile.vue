@@ -140,7 +140,6 @@ export default {
       return { ...this.$store.getters.user }
     },
     invoices() {
-      console.log(this.$store.getters['invoice/invoices']);
       return this.$store.getters['invoice/invoices']
     },
     orders() {

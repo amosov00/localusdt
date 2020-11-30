@@ -69,8 +69,8 @@ export default {
   }),
   mounted() {
     this.loadNotifictions()
+    console.log(`${process.env.API_WS_URL}notification/ws/`);
     document.body.addEventListener('click', this.hide, false)
-
     this.ws = new WebSocket(`${process.env.API_WS_URL}notification/ws/`)
     this.ws.onopen = (e) => {
       this.connected = true

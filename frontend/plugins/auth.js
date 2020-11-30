@@ -13,7 +13,7 @@ export default ({ app, redirect }, inject) => {
 				maxAge: 60 * 60 * 24 * 7,
 			});
 			redirect('/');
-			return true;
+			return true
 		}).catch(_ => {
 		  return false;
     })

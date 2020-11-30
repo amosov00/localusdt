@@ -51,7 +51,6 @@ export default {
   methods: {
     createInvoice() {
       if (this.invoiceForm.amount_usdt) {
-        console.log(this.invoiceForm);
         this.$store.dispatch('invoice/createInvoice', this.invoiceForm)
       } else {
         this.$toast.showMessage({ content: this.$t('orderForm.writeSum'), red: true })

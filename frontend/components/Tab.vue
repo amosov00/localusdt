@@ -3,14 +3,14 @@
     <nav v-if="nav" class="tab-nav">
       <div
         class="tab-nav__item"
-        :class="{ 'tab-nav__item--active': firstTab }"
+        :class="{ 'tab-nav__item--active':  secondTab  }"
         @click="selectTab"
       >
         {{ $t('main.fastBuy') }}
       </div>
       <div
         class="tab-nav__item"
-        :class="{ 'tab-nav__item--active': secondTab }"
+        :class="{ 'tab-nav__item--active': firstTab }"
         @click="selectTab"
       >
         {{ $t('main.fastSell') }}

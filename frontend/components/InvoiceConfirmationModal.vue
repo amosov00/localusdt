@@ -9,7 +9,7 @@
         <p class="mt-20 fz-20">
           {{ commaSplitting(invoice.amount_usdt) }} USDT {{ $t('other.for') }}
           <span class="opacity-50">
-            {{ commaSplitting(invoice.amount) }} ₽
+            {{ commaSplitting(invoice.amount) }} {{returnCurrency(invoice)}}
           </span>
         </p>
         <p class="fz-14 mt-20">{{ userName }} <span class="status-circle"></span></p>
@@ -43,10 +43,26 @@ export default {
     userName() {
       return this.invoice.ads_type === 2
         ? this.invoice.seller_username
-        : this.invoice.seller_username
+        : this.invoice.buyer_username
     }
   },
   methods: {
+    returnCurrency(row){
+      switch(row.currency){
+        case 1:
+         return '₽'
+        break
+        case 2:
+          return 'Br'
+        break 
+        case 3:
+          return '$'
+        break 
+        case 4:
+          return '€'
+        break 
+      }
+    },
     hideModal() {
       this.$emit('toggleModal', !this.show)
     },

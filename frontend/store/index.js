@@ -48,7 +48,8 @@ export const actions = {
         commit('setUser', resp.data.user)
         this.$toast.showMessage({
           content: $nuxt.$t('store.register'),
-          green: true
+          green: true,
+          timeout: 60000,
         })
         return this.$router.push('/')
       })

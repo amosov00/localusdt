@@ -17,22 +17,24 @@ export default {
     }
   },
   methods: {
-    halfLife() {
+    halfLife(timeout) {
       setTimeout(() => {
         this.show = false
         this.$toast.closeToast()
-      }, 10000)
+      }, timeout)
     }
   },
   created() {
-    this.$store.subscribe((mutation, state) => {
+    this.$store.subscribe((mutation, { toast }) => {
       if (mutation.type === 'toast/showMessage') {
+        const { content, red, green, timeout } = toast
         this.$toast.openToast()
-        this.message = state.toast.content
-        this.red = state.toast.red
-        this.green = state.toast.green
+        this.message = content
+        this.red = red
+        this.green = green
         this.show = true
-        this.halfLife()
+
+        this.halfLife(timeout)
       }
     })
   }

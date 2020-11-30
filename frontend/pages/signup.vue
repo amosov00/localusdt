@@ -117,18 +117,17 @@ export default {
       return query.ref ? query.ref : ''
     },
     ...mapGetters({
-      LOCALE_ID: 'i18n/GET_LOCALE_ID'
+      localeId: 'i18n/GET_LOCALE_ID'
     })
   },
   methods: {
     signUp() {
       let preparedForm = this.registerForm
-      preparedForm.lang = this.LOCALE_ID
 
       if (this.referralId) {
         preparedForm.referral_id = this.referralId
       }
-      this.$store.dispatch('signUp', preparedForm)
+      this.$store.dispatch('signUp', { ...preparedForm, language: this.localeId })
     }
   }
 }

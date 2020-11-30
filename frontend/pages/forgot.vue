@@ -46,13 +46,13 @@ export default {
 
   computed: {
     ...mapGetters({
-      LOCALE_ID: 'i18n/GET_LOCALE_ID'
+      localeId: 'i18n/GET_LOCALE_ID'
     })
   },
 
   methods: {
     startRecover() {
-      this.$store.dispatch('startRecover', {...this.forgotForm, lanag: this.LOCALE_ID })
+      this.$store.dispatch('startRecover', {...this.forgotForm, language: this.localeId })
     }
   }
 }

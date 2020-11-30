@@ -28,5 +28,9 @@ export const getters = {
   },
   GET_LOCALE_ID(state) {
     return state.locales.find(el => el.code === state.locale).id
-  }
+  },
+
+  GET_LOCALE_ID_BY_CODE: (state) => (code) => {
+    return state.locales.find(locale => locale.code === code).id
+}
 }

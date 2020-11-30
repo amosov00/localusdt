@@ -77,13 +77,13 @@ export default {
 
   computed: {
     ...mapGetters({
-      LOCALE_ID: 'i18n/GET_LOCALE_ID'
+      localeId: 'i18n/GET_LOCALE_ID'
     })
   },
 
   methods: {
     change() {
-      this.$store.dispatch('changePassword', {...this.changeForm, lang: this.LOCALE_ID })
+      this.$store.dispatch('changePassword', {...this.changeForm, language: this.localeId })
     }
   }
 }

@@ -36,7 +36,11 @@
       :header="inputHeader"
       placeholder="0"
       endIcon="usdt")
+
+      h2.create-order-price Цена:
+
       div.radio-group
+      
         label(for="profit-is-formula")
           input(id="profit-is-formula"
           type="radio"
@@ -302,4 +306,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.create-order-price{
+  margin-bottom: 20px;
+  font-size: 30px;
+}
+  
+</style>

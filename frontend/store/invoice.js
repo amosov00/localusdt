@@ -34,13 +34,11 @@ export const actions = {
   async createInvoice({ dispatch }, invoiceForm) {
     return await this.$axios.post('/invoice/create/', invoiceForm)
       .then(res => {
-          
-        this.$router.push(`/invoice/${res.data._id}`)
-
         const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
           ws.onopen = () => {
             console.log('SOCKET');
             ws.send(invoiceForm.chatText)
+            console.log('SOCKET FIRST SEND');
             setTimeout(() => {
               socketPing = setInterval(() => {
                 this.socket.send('');
@@ -56,6 +54,8 @@ export const actions = {
           green: true
         })
         dispatch('fetchInvoices')
+        console.log('push router');
+        this.$router.push(`/invoice/${res.data._id}`)
         return true
       })
       .catch(error => {

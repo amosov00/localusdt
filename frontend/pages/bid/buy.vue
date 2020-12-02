@@ -4,7 +4,6 @@
       =' '
       span.green {{commaSplitting(currencyPrice)}}
       span {{ returnCurrency }}/USDT
-      span
     header.create-order__navigation
       h1 {{$t('bid.buyUSDT')}}
     hr
@@ -40,7 +39,6 @@
       h2.create-order-price Цена:
 
       div.radio-group
-      
         label(for="profit-is-formula")
           input(id="profit-is-formula"
           type="radio"
@@ -74,8 +72,9 @@
       disabled
       :value="equation"
       :header="$t('bid.priceSetting')"
-      placeholder=""
       type="text"
+      hintTwo
+      :typeCurrency="currencyFullData.type"
       v-if="profitMode === 'formula'")
 
       div.create-order__gap

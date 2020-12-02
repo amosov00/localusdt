@@ -107,6 +107,7 @@ export default {
   methods: {
     goToInvoice(id) {
       this.$router.push(`/invoice/${id}`)
+      
     },
     async markAllRead() {
       this.$axios.get('/notification/watch/')
@@ -120,6 +121,7 @@ export default {
       this.$axios.get('/notification/')
         .then(res => {
           this.notif_list = res.data
+          console.log(res.data);
         }).catch(() => {
         this.$toast.showMessage({ content: this.$t('other.notesError'), red: true })
       })

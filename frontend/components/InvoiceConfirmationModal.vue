@@ -43,7 +43,7 @@ export default {
     userName() {
       return this.invoice.ads_type === 2
         ? this.invoice.seller_username
-        : this.invoice.buyer_username
+        : this.invoice.seller_username
     }
   },
   methods: {

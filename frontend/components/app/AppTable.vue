@@ -8,7 +8,7 @@
       </thead>
       <tbody class="table__body">
         <template v-for="(item, i) in whichTable" >
-          <tr class="table__row" :style="i % 2 === 0 ? 'background-color:#DFDFDF;' : null" :data-item="i">
+          <tr class="table__row" :style="i % 2 === 0 ? 'background-color:#F5F5F5;' : null" :data-item="i">
             <slot :row="item" />
           </tr>
         </template>

@@ -43,6 +43,8 @@ class NotificationManager:
         message["user_id"] = str(message["user_id"])
         if "invoice_id" in message:
             message["invoice_id"] = str(message["invoice_id"])
+        if "id" in message:
+            message["id"] = str(message["id"])
         message["created_at"] = str(message["created_at"])
         if self.connections.get(str(user_id)) is not None:
             await self.connections[str(user_id)].send_json(message)

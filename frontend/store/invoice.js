@@ -32,6 +32,7 @@ export const actions = {
   },
 
   async createInvoice({ dispatch }, invoiceForm) {
+    delete invoiceForm.chatText
     return await this.$axios.post('/invoice/create/', invoiceForm)
       .then(res => {
         const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)

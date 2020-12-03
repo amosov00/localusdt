@@ -85,12 +85,12 @@ export default {
         { name: this.$t('main.otherWay'), value: 4 },
         { name: `${this.$t('main.all')}`, value: 5 },
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cardToCard')}`, value: 6 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.qiwi')}`, value: 7 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.yandex')}`, value: 8 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payeer')}`, value: 9 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payPal')}`, value: 10 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cash')}`, value: 11 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.webMoney')}`, value: 12 },
+        { name: `${this.$t('main.qiwi')}`, value: 7 },
+        { name: `${this.$t('main.yandex')}`, value: 8 },
+        { name: `${this.$t('main.payeer')}`, value: 9 },
+        { name: `${this.$t('main.payPal')}`, value: 10 },
+        { name: `${this.$t('main.cash')}`, value: 11 },
+        { name: `${this.$t('main.webMoney')}`, value: 12 },
       ]
     }
   },

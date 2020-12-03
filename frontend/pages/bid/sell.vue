@@ -141,7 +141,7 @@ export default {
         price: 0
       },
       currencyOptions: [
-         { name: 'RUB', value: 1 },
+        { name: 'RUB', value: 1 },
         { name: 'BYN', value: 2 },
         { name: 'USD', value: 3 },
         { name: 'EUR', value: 4 }
@@ -153,12 +153,12 @@ export default {
         { name: this.$t('main.otherWay'), value: 4 },
         { name: `${this.$t('main.all')}`, value: 5 },
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cardToCard')}`, value: 6 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.qiwi')}`, value: 7 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.yandex')}`, value: 8 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payeer')}`, value: 9 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payPal')}`, value: 10 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cash')}`, value: 11 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.webMoney')}`, value: 12 },
+        { name: `${this.$t('main.qiwi')}`, value: 7 },
+        { name: `${this.$t('main.yandex')}`, value: 8 },
+        { name: `${this.$t('main.payeer')}`, value: 9 },
+        { name: `${this.$t('main.payPal')}`, value: 10 },
+        { name: `${this.$t('main.cash')}`, value: 11 },
+        { name: `${this.$t('main.webMoney')}`, value: 12 },
       ],
       showModal: false,
       checkbox: false
@@ -220,7 +220,7 @@ export default {
       return `usdt_in_${currencyName.name.toLowerCase()}*${this.adForm.profit}`
     },
     yourVersion() {
-      return this.adForm.payment_method === 3;
+      return this.adForm.payment_method === 4;
 
     },
     inputHeader() {

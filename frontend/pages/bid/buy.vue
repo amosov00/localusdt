@@ -142,17 +142,17 @@ export default {
       ],
       paymentOptions: [
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`, value: 1 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.tinkof')}`, value: 2, selected: true },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.tinkof')}`, value: 2,  },
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.alfa')}`, value: 3 },
-        { name: this.$t('main.otherWay'), value: 4 },
+        { name: this.$t('main.otherWay'), value: 4,selected: true},
         { name: `${this.$t('main.all')}`, value: 5 },
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cardToCard')}`, value: 6 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.qiwi')}`, value: 7 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.yandex')}`, value: 8 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payeer')}`, value: 9 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payPal')}`, value: 10 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cash')}`, value: 11 },
-        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.webMoney')}`, value: 12 },
+        { name: `${this.$t('main.qiwi')}`, value: 7 },
+        { name: `${this.$t('main.yandex')}`, value: 8 },
+        { name: `${this.$t('main.payeer')}`, value: 9 },
+        { name: `${this.$t('main.payPal')}`, value: 10 },
+        { name: `${this.$t('main.cash')}`, value: 11 },
+        { name: `${this.$t('main.webMoney')}`, value: 12 },
       ],
       showModal: false,
       checkbox: false
@@ -206,7 +206,7 @@ export default {
       return `usdt_in_${currencyName.name.toLowerCase()}*${this.adForm.profit}`
     },
     yourVersion() {
-      return this.adForm.payment_method === 3;
+      return this.adForm.payment_method === 4;
     },
     inputHeader() {
       return this.adForm.type === 2 ? this.$t('bid.wantToSell') : this.$t('bid.wantToBuy')

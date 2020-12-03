@@ -43,6 +43,14 @@ class PaymentMethod(IntEnum):
     TINKOFF = 2
     ALFA_BANK = 3
     OTHER = 4
+    ALL = 5
+    CARD_TO_CARD = 6
+    QIWI = 7
+    YANDEX_MONEY = 8
+    PAYEER = 9
+    PAYPAL = 10
+    WEBMONEY = 11
+    CASH = 12
 
 
 class AdsStatuses(IntEnum):

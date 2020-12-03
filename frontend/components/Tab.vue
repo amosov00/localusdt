@@ -34,7 +34,8 @@
         v-model="searchForm.payment_method"
         :width="370"
         :options="paymentOptions"
-        :selectedOptionProp="outsideParams ? outsideParams.payment_method : '1'"
+        noCurrency
+        :selectedOptionProp="outsideParams ?  outsideParams.payment_method ? outsideParams.payment_method : '5' : '5'"
       />
       <Button green @click.native="searchOrders"> {{ $t('main.search') }}</Button>
     </div>
@@ -64,7 +65,7 @@ export default {
   data() {
     return {
       searchForm: {
-        payment_method: this.outsideParams &&  this.outsideParams.payment_method !== undefined ? (this.outsideParams.payment_method) : 1,
+        payment_method: this.outsideParams &&  this.outsideParams.payment_method !== undefined ? this.outsideParams.payment_method : 5,
         currency: this.outsideParams &&  this.outsideParams.currency !== undefined ? (this.outsideParams.currency) : 1,
         bot_limit: this.outsideParams &&  this.outsideParams.price_bot !== undefined ? this.outsideParams.price_bot : 0,
         top_limit: this.outsideParams &&  this.outsideParams.price_top !== undefined ? this.outsideParams.price_top : 0,
@@ -81,7 +82,15 @@ export default {
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`, value: 1 },
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.tinkof')}`, value: 2, selected: true },
         { name: `${this.$t('main.bankTransfer')} ${this.$t('main.alfa')}`, value: 3 },
-        { name: this.$t('main.otherWay'), value: 4 }
+        { name: this.$t('main.otherWay'), value: 4 },
+        { name: `${this.$t('main.all')}`, value: 5 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cardToCard')}`, value: 6 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.qiwi')}`, value: 7 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.yandex')}`, value: 8 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payeer')}`, value: 9 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payPal')}`, value: 10 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cash')}`, value: 11 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.webMoney')}`, value: 12 },
       ]
     }
   },
@@ -94,7 +103,7 @@ export default {
       }
     },
     queries() {
-      return `/?payment_method=${this.searchForm.payment_method}&currency=${this.searchForm.currency}&price_bot=${this.searchForm.bot_limit}&price_top=${this.searchForm.top_limit}`
+      return `/?${this.searchForm.payment_method == 5 ? '' : `payment_method=${this.searchForm.payment_method}`}&currency=${this.searchForm.currency}&price_bot=${this.searchForm.bot_limit}&price_top=${this.searchForm.top_limit}`
     },
     adType() {
       if (this.firstTab || this.type === 1) {
@@ -105,7 +114,6 @@ export default {
     }
   },
   mounted(){
-    console.log(this.$route.path);
     if(this.$route.path == '/') return
     if(this.$route.path == '/buy') this.firstTab = false
     if(this.$route.path == '/sell'){
@@ -125,12 +133,10 @@ export default {
       this.$emit('selectedTab', { buy: this.firstTab, sell: this.secondTab })
     },
     searchOrders() {
-      console.log(this.firstTab);
       this.$store.dispatch('order/searchOrders', {
         ...this.searchForm,
         ad_type: this.adType
       })
-      console.log('1111',this.routePath);
       this.$router.push(this.routePath + this.queries)
     }
   }

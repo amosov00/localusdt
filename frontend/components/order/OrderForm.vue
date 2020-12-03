@@ -15,7 +15,7 @@
         v-model="invoiceForm.chatText"
       />
       <Button class="mt-20" green @click.native="createInvoice">
-        {{ $t('orderForm.send') }}
+        {{ $t('orderForm.send') }} 
       </Button>
     </div>
     <nuxt-link v-else to="/signup">

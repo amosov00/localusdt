@@ -205,9 +205,9 @@ export const actions = {
       })
   },
   async fetchCurrencyPrice({ commit }, payload = 1) {
-    const { data } = await this.$axios.get(`/currency/?currency=${payload}`)
-    commit('setCurrencyPrice', data)
-    commit('currencyFullData', data)
+    let  result = await this.$axios.get(`/currency/?currency=${payload}`)
+      commit('setCurrencyPrice', result.data)
+      commit('currencyFullData', result.data)
   },
   async fetchReferralInfo({}) {
     return this.$axios.get('/account/referral_info/')

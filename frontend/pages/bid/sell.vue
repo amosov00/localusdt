@@ -35,6 +35,9 @@
       :header="inputHeader"
       placeholder="0"
       endIcon="usdt")
+
+      h2.create-order-price Цена:
+
       div.radio-group
         label(for="profit-is-formula")
           input(id="profit-is-formula"
@@ -51,13 +54,11 @@
           name="profit-mode"
           v-model="profitMode")
           span {{$t('bid.fixed')}}
-
       Input.create-order__input(
       v-model="adForm.price"
       :header="$t('bid.price')"
       :placeholder="$t('bid.price')"
       v-if="adForm.fixed_price")
-
       Input.create-order__input(
       v-model="adForm.profit"
       :header="$t('bid.profit')"
@@ -72,6 +73,7 @@
       :header="$t('bid.priceSetting')"
       placeholder=""
       type="text"
+      hintTwo
       v-if="profitMode === 'formula'")
 
       div.create-order__gap
@@ -145,9 +147,18 @@ export default {
         { name: 'EUR', value: 4 }
       ],
       paymentOptions: [
-        { name: this.$t('main.sberTransfer'), value: 1 },
-        { name: this.$t('main.tinkofTransfer'), value: 2 },
-        { name: this.$t('main.otherWay'), value: 3 }
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`, value: 1 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.tinkof')}`, value: 2, selected: true },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.alfa')}`, value: 3 },
+        { name: this.$t('main.otherWay'), value: 4 },
+        { name: `${this.$t('main.all')}`, value: 5 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cardToCard')}`, value: 6 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.qiwi')}`, value: 7 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.yandex')}`, value: 8 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payeer')}`, value: 9 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.payPal')}`, value: 10 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cash')}`, value: 11 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.webMoney')}`, value: 12 },
       ],
       showModal: false,
       checkbox: false
@@ -314,4 +325,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.create-order-price{
+  margin-bottom: 20px;
+  font-size: 30px;
+}
 </style>

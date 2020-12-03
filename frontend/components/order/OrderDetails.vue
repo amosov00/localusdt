@@ -18,7 +18,7 @@
     </div>
     <div class="order-details__row">
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.payType') }}</p>
-      <p class="order-details__cell">{{ $t('main.bankTransfer') }} {{ $t('main.sberbank') }}</p>
+      <p class="order-details__cell">{{orderDetails.payment_method ? paymentMethod(orderDetails.payment_method) : ''}}</p>
     </div>
     <hr />
     <div class="order-details__row mt-10">
@@ -49,12 +49,15 @@
 
 <script>
 import formatCurreny from '~/mixins/formatCurrency'
+import paymentMethod from '~/mixins/paymentMethod'
 import { mapGetters } from 'vuex'
 
 export default {
   props: {
     orderDetails: Object,
   },
+   mixins: [paymentMethod,formatCurreny],
+
   computed: {
     ...mapGetters({
       user: 'user',
@@ -116,7 +119,6 @@ export default {
       }
     },
   },
-  mixins: [formatCurreny],
 }
 </script>
 

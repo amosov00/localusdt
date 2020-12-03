@@ -32,6 +32,7 @@ export default {
       type: [String, Number],
       default: 1
     },
+    noCurrency: Boolean,
     options: {
       default() {
         return []
@@ -70,7 +71,7 @@ export default {
     selectOption(option) {
       this.selected = option
       this.areOptionsVisible = false
-      this.$store.dispatch('fetchCurrencyPrice', option.value)
+      if(!this.noCurrency)  this.$store.dispatch('fetchCurrencyPrice', option.value)
       this.$emit('input', option.value)
     },
     hideSelect() {

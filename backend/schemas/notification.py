@@ -24,7 +24,12 @@ class Notification(BaseModel):
     user_id: ObjectIdPydantic = Field(...)
     type: NotificationType = Field(
         ...,
-        description="NEW_INVOICE = 1, DEPOSIT = 2, WITHDRAW = 3, SYSTEM = 4, CHAT_MESSAGE = 5, INVOICE_STATUS_CHANGE = 6",
+        description="NEW_INVOICE = 1,"
+                    " DEPOSIT = 2,"
+                    " WITHDRAW = 3,"
+                    " SYSTEM = 4,"
+                    " CHAT_MESSAGE = 5,"
+                    " INVOICE_STATUS_CHANGE = 6",
     )
     watched: bool = Field(...)
     new_status: str = Field(default=None)

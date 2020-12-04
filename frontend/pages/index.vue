@@ -179,7 +179,7 @@ export default {
       return this.isToastActive ? top + 50 : top
     },
     buyOrdersWithLimit() {
-      
+      console.log(this.$store.getters['order/buyOrdersWithLimit'](5))
       return this.$store.getters['order/buyOrdersWithLimit'](5);
     },
     sellOrdersWithLimit() {

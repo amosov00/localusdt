@@ -192,7 +192,8 @@
     "small_completed": "Завершен",
     "active": "Активно",
     "notActive": "Не активно",
-    "deleted": "Удален"
+    "deleted": "Удален",
+    "frozen": "Спор"
   },
   "profile": {
     "changePass": "Изменить пароль",

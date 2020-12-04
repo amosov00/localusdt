@@ -81,7 +81,6 @@
             </td>
             <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT </td>
             <td class="table__data" :style="{ color: orderStatusColor(row.status) }">
-              
               <nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
             </td>
           </template>

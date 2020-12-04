@@ -192,7 +192,8 @@
     "small_completed": "Completed",
     "active": "Active",
     "notActive": "Not active",
-    "deleted": "Deleted"
+    "deleted": "Deleted",
+    "frozen": "Dispute"
   },
   "profile": {
     "changePass": "Change password",

@@ -14,7 +14,7 @@ export const getters = {
       .filter(order => order.type === 2)
       .sort((a, b) => b.price - a.price),
   buyOrdersWithLimit: s => limit => {
-    return s.orders.filter(order => order.amount_usdt === 1).slice(0, limit)
+    return s.orders.filter(order => order.currency === 1).slice(0, limit)
   },
   sellOrdersWithLimit: s => limit => {
     return s.orders

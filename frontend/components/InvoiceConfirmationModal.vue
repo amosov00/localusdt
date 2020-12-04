@@ -13,6 +13,7 @@
           </span>
         </p>
         <p class="fz-14 mt-20">{{ userName }} <span class="status-circle"></span></p>
+        {{invoice}}
         <div>
           <Button @click.native="confirm" class="referral__button mr-15" green lg>
             {{$t('other.send')}}
@@ -42,8 +43,8 @@ export default {
   computed: {
     userName() {
       return this.invoice.ads_type === 2
-        ? this.invoice.seller_username
-        : this.invoice.seller_username
+        ? this.invoice.buyer_username
+        : this.invoice.buyer_username
     }
   },
   methods: {

@@ -18,7 +18,7 @@
     </div>
     <div class="order-details__row">
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.payType') }}</p>
-      <p class="order-details__cell">{{orderDetails.payment_method ? paymentMethod(orderDetails.payment_method) : ''}}</p>
+      <p class="order-details__cell">{{orderDetails.other_payment_method ? orderDetails.other_payment_method :  orderDetails.payment_method ? paymentMethod(orderDetails.payment_method) : ''}}</p>
     </div>
     <hr />
     <div class="order-details__row mt-10">

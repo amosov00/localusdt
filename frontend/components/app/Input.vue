@@ -15,9 +15,7 @@
     </div>
     <p v-if="hint" class="input__hint" v-html="$t('main.inputWarn')"></p>
     <p v-if="hintTwo" class="input__hintTwo">
-      {{$t('main.PriceSettingEquation')}} {{ typeCurrency == 2 ? $t('main.NBRB') : $t('main.Binance') }}, 
-      {{ $t('main.PriceSettingEquation2') }}
-      {{ $t('main.PriceSettingEquation3') }} {{ typeCurrency == 2 ? $t('main.NBRB') : $t('main.Binance') }}
+      {{ typeCurrency == 2 ? $t('main.PriceSettingEquation2') : $t('main.PriceSettingEquation') }}
     </p>
   </div>
 </template>

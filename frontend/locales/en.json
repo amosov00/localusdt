@@ -294,9 +294,7 @@
     "addressCopied": "Address copied",
     "Binance": "Binance",
     "NBRB": "NBRB",
-    "PriceSettingEquation": "To set the price 1 percent higher than the NBRB rate,",
-    "PriceSettingEquation2": " indicate in the 'Profit' field - 1.",
-    "PriceSettingEquation3": "The price in the ad will change dynamically depending on the NBRB rate."
-      
+    "PriceSettingEquation": "To set the price 1 percent higher than the Binance rate, enter in the 'Profit' field - 1. The price in the ad will change dynamically depending on the Binance rate.",
+    "PriceSettingEquation2": "To set the price 1 percent higher than the NB RB rate, indicate in the 'Profit' field - 1. The price in the ad will change dynamically depending on the NB RB rate."
   }
 }

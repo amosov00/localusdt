@@ -197,15 +197,16 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if (
-                (invoice.get("buyer_id") != user.id and not user.is_staff)
-                or invoice.get("buyer_id") != user.id
-                or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
-                        or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
-        ):
-            raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-            )
+        if invoice.get("buyer_id") != user.id:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
+        if invoice.get("status") not in (InvoiceStatus.WAITING_FOR_TOKENS, InvoiceStatus.WAITING_FOR_PAYMENT):
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
 
         seller_db = await UserCRUD.find_by_id(invoice["seller_id"])
         buyer_db = await UserCRUD.find_by_id(invoice["buyer_id"])
@@ -229,14 +230,17 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if (
-                (invoice.get("buyer_id") != user.id and not user.is_staff)
-                or invoice.get("buyer_id") != user.id
-                or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
-        ):
-            raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-            )
+        if invoice.get("buyer_id") != user.id:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
+
+        if invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
 
         await cls.update_one(
             query={"_id": invoice["_id"]},
@@ -265,15 +269,17 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if (
-                (invoice.get("seller_id") != user.id and not user.is_staff)
-                or invoice.get("seller_id") != user.id
-                or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
-                        or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
-        ):
-            raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-            )
+        if invoice.get("seller_id") != user.id:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
+
+        if invoice.get("status") not in (InvoiceStatus.WAITING_FOR_TOKENS, InvoiceStatus.FROZEN):
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
 
         buyer = await UserCRUD.find_by_id(invoice["buyer_id"])
         if not buyer:

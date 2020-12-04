@@ -22,7 +22,7 @@
             v-for="(msg, i) in notif_list"
             :class="{ 'status-new' : !msg.watched}"
             :key="i"
-            @click="goToInvoice(msg.invoice_id)").notify-center__msg
+            @click="goToInvoice(msg)").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
                   span(v-if="!msg.new_status") {{ $t('other.order') }}
@@ -105,10 +105,11 @@ export default {
   },
 
   methods: {
-    async goToInvoice(id) {
-      this.$axios.get(`/notification/watch/${id}/`)
+    async goToInvoice(msg) {
+      this.$axios.get(`/notification/watch/${msg._id}/`)
         .then(async() => {
-            this.$router.push(`/invoice/${id}`)
+          msg.watched = true
+            this.$router.push(`/invoice/${msg.invoice_id}`)
         }).catch(() => {
       })
     },

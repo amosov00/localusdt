@@ -36,7 +36,7 @@
       placeholder="0"
       endIcon="usdt")
 
-      h2.create-order-price Цена:
+      h2.create-order-price {{$t('bid.price')}}:
 
       div.radio-group
         label(for="profit-is-formula")
@@ -253,6 +253,9 @@ export default {
             this.$nuxt.context.redirect(`/order/${this.$route.query.edit}`)
           }
         } else {
+          if(this.adForm.bank_title){
+            this.adForm.other_payment_method = this.adForm.bank_title
+          }
           res = await this.$store.dispatch('order/createOrder', this.adForm)
           if (res) {
             this.showModal = true

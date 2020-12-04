@@ -36,7 +36,7 @@
       placeholder="0"
       endIcon="usdt")
 
-      h2.create-order-price Цена:
+      h2.create-order-price {{$t('bid.price')}}:
 
       div.radio-group
         label(for="profit-is-formula")
@@ -67,6 +67,7 @@
       endIcon="procent"
       hint v-if="!adForm.fixed_price")
 
+      
       Input.create-order__input(
       disabled
       :value="equation"
@@ -74,6 +75,7 @@
       placeholder=""
       type="text"
       hintTwo
+      :typeCurrency="currencyFullData ? currencyFullData.type : 1"
       v-if="profitMode === 'formula'")
 
       div.create-order__gap

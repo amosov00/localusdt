@@ -24,7 +24,7 @@ export default {
           return `${this.$t('main.payPal')}`
         case 11:
           return `${this.$t('main.cash')}`
-        case 11:
+        case 12:
           return `${this.$t('main.webMoney')}`
         default:
           break;

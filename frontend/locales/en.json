@@ -291,6 +291,12 @@
     "tinkofTransfer": "Bank Transfer: Tinkoff",
     "alfaTransfer": "Bank transfer: Alfa Bank",
     "inputWarn": "The amount of profit you want to make <br> on top of the market price.",
-    "addressCopied": "Address copied"
+    "addressCopied": "Address copied",
+    "Binance": "Binance",
+    "NBRB": "NBRB",
+    "PriceSettingEquation": "To set the price 1 percent higher than the NBRB rate,",
+    "PriceSettingEquation2": " indicate in the 'Profit' field - 1.",
+    "PriceSettingEquation3": "The price in the ad will change dynamically depending on the NBRB rate."
+      
   }
 }

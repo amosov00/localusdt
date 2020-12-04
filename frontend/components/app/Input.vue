@@ -15,9 +15,9 @@
     </div>
     <p v-if="hint" class="input__hint" v-html="$t('main.inputWarn')"></p>
     <p v-if="hintTwo" class="input__hintTwo">
-      {{`Чтобы выставить цену на 1 процент выше курса ${typeCurrency == 2 ? 'НБ РБ' : 'Binance' }, 
-      укажите в поле "Прибыль" - 1.
-      Цена в объявлении будет меняться динамически в зависимости от курса ${typeCurrency == 2 ? 'НБ РБ' : 'Binance' }.`}}
+      {{$t('main.PriceSettingEquation')}} {{ typeCurrency == 2 ? $t('main.NBRB') : $t('main.Binance') }}, 
+      {{ $t('main.PriceSettingEquation2') }}
+      {{ $t('main.PriceSettingEquation3') }} {{ typeCurrency == 2 ? $t('main.NBRB') : $t('main.Binance') }}
     </p>
   </div>
 </template>
@@ -47,7 +47,9 @@ export default {
       required: false
     },
     typeCurrency:{
-      type:String
+      type: [String, Number],
+      default: 1,
+      required: false
     },
     endIcon: {
       type: String,

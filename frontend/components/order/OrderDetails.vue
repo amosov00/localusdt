@@ -3,7 +3,7 @@
     <div class="order-details__row fz-20">
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.price') }}</p>
       <p class="order-details__cell">
-        {{ commaSplitting(orderDetails.price || orderDetails.amount) }}
+        {{price}}
         
         {{returnCurrency(orderDetails)}}/USDT
       </p>
@@ -57,10 +57,13 @@ export default {
     orderDetails: Object,
   },
    mixins: [paymentMethod,formatCurreny],
-
+  data: ()=> ({
+    price:null,
+  }),
   computed: {
     ...mapGetters({
       user: 'user',
+      currencyPrice: 'currencyPrice',
     }),
     role() {
       if (
@@ -119,6 +122,10 @@ export default {
       }
     },
   },
+  async mounted(){
+    await this.$store.dispatch('fetchCurrencyPrice' , this.orderDetails.currency)
+    this.price = this.currencyPrice.toFixed(2)
+  }
 }
 </script>
 

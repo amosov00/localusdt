@@ -105,13 +105,12 @@ export default {
   },
 
   methods: {
-    goToInvoice(id) {
-      // this.$axios.get(`/notification/watch/${id}`)
-      //   .then(async() => {
-      //       this.$router.push(`/invoice/${id}`)
-      //   }).catch(() => {
-      // })
-      this.$router.push(`/invoice/${id}`)
+    async goToInvoice(id) {
+      this.$axios.get(`/notification/watch/${id}/`)
+        .then(async() => {
+            this.$router.push(`/invoice/${id}`)
+        }).catch(() => {
+      })
     },
     async markAllRead() {
       this.$axios.get('/notification/watch/')

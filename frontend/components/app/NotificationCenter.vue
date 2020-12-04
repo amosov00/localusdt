@@ -109,7 +109,7 @@ export default {
       console.log(id);
       this.$axios.get(`/notification/watch/${id}`)
         .then(async() => {
-          this.$router.push(`/invoice/${id}`)
+            this.$router.push(`/invoice/${id}`)
         }).catch(() => {
       })
     },

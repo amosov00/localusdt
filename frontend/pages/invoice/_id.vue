@@ -17,8 +17,8 @@
             <p
             class="underline-link red"
             v-if="
-            invoice.status === 'waiting_for_payment' && user._id === invoice.buyer_id ||
-            invoice.status === 'waiting_for_tokens' && user._id === invoice.buyer_id
+                invoice.status === 'waiting_for_payment' && user._id === invoice.buyer_id ||
+                invoice.status === 'waiting_for_tokens' && user._id === invoice.buyer_id
             "
             @click="cancelModal = true"
             >

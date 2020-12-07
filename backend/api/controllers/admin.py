@@ -18,7 +18,7 @@ from schemas.ads import AdsInSearch
 from schemas.base import ObjectId
 from schemas.logging import Log
 from schemas.ethereum_wallet import EthereumWalletResponse, ServiceEthereumWalletsResponse
-from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInDB
+from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInAdminPanel
 from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
 from schemas import User, UserUpdateNotSafe, UserTransaction
 from schemas.referral import ReferralGeneralInfo
@@ -29,21 +29,34 @@ __all__ = ["router"]
 router = APIRouter()
 
 
-@router.get("/invoices/{status}/", response_model=Optional[List[InvoiceInDB]])
+@router.get("/invoices/{status}/", response_model=Optional[List[InvoiceInAdminPanel]])
 async def get_all_invoices(
     user: User = Depends(user_is_staff_or_superuser),
     status: str = Path(
         ..., description="possible: 'active', 'not_active', 'under_consideration'"
     ),
 ):
+    result = []
     if status == "active":
-        return await InvoiceCRUD.get_invoice_by_status(status=InvoiceStatus.ACTIVE)
+        result = await InvoiceCRUD.get_invoice_by_status(status=InvoiceStatus.ACTIVE)
     elif status == "not_active":
-        return await InvoiceCRUD.get_invoice_by_status(status=InvoiceStatus.NOT_ACTIVE)
+        result = await InvoiceCRUD.get_invoice_by_status(status=InvoiceStatus.NOT_ACTIVE)
     elif status == "under_consideration":
-        return await InvoiceCRUD.get_invoice_by_status(
+        result = await InvoiceCRUD.get_invoice_by_status(
             status=InvoiceStatus.FROZEN
         )
+
+    users = await UserCRUD.find_many({})
+    user_kw = {}
+
+    for user in users:
+        user_kw[str(user.get("_id"))] = user.get("username")
+
+    for invoice in result:
+        invoice["seller_nickname"] = user_kw.get(str(invoice.get("seller_id")))
+        invoice["buyer_nickname"] = user_kw.get(str(invoice.get("buyer_id")))
+
+    return result
 
 
 @router.get("/invoice/{invoice_id}/", response_model=InvoiceWithAds)

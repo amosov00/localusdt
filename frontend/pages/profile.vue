@@ -13,6 +13,9 @@
         </nuxt-link>
         <p class="underline-link red" @click="logout()">{{$t('profile.logOut')}}</p>
       </div>
+       <nuxt-link class="underline-link underline-link--grey" to="/adminPanel">
+          admin panel
+        </nuxt-link>
     </div>
     <div class="bio">
       <div class="bio__container">

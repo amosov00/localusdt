@@ -37,7 +37,6 @@
       endIcon="usdt")
 
       h2.create-order-price {{$t('bid.price')}}:
-
       div.radio-group
         label(for="profit-is-formula")
           input(id="profit-is-formula"

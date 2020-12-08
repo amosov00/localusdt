@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional, Union
+from typing import Optional, Union, List
 from datetime import datetime
 from fastapi import HTTPException
 from http import HTTPStatus
@@ -339,13 +339,11 @@ class InvoiceCRUD(BaseMongoCRUD):
         return invoice
 
     @classmethod
-    async def get_invoice_by_status(cls, status: InvoiceStatus):
-        invoices = await cls.find_many({})
-        invoices_to_response = []
-        for invoice in invoices:
-            if invoice.get("status") in status:
-                invoices_to_response.append(invoice)
-        return invoices_to_response
+    async def get_invoice_by_statuses(cls, statuses: List[InvoiceStatus]):
+        invoices = await cls.find_many({
+            "status": {"$in": statuses}
+        })
+        return invoices
 
     @classmethod
     async def rollback(cls, invoice_id: str):

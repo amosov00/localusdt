@@ -22,7 +22,7 @@
             v-for="(msg, i) in notif_list"
             :class="{ 'status-new' : !msg.watched}"
             :key="i"
-            @click="goToInvoice(msg)").notify-center__msg
+            @click="goToInvoice(msg, notif_list)").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
                   span(v-if="!msg.new_status") {{ $t('other.order') }}
@@ -69,7 +69,6 @@ export default {
   }),
   mounted() {
     this.loadNotifictions()
-    console.log(`${process.env.API_WS_URL}notification/ws/`);
     document.body.addEventListener('click', this.hide, false)
     this.ws = new WebSocket(`${process.env.API_WS_URL}notification/ws/`)
     this.ws.onopen = (e) => {
@@ -105,13 +104,21 @@ export default {
   },
 
   methods: {
-    async goToInvoice(msg) {
-      this.$axios.get(`/notification/watch/${msg._id}/`)
-        .then(async() => {
-          msg.watched = true
-            this.$router.push(`/invoice/${msg.invoice_id}`)
-        }).catch(() => {
+    async goToInvoice(msg, list) {
+      list.forEach( async e=>{ 
+        if(msg.invoice_id == e.invoice_id){
+             await this.$axios.get(`/notification/watch/${e._id}/`)
+              .then(async() => {
+                e.watched = true
+              })
+        }
       })
+      this.notif_list.sort((e)=>{
+        return  e.watched == true ? 1 : -1 
+      })
+        this.$router.push(`/invoice/${msg.invoice_id}`)
+
+     
     },
     async markAllRead() {
       this.$axios.get('/notification/watch/')
@@ -124,8 +131,10 @@ export default {
     async loadNotifictions() {
       this.$axios.get('/notification/')
         .then(res => {
+          res.data.sort((e)=>{
+            return e.watched == true ? 1 : -1
+          })
           this.notif_list = res.data
-          console.log(res.data);
         }).catch(() => {
         this.$toast.showMessage({ content: this.$t('other.notesError'), red: true })
       })
@@ -199,7 +208,7 @@ export default {
 
 .notify-center {
   position: relative;
-
+  z-index: 9999999;
   &__badge {
     position: absolute;
     background-color: #ED9F43;
@@ -351,7 +360,7 @@ export default {
     left: -320px;
     width: 400px;
     top: 50px;
-    z-index: 20000;
+    z-index: 9999999;
     position: absolute;
     background-color: #ffffff;
     box-shadow: 0 8px 9px rgba(67, 78, 74, 0.07), 0 16px 23px rgba(67, 78, 74, 0.09);

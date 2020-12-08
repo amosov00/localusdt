@@ -43,6 +43,7 @@ import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
 import paymentMethod from '~/mixins/paymentMethod'
 export default {
+  name:'AppTable',
   props: {
     data: Array,
     headers: Array,
@@ -91,7 +92,6 @@ export default {
     },
     pagesCount() {
       if(this.data !== null){
-        console.log(this.data.length / this.contentPerPage);
         return Math.ceil(this.data.length / this.contentPerPage)
       }
     }
@@ -114,8 +114,12 @@ export default {
       this.currentPage = 1
     },
     goToPage(page) {
-      this.currentPage = page
-    }
+      this.currentPage = page;
+    },
+     
+  },
+  created() {
+    this.$parent.$on('clickPageOne', this.goToPage);
   }
 }
 </script>

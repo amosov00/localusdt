@@ -1,9 +1,6 @@
 <template lang="pug">
   div.create-order
-    p.create-order__token-price {{$t('bid.actualCourse')}}
-      =' '
-      span.green {{commaSplitting(currencyPrice)}}
-      span {{ returnCurrency }}/USDT
+    
     header.create-order__navigation
       h1 {{$t('bid.buyUSDT')}}
     hr
@@ -75,7 +72,10 @@
       hintTwo
       :typeCurrency="currencyFullData.type"
       v-if="profitMode === 'formula'")
-
+      p.create-order__token-price {{$t('bid.actualCourse')}}
+        =' '
+        span.green {{commaSplitting(currencyPrice)}}
+        span {{ returnCurrency }}/USDT
       div.create-order__gap
         Input.mr-30(
         v-model="adForm.bot_limit"

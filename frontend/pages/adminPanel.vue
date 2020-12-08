@@ -2,7 +2,7 @@
   <div>
       <Tabs>
             <tab name="Пользователи" :selected="true">
-                <Content v-if="users" title="Сделки" :dataInvoices="users" :headers="headersUsers">
+                <Content v-if="users" title="Сделки" type="users" :dataInvoices="users" :headers="headersUsers">
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
                             <p>{{ data.username }}</p>
@@ -27,13 +27,22 @@
                             test
                         </td>
                         <td class="table__data paddingSmall" style="text-align:center; padding-right:10px;">
-                            {{data.is_active ? 'Активный': 'Неактивный'}} 
+                             <Select
+                                :v-model="data.is_active ? 'Активный': 'Неактивный'"
+                                :width="120"
+                                :options="selctOptions"
+                                noCurrency
+                                status
+                                :user="data._id"
+                                :hideArrow="true"
+                                :selectedOptionProp="bannedOrActive(data.is_active, data.banned)"
+                            />
                         </td>
                     </template>
                 </Content>
             </tab>
             <tab name="Сделки" >
-                <Content v-if="invoices" title="Сделки" :dataInvoices="invoices" :headers="headersInvoice">
+                <Content :key="componentInvoice" v-if="invoiceBoolean" title="Сделки" type="deal" :dataInvoices="dataInvoice" :headers="headersInvoice">
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
                             <p>{{ formatDate(data.finished_at) }}</p>
@@ -41,7 +50,7 @@
                         </td>
                         <td class="table__data paddingSmall ">
                             <p>
-                                {{ data.buyer_id }}
+                                {{ data.buyer_nickname }} - {{ data.seller_nickname }}
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
@@ -52,19 +61,20 @@
                         <td class="table__data paddingSmall ">
                         {{ data.status }} 
                         </td>
-                        <td class="table__data paddingNull" style="text-align:center;">
-                            <Button @click.native="freeze(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                        <td  class="table__data paddingNull" style="text-align:center;">
+                            <Button :disabled="data.status !== 'waiting_for_tokens'" @click.native="freeze(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button @click.native="rollback(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button :disabled="data.status == 'cancelled'" @click.native="rollback(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button @click.native="confirm(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                     </template>
                 </Content>
             </tab>
       </Tabs>
+      <!-- 30 минут -->
   </div>
 </template>
 
@@ -74,9 +84,9 @@ import Tab from '../components/tabsAdminPanel/Tab'
 import Content from '../components/AdminPanel/Content'
 import Button from '@/components/app/Button'
 import Input from '@/components/app/Input'
+import Select from '@/components/app/Select'
 import paymentMethod from '~/mixins/paymentMethod'
 import formatDate from '~/mixins/formatDate'
-
 export default {
     mixins: [paymentMethod, formatDate],
     data(){
@@ -98,7 +108,15 @@ export default {
                 'Баланс пользв кошельков',
                 'Баланс ЕТН',
                 'Статус',
-            ]
+            ],
+            selctOptions:[
+                { name: 'Активный', value: 1 },
+                { name: 'Заморожен', value: 2 },
+                { name: 'Заблокирован', value: 3 },
+            ],
+            dataInvoice:null,
+            invoiceBoolean:false,
+            componentInvoice:1
         }
     },
     components:{
@@ -106,17 +124,76 @@ export default {
         Tab,
         Content,
         Button,
-        Input
+        Input,
+        Select
     },
     methods:{
         async freeze(id){
-            console.log(id);
-            //   let res = await this.$axios.put(`/admin/invoice/${id}/freeze/`)
-            console.log(res);
+            let res = await this.$axios.put(`/admin/invoice/${id}/freeze/`);
+            if(res.status == 200){
+                this.invoiceBoolean = false
+                // this.dataInvoice = this.dataInvoice.filter(e => e._id !== id)
+                // let data = this.dataInvoice
+                //     data.forEach(e=>{
+                //    if( e._id == id){
+                //        e.status = 'lol'
+                //    }
+                // })
+                // this.dataInvoice = data
+                setTimeout(() => {
+                    this.componentInvoice++
+                    this.invoiceBoolean = true
+                }, 1000);
+            }
         },
         async rollback(id){
-            let res = await this.$axios.put(`/admin/invoice/${id}/rollback/`)
-            console.log(res);
+            try{
+                let res = await this.$axios.put(`/admin/invoice/${id}/rollback/`)
+                console.log(res);
+
+            }catch(e){
+                console.log(e);
+            }
+        },
+        async cancel(){
+            try{
+                let res = await this.$axios.put(`/admin/invoice/${id}/cancel/`)
+                console.log(res);
+
+            }catch(e){
+                console.log(e);
+            }
+        },  
+        async confirm(id){
+                let res = await this.$axios.put(`/admin/invoice/${id}/confirm/`)
+                .catch(()=>{
+                    this.invoiceBoolean = false
+                    this.$store.dispatch('adminPanel/getInvoices')
+                    .then(()=>{
+                        this.dataInvoice = this.$store.getters['adminPanel/getInvoices']
+                        this.invoiceBoolean = true
+                        this.componentInvoice++
+                    })
+                })
+                
+
+        },
+        bannedOrActive(e,y){
+            let res;
+            if(y == false){
+                res = 1
+            }
+            if(y == true){
+                res = 3
+            }
+
+            if(e == true){
+                res =  1
+            }
+            if(e == false){
+                res =  2
+            }
+            return res
         }
     },
     computed:{
@@ -129,10 +206,12 @@ export default {
     },
     async created() {
         this.$store.dispatch('adminPanel/getInvoices')
+        .then(()=>{
+            this.dataInvoice = this.$store.getters['adminPanel/getInvoices']
+            this.invoiceBoolean = true
+        })
         this.$store.dispatch('adminPanel/getUsers')
     },
-
-
 }
 </script>
 <style lang="scss" scoped>

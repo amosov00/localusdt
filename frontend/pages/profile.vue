@@ -11,11 +11,12 @@
         <nuxt-link class="underline-link underline-link--grey" to="/change">
           {{$t('profile.changePass')}}
         </nuxt-link>
-        <p class="underline-link red" @click="logout()">{{$t('profile.logOut')}}</p>
-      </div>
-       <nuxt-link class="underline-link underline-link--grey" to="/adminPanel">
+        <nuxt-link class="underline-link underline-link--grey" to="/adminPanel">
           admin panel
         </nuxt-link>
+        <p class="underline-link red" @click="logout()">{{$t('profile.logOut')}}</p>
+      </div>
+      
     </div>
     <div class="bio">
       <div class="bio__container">

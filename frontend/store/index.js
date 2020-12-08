@@ -206,6 +206,7 @@ export const actions = {
   },
   async fetchCurrencyPrice({ commit }, payload = 1) {
     let  result = await this.$axios.get(`/currency/?currency=${payload}`)
+    console.log(1);
       commit('setCurrencyPrice', result.data)
       commit('currencyFullData', result.data)
   },

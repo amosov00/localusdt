@@ -65,7 +65,7 @@
             </td>
           </template>
         </AppTable>
-        <nuxt-link to="buy/">
+        <nuxt-link to="sell/">
           <p class="table-section__subtitle fz-20 ">
             {{ $t('main.showMore') }}
           </p>
@@ -101,7 +101,7 @@
             </td>
           </template>
         </AppTable>
-        <nuxt-link to="buy/">
+        <nuxt-link to="sell/">
           <p class="table-section__subtitle fz-20 ">
             {{ $t('main.showMore') }}
           </p>
@@ -153,6 +153,7 @@ import AppTable from '~/components/app/AppTable'
 import paymentMethod from '~/mixins/paymentMethod'
 import formatCurrency from '~/mixins/formatCurrency'
 import Button from '~/components/app/Button'
+import Vue from 'vue'
 
 export default {
   mixins: [paymentMethod, formatCurrency],
@@ -179,7 +180,6 @@ export default {
       return this.isToastActive ? top + 50 : top
     },
     buyOrdersWithLimit() {
-      console.log(this.$store.getters['order/buyOrdersWithLimit'](5))
       return this.$store.getters['order/buyOrdersWithLimit'](5);
     },
     sellOrdersWithLimit() {

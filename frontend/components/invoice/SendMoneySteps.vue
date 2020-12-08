@@ -14,6 +14,7 @@
             <span class="opacity-50">{{$t('sendMoney.sum')}} </span>
           </p>
           <p class="steps-list--left">
+            
             <span>{{ commaSplitting(invoice.amount) }} {{returnCurrency(invoice)}}</span>
           </p>
         </div>
@@ -22,7 +23,7 @@
             <span class="opacity-50">{{$t('sendMoney.payType')}} </span>
           </p>
           <p class="steps-list--left">
-            <span>{{$t('main.bankTransfer')}} {{$t('main.sberbank')}} </span>
+            <span>{{invoice.payment_method ? paymentMethod(invoice.payment_method) : ''}} </span>
           </p>
         </div>
       </div>
@@ -50,9 +51,9 @@
 <script>
 import Button from '~/components/app/Button'
 import formatCurrency from '~/mixins/formatCurrency'
-
+import paymentMethod from '~/mixins/paymentMethod'
 export default {
-  mixins: [formatCurrency],
+  mixins: [formatCurrency,paymentMethod],
   props: {
     invoice: Object
   },

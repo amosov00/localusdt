@@ -8,9 +8,9 @@
           <img src="~/assets/icons/arrow-down.svg" alt="" />
         </span>
       </div>
-      <div class="select__options" v-if="areOptionsVisible">
+      <div class="select__options" v-if="areOptionsVisible" >
         <div
-          class="select__option"
+          class="select__option" style="z-index:99999;"
           v-for="(option, i) in filteredOptions"
           :key="i"
           @click.stop="selectOption(option)"
@@ -32,7 +32,11 @@ export default {
       type: [String, Number],
       default: 1
     },
+    user:{
+      type:[String, Number]
+    },
     noCurrency: Boolean,
+    status: Boolean,  
     options: {
       default() {
         return []
@@ -71,7 +75,9 @@ export default {
     selectOption(option) {
       this.selected = option
       this.areOptionsVisible = false
+      console.log(option);
       if(!this.noCurrency)  this.$store.dispatch('fetchCurrencyPrice', option.value)
+      if(this.status && this.user) this.$store.dispatch('adminPanel/userStatus', {value: option.value, user:this.user})
       this.$emit('input', option.value)
     },
     hideSelect() {
@@ -92,7 +98,6 @@ export default {
 .select {
   @include montserrat;
   position: relative;
-  z-index: 10000;
   &__header {
     font-size: 12px;
     opacity: 0.7;
@@ -141,6 +146,7 @@ export default {
     background-color: #ffffff;
 /*    width: calc(100% + 2px);
     left: -1px;*/
+    z-index: 99999;
     width: calc(100% + 2px);
     left: -1px;
     box-sizing: border-box;

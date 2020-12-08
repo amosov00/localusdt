@@ -1,9 +1,5 @@
 <template lang="pug">
   div.create-order
-    p.create-order__token-price {{$t('bid.actualCourse')}}
-      =' '
-      span.green {{currencyPrice ? commaSplitting(currencyPrice) : null}}
-      span {{ returnCurrency }} /USDT
     header.create-order__navigation
       h1 {{$t('bid.sellUSDT')}}
     hr
@@ -66,7 +62,7 @@
       type="number"
       endIcon="procent"
       hint v-if="!adForm.fixed_price")
-
+      
       
       Input.create-order__input(
       disabled
@@ -77,6 +73,10 @@
       hintTwo
       :typeCurrency="currencyFullData ? currencyFullData.type : 1"
       v-if="profitMode === 'formula'")
+      p.create-order__token-price {{$t('bid.actualCourse')}}
+        =' '
+        span.green {{currencyPrice ? commaSplitting(currencyPrice) : null}}
+        span {{ returnCurrency }} /USDT
 
       div.create-order__gap
         Input.mr-30(
@@ -288,6 +288,7 @@ export default {
     return store.dispatch('fetchCurrencyPrice')
   }*/
   async fetch() {
+    await this.$store.dispatch('fetchCurrencyPrice', this.adForm.currency)
     let res = null
     let adForm = {
       type: 2,
@@ -317,7 +318,6 @@ export default {
         }
         this.adForm = adForm
         
-        await this.$store.dispatch('fetchCurrencyPrice', this.adForm.currency)
       }
     }
 

@@ -32,13 +32,15 @@ export const actions = {
   },
 
   async createInvoice({ dispatch }, invoiceForm) {
-    delete invoiceForm.chatText
+    // delete invoiceForm.chatText
     return await this.$axios.post('/invoice/create/', invoiceForm)
       .then(res => {
         const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
           ws.onopen = () => {
             console.log('SOCKET');
-            ws.send(invoiceForm.chatText)
+            if(invoiceForm.chatText){
+              ws.send(invoiceForm.chatText)
+            }
             console.log('SOCKET FIRST SEND');
             setTimeout(() => {
               socketPing = setInterval(() => {

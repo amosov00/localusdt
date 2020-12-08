@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path, Body, HTTPException
+from fastapi import APIRouter, Depends, Path, Body, HTTPException, Query
 from typing import List, Optional
 from http import HTTPStatus
 from decimal import Decimal
@@ -29,23 +29,25 @@ __all__ = ["router"]
 router = APIRouter()
 
 
-@router.get("/invoices/{status}/", response_model=Optional[List[InvoiceInAdminPanel]])
+@router.get("/invoices/", response_model=Optional[List[InvoiceInAdminPanel]])
 async def get_all_invoices(
     user: User = Depends(user_is_staff_or_superuser),
-    status: str = Path(
-        ..., description="possible: 'active', 'not_active', 'under_consideration'"
+    statuses: Optional[List[str]] = Query(
+        default=["all"], description="possible: 'active', 'not_active', 'under_consideration', 'all'"
     ),
 ):
-    result = []
-    if status == "active":
-        result = await InvoiceCRUD.get_invoice_by_status(status=InvoiceStatus.ACTIVE)
-    elif status == "not_active":
-        result = await InvoiceCRUD.get_invoice_by_status(status=InvoiceStatus.NOT_ACTIVE)
-    elif status == "under_consideration":
-        result = await InvoiceCRUD.get_invoice_by_status(
-            status=InvoiceStatus.FROZEN
-        )
+    statuses_set = set()
+    for status in statuses:
+        if status == "all":
+            [statuses_set.add(i) for i in InvoiceStatus.ALL]
+        elif status == "active":
+            [statuses_set.add(i) for i in InvoiceStatus.ACTIVE]
+        elif status == "not_active":
+            [statuses_set.add(i) for i in InvoiceStatus.NOT_ACTIVE]
+        elif status == "under_consideration":
+            statuses_set.add(InvoiceStatus.FROZEN)
 
+    result = await InvoiceCRUD.get_invoice_by_statuses(list(statuses_set))
     users = await UserCRUD.find_many({})
     user_kw = {}
 
@@ -158,44 +160,28 @@ async def get_user_referral_info(
     return await ReferralCRUD.get_general_info(user)
 
 
-@router.put("/users/ban/{user_id}/")
-async def ban_user(
-    user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)
+@router.put("/users/status/{user_id}/{status}")
+async def set_user_status(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: str = Path(...),
+    status: str = Path(..., description="possible: 'active', 'freezed', 'blocked")
 ):
     # TODO: delete all ads and invoice for current user
-    await UserCRUD.update_one(
-        query={"_id": ObjectId(user_id)}, payload={"banned": True}
-    )
-    return True
-
-
-@router.put("/users/unban/{user_id}/")
-async def unban_user(
-    user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)
-):
-    await UserCRUD.update_one(
-        query={"_id": ObjectId(user_id)}, payload={"banned": False}
-    )
-    return True
-
-
-@router.put("/users/deactivate/{user_id}/")
-async def deactivate_user(
-    user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)
-):
-    await UserCRUD.update_one(
-        query={"_id": ObjectId(user_id)}, payload={"is_active": False}
-    )
-    return True
-
-
-@router.put("/users/activate/{user_id}/")
-async def activate_user(
-    user: User = Depends(user_is_staff_or_superuser), user_id: str = Path(...)
-):
-    await UserCRUD.update_one(
-        query={"_id": ObjectId(user_id)}, payload={"is_active": True}
-    )
+    if status == "freezed":
+        await UserCRUD.update_one(
+            query={"_id": ObjectId(user_id)}, payload={"banned": True}
+        )
+    elif status == "blocked":
+        await UserCRUD.update_one(
+            query={"_id": ObjectId(user_id)}, payload={"is_active": False}
+        )
+    elif status == "active":
+        await UserCRUD.update_one(
+            query={"_id": ObjectId(user_id)}, payload={
+                "banned": False,
+                "is_active": True
+            }
+        )
     return True
 
 

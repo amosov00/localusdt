@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional, Union
+from typing import Optional, Union, List
 from datetime import datetime
 from fastapi import HTTPException
 from http import HTTPStatus
@@ -328,24 +328,22 @@ class InvoiceCRUD(BaseMongoCRUD):
         ads = await AdsCRUD.find_by_id(invoice["ads_id"])
         buyer_username = (await UserCRUD.find_by_id(invoice.get("buyer_id"))).get("username")
         seller_username = (await UserCRUD.find_by_id(invoice.get("seller_id"))).get("username")
-        ads_type = (await AdsCRUD.find_by_id(invoice.get("ads_id"))).get("type")
         invoice["buyer_username"] = buyer_username
         invoice["seller_username"] = seller_username
-        invoice["ads_type"] = ads_type
+        invoice["ads_type"] = ads.get("type")
         invoice["bot_limit"] = ads["bot_limit"]
         invoice["top_limit"] = ads["top_limit"]
         invoice["condition"] = ads["condition"]
+        invoice["payment_method"] = ads.get("payment_method")
 
         return invoice
 
     @classmethod
-    async def get_invoice_by_status(cls, status: InvoiceStatus):
-        invoices = await cls.find_many({})
-        invoices_to_response = []
-        for invoice in invoices:
-            if invoice.get("status") in status:
-                invoices_to_response.append(invoice)
-        return invoices_to_response
+    async def get_invoice_by_statuses(cls, statuses: List[InvoiceStatus]):
+        invoices = await cls.find_many({
+            "status": {"$in": statuses}
+        })
+        return invoices
 
     @classmethod
     async def rollback(cls, invoice_id: str):

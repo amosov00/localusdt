@@ -3,7 +3,7 @@
     <div class="order-details__row fz-20">
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.price') }}</p>
       <p class="order-details__cell">
-        {{ commaSplitting(orderDetails.price || orderDetails.amount) }}
+        {{price}}
         
         {{returnCurrency(orderDetails)}}/USDT
       </p>
@@ -18,7 +18,7 @@
     </div>
     <div class="order-details__row">
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.payType') }}</p>
-      <p class="order-details__cell">{{ $t('main.bankTransfer') }} {{ $t('main.sberbank') }}</p>
+      <p class="order-details__cell">{{orderDetails.other_payment_method ? orderDetails.other_payment_method :  orderDetails.payment_method ? paymentMethod(orderDetails.payment_method) : ''}}</p>
     </div>
     <hr />
     <div class="order-details__row mt-10">
@@ -49,15 +49,21 @@
 
 <script>
 import formatCurreny from '~/mixins/formatCurrency'
+import paymentMethod from '~/mixins/paymentMethod'
 import { mapGetters } from 'vuex'
 
 export default {
   props: {
     orderDetails: Object,
   },
+   mixins: [paymentMethod,formatCurreny],
+  data: ()=> ({
+    price:null,
+  }),
   computed: {
     ...mapGetters({
       user: 'user',
+      currencyPrice: 'currencyPrice',
     }),
     role() {
       if (
@@ -116,7 +122,10 @@ export default {
       }
     },
   },
-  mixins: [formatCurreny],
+  async mounted(){
+    await this.$store.dispatch('fetchCurrencyPrice' , this.orderDetails.currency)
+    this.price = this.currencyPrice.toFixed(2)
+  }
 }
 </script>
 

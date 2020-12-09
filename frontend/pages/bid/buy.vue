@@ -1,10 +1,6 @@
 <template lang="pug">
   div.create-order
-    p.create-order__token-price {{$t('bid.actualCourse')}}
-      =' '
-      span.green {{commaSplitting(currencyPrice)}}
-      span {{ returnCurrency }}/USDT
-      span
+    
     header.create-order__navigation
       h1 {{$t('bid.buyUSDT')}}
     hr
@@ -36,6 +32,8 @@
       :header="inputHeader"
       placeholder="0"
       endIcon="usdt")
+
+      h2.create-order-price {{$t('bid.price')}}:
       div.radio-group
         label(for="profit-is-formula")
           input(id="profit-is-formula"
@@ -70,10 +68,14 @@
       disabled
       :value="equation"
       :header="$t('bid.priceSetting')"
-      placeholder=""
       type="text"
+      hintTwo
+      :typeCurrency="currencyFullData.type"
       v-if="profitMode === 'formula'")
-
+      p.create-order__token-price {{$t('bid.actualCourse')}}
+        =' '
+        span.green {{commaSplitting(currencyPrice)}}
+        span {{ returnCurrency }}/USDT
       div.create-order__gap
         Input.mr-30(
         v-model="adForm.bot_limit"
@@ -138,9 +140,18 @@ export default {
         { name: 'EUR', value: 4 }
       ],
       paymentOptions: [
-        { name: this.$t('main.sberTransfer'), value: 1 },
-        { name: this.$t('main.tinkofTransfer'), value: 2 },
-        { name: this.$t('main.otherWay'), value: 3 }
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.sberbank')}`, value: 1 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.tinkof')}`, value: 2,  },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.alfa')}`, value: 3 },
+        { name: this.$t('main.otherWay'), value: 4,selected: true},
+        { name: `${this.$t('main.all')}`, value: 5 },
+        { name: `${this.$t('main.bankTransfer')} ${this.$t('main.cardToCard')}`, value: 6 },
+        { name: `${this.$t('main.qiwi')}`, value: 7 },
+        { name: `${this.$t('main.yandex')}`, value: 8 },
+        { name: `${this.$t('main.payeer')}`, value: 9 },
+        { name: `${this.$t('main.payPal')}`, value: 10 },
+        { name: `${this.$t('main.cash')}`, value: 11 },
+        { name: `${this.$t('main.webMoney')}`, value: 12 },
       ],
       showModal: false,
       checkbox: false
@@ -194,7 +205,7 @@ export default {
       return `usdt_in_${currencyName.name.toLowerCase()}*${this.adForm.profit}`
     },
     yourVersion() {
-      return this.adForm.payment_method === 3;
+      return this.adForm.payment_method === 4;
     },
     inputHeader() {
       return this.adForm.type === 2 ? this.$t('bid.wantToSell') : this.$t('bid.wantToBuy')
@@ -241,6 +252,9 @@ export default {
             this.$nuxt.context.redirect(`/order/${this.$route.query.edit}`)
           }
         } else {
+          if(this.adForm.bank_title){
+            this.adForm.other_payment_method = this.adForm.bank_title
+          }
           res = await this.$store.dispatch('order/createOrder', this.adForm)
           if (res) {
             this.showModal = true
@@ -302,4 +316,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.create-order-price{
+  margin-bottom: 20px;
+  font-size: 30px;
+}
+  
+</style>

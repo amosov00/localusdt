@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 let cookieOpts = {
   path: '/',
-  maxAge: 60 * 60 * 24 * 7
+  maxAge: 60 * 60 * 24 * 7,
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -205,9 +205,10 @@ export const actions = {
       })
   },
   async fetchCurrencyPrice({ commit }, payload = 1) {
-    const { data } = await this.$axios.get(`/currency/?currency=${payload}`)
-    commit('setCurrencyPrice', data)
-    commit('currencyFullData', data)
+    let  result = await this.$axios.get(`/currency/?currency=${payload}`)
+    console.log(1);
+      commit('setCurrencyPrice', result.data)
+      commit('currencyFullData', result.data)
   },
   async fetchReferralInfo({}) {
     return this.$axios.get('/account/referral_info/')

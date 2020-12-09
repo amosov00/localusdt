@@ -28,7 +28,9 @@ import { PerfectScrollbar } from "vue2-perfect-scrollbar";
 import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 import formatDate from "~/mixins/formatDate";
-
+// import VueNativeSock from 'vue-native-websocket'
+// import Vue from 'vue'
+// Vue.use(VueNativeSock, 'ws://localhost:9090')
 export default {
   mixins: [formatDate],
   props: ['name','invoice'],
@@ -81,7 +83,6 @@ export default {
     },
     chatConnect() {
       //let token = this.$cookies.get('token')
-
       this.ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`);
       this.ws.onopen = async (e) => {
          this.socketPing = setInterval(() => {
@@ -93,6 +94,7 @@ export default {
       this.ws.onerror = (e) => {
       }
       this.ws.onmessage = (e) => {
+        console.log(e.data);
         const data = JSON.parse(e.data);
         
         if(this.user.username !== data.sender) {
@@ -120,7 +122,6 @@ export default {
   async mounted() {
     let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);
     this.chatMessages = messages;
-
     let container = this.$refs.chatScroll.$el;
     let scrollAtEnd = container.scrollHeight - container.scrollTop === container.clientHeight;
     if(scrollAtEnd) {

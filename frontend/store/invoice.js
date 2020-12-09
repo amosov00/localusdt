@@ -32,14 +32,16 @@ export const actions = {
   },
 
   async createInvoice({ dispatch }, invoiceForm) {
-    return await this.$axios
-      .post('/invoice/create/', invoiceForm)
+    // delete invoiceForm.chatText
+    return await this.$axios.post('/invoice/create/', invoiceForm)
       .then(res => {
-        if (invoiceForm.chatText) {
-          const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
+        const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
           ws.onopen = () => {
             console.log('SOCKET');
-            ws.send(invoiceForm.chatText)
+            if(invoiceForm.chatText){
+              ws.send(invoiceForm.chatText)
+            }
+            console.log('SOCKET FIRST SEND');
             setTimeout(() => {
               socketPing = setInterval(() => {
                 this.socket.send('');
@@ -50,14 +52,14 @@ export const actions = {
           ws.onclose = async (event) => {
             clearInterval(socketPing);
           };
-          
-        }
-        this.$router.push(`/invoice/${res.data._id}`)
         this.$toast.showMessage({
           content: $nuxt.$t('store.invoiceCreate'),
           green: true
         })
         dispatch('fetchInvoices')
+        console.log('push router');
+        this.$router.push(`/invoice/${res.data._id}`)
+        return true
       })
       .catch(error => {
         // TEMPORARY BAD ASS SOLUTION, WILL BE FIXED

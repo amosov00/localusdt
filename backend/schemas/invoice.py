@@ -5,7 +5,7 @@ from pydantic import Field, validator
 
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
-from schemas.ads import AdsType
+from schemas.ads import AdsType, PaymentMethod
 from schemas.currency import CurrencyType
 
 __all__ = [
@@ -14,7 +14,8 @@ __all__ = [
     "InvoiceStatus",
     "InvoiceCreate",
     "InvoiceInSearch",
-    "InvoiceWithAds"
+    "InvoiceWithAds",
+    "InvoiceInAdminPanel"
 ]
 
 
@@ -71,8 +72,14 @@ class InvoiceWithAds(InvoiceInDB):
     top_limit: float = Field(default=None)
     bot_limit: float = Field(default=None)
     condition: str = Field(default=None)
+    payment_method: PaymentMethod = Field(default=None)
 
 
 class InvoiceCreate(BaseModel):
     ads_id: ObjectIdPydantic = Field(...)
     amount_usdt: float = Field(...)
+
+
+class InvoiceInAdminPanel(InvoiceInDB):
+    seller_nickname: str = Field(default=None)
+    buyer_nickname: str = Field(default=None)

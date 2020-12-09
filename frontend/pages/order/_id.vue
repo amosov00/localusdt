@@ -5,7 +5,7 @@
       <h1 v-else class="order__title">{{$t('profile.sellUSDT')}}</h1>
       <!--<div>{{ order }}</div>-->
       <div class="order__header-additional">
-        <div class="order__subtitle flex-1">{{$t('main.bankTransfer')}} {{$t('main.sberbank')}}</div>
+        <div class="order__subtitle flex-1"> {{ order.other_payment_method ? order.other_payment_method : paymentMethod(order.payment_method) }}</div>
         <div class="flex-1 order__header-actions" v-if="order.status < 3 && order.username === user.username">
           <n-link class="order__link order__link--edit" :to="`/bid/${isSell ? 'sell' : 'buy' }?edit=${id}`">
             <InlineSvg :src="require('~/assets/icons/pen.svg')"></InlineSvg>
@@ -52,13 +52,14 @@ import OrderForm from '~/components/order/OrderForm'
 import OrderInfo from '~/components/order/OrderInfo'
 import InlineSvg from 'vue-inline-svg'
 import Button from "~/components/app/Button";
+import paymentMethod from '~/mixins/paymentMethod'
 
 import Confirm from "~/components/app/Confirm";
 
 export default {
   name: 'order_by_id',
   components: { OrderInfo, OrderForm, InlineSvg, Confirm, Button },
-
+  mixins: [paymentMethod],
   data: () => ({
     showModal: false,
     adStatus: 'on',

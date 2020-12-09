@@ -3,7 +3,7 @@ from starlette.websockets import WebSocketDisconnect
 from typing import List
 
 from schemas.user import User
-from schemas.notification import Notification
+from schemas.notification import NotificationInDB
 from database.crud.notification import NotificationCRUD
 from api.dependencies import get_user_websocket, get_user
 from core.mechanics.notification_manager import notification_manager
@@ -19,7 +19,12 @@ async def watch_all(user: User = Depends(get_user)):
     return await NotificationCRUD.watch_notifications(user)
 
 
-@router.get("/", response_model=List[Notification])
+@router.get("/watch/{notification_id}/")
+async def watch_notification(user: User = Depends(get_user), notification_id: str = Path(...)):
+    return await NotificationCRUD.watch_notification(user, notification_id)
+
+
+@router.get("/", response_model=List[NotificationInDB])
 async def get_notifications(user: User = Depends(get_user)):
     return await NotificationCRUD.get_user_notifications(user)
 

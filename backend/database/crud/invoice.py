@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional, Union
+from typing import Optional, Union, List
 from datetime import datetime
 from fastapi import HTTPException
 from http import HTTPStatus
@@ -197,15 +197,16 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if (
-                (invoice.get("buyer_id") != user.id and not user.is_staff)
-                or invoice.get("buyer_id") != user.id
-                or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
-                        or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
-        ):
-            raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-            )
+        if invoice.get("buyer_id") != user.id:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
+        if invoice.get("status") not in (InvoiceStatus.WAITING_FOR_TOKENS, InvoiceStatus.WAITING_FOR_PAYMENT):
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
 
         seller_db = await UserCRUD.find_by_id(invoice["seller_id"])
         buyer_db = await UserCRUD.find_by_id(invoice["buyer_id"])
@@ -229,14 +230,17 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if (
-                (invoice.get("buyer_id") != user.id and not user.is_staff)
-                or invoice.get("buyer_id") != user.id
-                or invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT
-        ):
-            raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-            )
+        if invoice.get("buyer_id") != user.id:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
+
+        if invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
 
         await cls.update_one(
             query={"_id": invoice["_id"]},
@@ -265,15 +269,17 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if (
-                (invoice.get("seller_id") != user.id and not user.is_staff)
-                or invoice.get("seller_id") != user.id
-                or not (invoice.get("status") == InvoiceStatus.WAITING_FOR_TOKENS
-                        or (invoice.get("status") == InvoiceStatus.FROZEN and user.is_staff))
-        ):
-            raise HTTPException(
-                HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-            )
+        if invoice.get("seller_id") != user.id:
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
+
+        if invoice.get("status") not in (InvoiceStatus.WAITING_FOR_TOKENS, InvoiceStatus.FROZEN):
+            if not user.is_staff:
+                raise HTTPException(
+                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
+                )
 
         buyer = await UserCRUD.find_by_id(invoice["buyer_id"])
         if not buyer:
@@ -322,24 +328,22 @@ class InvoiceCRUD(BaseMongoCRUD):
         ads = await AdsCRUD.find_by_id(invoice["ads_id"])
         buyer_username = (await UserCRUD.find_by_id(invoice.get("buyer_id"))).get("username")
         seller_username = (await UserCRUD.find_by_id(invoice.get("seller_id"))).get("username")
-        ads_type = (await AdsCRUD.find_by_id(invoice.get("ads_id"))).get("type")
         invoice["buyer_username"] = buyer_username
         invoice["seller_username"] = seller_username
-        invoice["ads_type"] = ads_type
+        invoice["ads_type"] = ads.get("type")
         invoice["bot_limit"] = ads["bot_limit"]
         invoice["top_limit"] = ads["top_limit"]
         invoice["condition"] = ads["condition"]
+        invoice["payment_method"] = ads.get("payment_method")
 
         return invoice
 
     @classmethod
-    async def get_invoice_by_status(cls, status: InvoiceStatus):
-        invoices = await cls.find_many({})
-        invoices_to_response = []
-        for invoice in invoices:
-            if invoice.get("status") in status:
-                invoices_to_response.append(invoice)
-        return invoices_to_response
+    async def get_invoice_by_statuses(cls, statuses: List[InvoiceStatus]):
+        invoices = await cls.find_many({
+            "status": {"$in": statuses}
+        })
+        return invoices
 
     @classmethod
     async def rollback(cls, invoice_id: str):

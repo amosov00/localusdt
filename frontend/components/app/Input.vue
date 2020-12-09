@@ -14,6 +14,9 @@
       </span>
     </div>
     <p v-if="hint" class="input__hint" v-html="$t('main.inputWarn')"></p>
+    <p v-if="hintTwo" class="input__hintTwo">
+      {{ typeCurrency == 2 ? $t('main.PriceSettingEquation2') : $t('main.PriceSettingEquation') }}
+    </p>
   </div>
 </template>
 
@@ -41,6 +44,11 @@ export default {
       default: '',
       required: false
     },
+    typeCurrency:{
+      type: [String, Number],
+      default: 1,
+      required: false
+    },
     endIcon: {
       type: String,
       default: '',
@@ -51,6 +59,7 @@ export default {
       default: ''
     },
     hint: Boolean,
+    hintTwo:Boolean,
     disabled: Boolean,
     toastText: {
       type: String,
@@ -107,6 +116,14 @@ export default {
     position: absolute;
     top: 40%;
     right: -70%;
+    font-style: italic;
+    opacity: .5;
+  }
+  &__hintTwo{
+    position: absolute;
+    top: 0%;
+    right: -70%;
+    left:108%;
     font-style: italic;
     opacity: .5;
   }

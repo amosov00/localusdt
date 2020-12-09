@@ -39,7 +39,7 @@ export default {
     '~/plugins/vee-validate.js',
     '~/plugins/vue-clipboard.js',
     '~/plugins/vue-notification.js',
-    '~/plugins/i18n.js'
+    '~/plugins/i18n.js',
   ],
   modules: [
     '@nuxtjs/axios',

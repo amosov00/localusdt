@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import WebSocket
 
 from schemas.base import ObjectId
-from schemas.notification import NotificationType, Notification
+from schemas.notification import NotificationType, Notification, NotificationInDB
 from database.crud.notification import NotificationCRUD
 
 
@@ -43,6 +43,8 @@ class NotificationManager:
         message["user_id"] = str(message["user_id"])
         if "invoice_id" in message:
             message["invoice_id"] = str(message["invoice_id"])
+        if "id" in message:
+            message["id"] = str(message["id"])
         message["created_at"] = str(message["created_at"])
         if self.connections.get(str(user_id)) is not None:
             await self.connections[str(user_id)].send_json(message)
@@ -68,8 +70,10 @@ class NotificationSender:
             participant_nickname=kwargs.get("participant_nickname"),
             invoice_id=kwargs.get("invoice_id")
         )
+        inserted_id = await NotificationCRUD.create_notification(new_notification)
+        new_notification = NotificationInDB(**new_notification.dict())
+        new_notification.id = inserted_id
         await notification_manager.push(new_notification.dict(), user_id)
-        await NotificationCRUD.create_notification(new_notification)
 
     @staticmethod
     async def send_invoice_status_change(user_id: str, **kwargs) -> None:
@@ -88,8 +92,10 @@ class NotificationSender:
             invoice_id=kwargs.get("invoice_id"),
             new_status=kwargs.get("new_status")
         )
+        inserted_id = await NotificationCRUD.create_notification(new_notification)
+        new_notification = NotificationInDB(**new_notification.dict())
+        new_notification.id = inserted_id
         await notification_manager.push(new_notification.dict(), user_id)
-        await NotificationCRUD.create_notification(new_notification)
 
     @staticmethod
     async def send_new_message_notification(user_id: str, **kwargs) -> None:
@@ -108,8 +114,10 @@ class NotificationSender:
             invoice_id=kwargs.get("invoice_id"),
             message_text=kwargs.get("message_text")
         )
+        inserted_id = await NotificationCRUD.create_notification(new_notification)
+        new_notification = NotificationInDB(**new_notification.dict())
+        new_notification.id = inserted_id
         await notification_manager.push(new_notification.dict(), user_id)
-        await NotificationCRUD.create_notification(new_notification)
 
     @staticmethod
     async def send_deposit_notification(user_id: str, **kwargs) -> None:
@@ -144,8 +152,10 @@ class NotificationSender:
                 created_at=datetime.utcnow(),
                 invoice_id=kwargs.get("invoice_id")
             )
+            inserted_id = await NotificationCRUD.create_notification(new_notification)
+            new_notification = NotificationInDB(**new_notification.dict())
+            new_notification.id = inserted_id
             await notification_manager.push(new_notification.dict(), str(user_id))
-            await NotificationCRUD.create_notification(new_notification)
 
     @staticmethod
     async def send_withdraw_notification(user_id: str, **kwargs) -> None:

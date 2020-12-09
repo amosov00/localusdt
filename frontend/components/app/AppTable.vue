@@ -1,14 +1,14 @@
 <template>
   <div :class="{'mb-80': pagination ? pagination : false}">
-    <table class="table">
+    <table class="table" :style="'max-width:'+ maxWidth">
       <thead class="table__head">
         <tr class="table__row">
-          <th class="table__header" v-for="header in headers">{{ header }}</th>
+          <th class="table__header" style="font-size: 10px;" v-for="(header, i) in headers" :key="i">{{ header }}</th>
         </tr>
       </thead>
       <tbody class="table__body">
-        <template v-for="item in whichTable">
-          <tr class="table__row">
+        <template v-for="(item, i) in whichTable" >
+          <tr class="table__row" :style="i % 2 === 0 ? 'background-color:#F5F5F5;' : null" :data-item="i" :key="i">
             <slot :row="item" />
           </tr>
         </template>
@@ -20,6 +20,7 @@
           <InlineSvg class="pagination__arrow-icon" :src="require('~/assets/icons/arrow-left.svg')" />
         </button>
         <p>
+           <!-- v-show="pagesCount > 40 ?  i > 3 && i < 43 ? false : true : false " -->
           <button class="pagination__page-button" v-for="page in pagesCount" :key="page" @click="goToPage(page)" :class="{'orange': currentPage === page}">{{page}}</button>
         </p>
         <button class="pagination__arrow-button" @click="nextPage">
@@ -42,12 +43,19 @@ import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
 import paymentMethod from '~/mixins/paymentMethod'
 export default {
+  name:'AppTable',
   props: {
     data: Array,
     headers: Array,
     pagination: {
       type: Boolean,
       default: false
+    },
+    maxWidth:{
+      default:'1230px'
+    },
+    propsContPage:{
+      default:15,
     }
   },
   mixins: [formatCurreny, paymentMethod],
@@ -58,7 +66,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      contentPerPage: 15
+      contentPerPage: this.propsContPage
     }
   },
   computed: {
@@ -75,13 +83,17 @@ export default {
       }
     },
     paginatedTableData() {
-      return this.data.slice(
+      if(this.data !== null){
+        return this.data.slice(
         this.currentPage * this.contentPerPage - this.contentPerPage,
         this.currentPage * this.contentPerPage
       )
+      }
     },
     pagesCount() {
-      return Math.ceil(this.data.length / this.contentPerPage)
+      if(this.data !== null){
+        return Math.ceil(this.data.length / this.contentPerPage)
+      }
     }
   },
   methods: {
@@ -102,21 +114,25 @@ export default {
       this.currentPage = 1
     },
     goToPage(page) {
-      this.currentPage = page
-    }
+      this.currentPage = page;
+    },
+     
+  },
+  created() {
+    this.$parent.$on('clickPageOne', this.goToPage);
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .table {
-  max-width: 1230px;
-  width: 100%;
   border-collapse: collapse;
   margin: 25px 0;
   text-align: center;
+  overflow-wrap:break-word;
   &__head {
     .table__row {
+       word-wrap: break-word;
       color: #000;
       opacity: 0.3;
       font-weight: 500;
@@ -132,6 +148,8 @@ export default {
   }
   &__body {
     .table__row {
+      overflow-wrap:break-word;
+       word-wrap: break-word;
       line-height: 70px;
 
       &:nth-child(2n) {
@@ -164,7 +182,7 @@ export default {
     }
 
     &:not(:last-child) {
-      border-right: 1px solid $grey;
+      border-right: 1px solid #808080;
     }
   }
 }

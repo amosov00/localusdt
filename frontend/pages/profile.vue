@@ -11,8 +11,12 @@
         <nuxt-link class="underline-link underline-link--grey" to="/change">
           {{$t('profile.changePass')}}
         </nuxt-link>
+        <nuxt-link class="underline-link underline-link--grey" to="/adminPanel">
+          admin panel
+        </nuxt-link>
         <p class="underline-link red" @click="logout()">{{$t('profile.logOut')}}</p>
       </div>
+      
     </div>
     <div class="bio">
       <div class="bio__container">
@@ -55,10 +59,9 @@
             </td>
             <td class="table__data">
                <span class="grey-dark fw-400">
-                {{commaSplitting(row.amount)}} USDT {{$t('profile.for')}}
+                 {{commaSplitting(row.amount_usdt)}} USDT {{$t('profile.for')}}
               </span>
-                {{commaSplitting(row.amount_usdt)}}{{returnCurrency(row)}}
-             
+                {{commaSplitting(row.amount)}}{{returnCurrency(row)}}
             </td>
             <td class="table__data" :style="{ color: statusColor(row.status) }">
               <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
@@ -73,7 +76,7 @@
             <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
             <td class="table__data" v-if="row.type === 1">{{$t('profile.buyUSDT')}}</td>
             <td class="table__data" v-else-if="row.type === 2">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data">{{commaSplitting(row.price)}}</td>
+            <td class="table__data">{{commaSplitting(row.price)}} {{returnCurrency(row)}}</td>
             <td class="table__data">
               <span>
                 {{spaceSplitting(row.bot_limit)}} -
@@ -140,7 +143,6 @@ export default {
       return { ...this.$store.getters.user }
     },
     invoices() {
-      console.log(this.$store.getters['invoice/invoices']);
       return this.$store.getters['invoice/invoices']
     },
     orders() {

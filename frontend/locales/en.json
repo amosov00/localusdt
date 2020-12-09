@@ -192,7 +192,8 @@
     "small_completed": "Completed",
     "active": "Active",
     "notActive": "Not active",
-    "deleted": "Deleted"
+    "deleted": "Deleted",
+    "frozen": "Dispute"
   },
   "profile": {
     "changePass": "Change password",
@@ -278,11 +279,23 @@
     "sberbank": "Sberbank",
     "tinkof": "Tinkoff",
     "alfa": "Alfa Bank",
+    "yandex": " Yandex money",
+    "qiwi": "Qiwi",
+    "payeer": "Payeer",
+    "payPal": "PayPal",
+    "cardToCard": "Card to card",
+    "webMoney": "WebMoney",
+    "cash": "Cash",
+    "all": "All ways",
     "otherWay": "Other way",
     "sberTransfer": "Bank Transfer: Sberbank",
     "tinkofTransfer": "Bank Transfer: Tinkoff",
     "alfaTransfer": "Bank transfer: Alfa Bank",
     "inputWarn": "The amount of profit you want to make <br> on top of the market price.",
-    "addressCopied": "Address copied"
+    "addressCopied": "Address copied",
+    "Binance": "Binance",
+    "NBRB": "NBRB",
+    "PriceSettingEquation": "To set the price 1 percent higher than the Binance rate, enter in the 'Profit' field - 1. The price in the ad will change dynamically depending on the Binance rate.",
+    "PriceSettingEquation2": "To set the price 1 percent higher than the NB RB rate, indicate in the 'Profit' field - 1. The price in the ad will change dynamically depending on the NB RB rate."
   }
 }

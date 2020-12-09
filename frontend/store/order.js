@@ -14,7 +14,7 @@ export const getters = {
       .filter(order => order.type === 2)
       .sort((a, b) => b.price - a.price),
   buyOrdersWithLimit: s => limit => {
-    return s.orders.filter(order => order.amount_usdt === 1).slice(0, limit)
+    return s.orders.filter(order => order.currency === 1).slice(0, limit)
   },
   sellOrdersWithLimit: s => limit => {
     return s.orders
@@ -52,13 +52,14 @@ export const actions = {
     commit('setOrdersByUser', data)
   },
   async searchOrders({ commit }, params) {
-    const { data } = await this.$axios.get(
-      `/order/?order_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}&payment_method=${params.payment_method}&currency=${params.currency}`
-    )
+    console.log(params.currency);
+    let url = `/order/?order_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}${params.payment_method == 5 ? '' : `&payment_method=${params.payment_method}`}&currency=${params.currency}`
+    console.log('url', url);
+    const { data } = await this.$axios.get(url)
+    console.log('data', data);
     data.forEach(e => {
       e.setCurrency = params.currency
     });
-    console.log(data);
     commit('setOrders', data)
   },
 

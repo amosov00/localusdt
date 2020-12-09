@@ -1,28 +1,29 @@
 import pymongo
+from bson import ObjectId
+from http import HTTPStatus
 from datetime import datetime
-from typing import List
+from fastapi import HTTPException
 
+from schemas.user import User
 from database.crud.base import BaseMongoCRUD
 from schemas.notification import Notification
-from schemas.user import User
 
 
 class NotificationCRUD(BaseMongoCRUD):
     collection = "notification"
 
     @classmethod
-    async def create_notification(cls, payload: Notification) -> None:
+    async def create_notification(cls, payload: Notification) -> ObjectId:
         payload.watched = False
         payload.created_at = datetime.utcnow()
-        await cls.insert_one(payload=payload.dict())
+        return (await cls.insert_one(payload=payload.dict())).inserted_id
 
     @classmethod
     async def get_user_notifications(cls, user: User):
         query = {
-            "user_id": user.id,
-            "watched": False
+            "user_id": user.id
         }
-        result = await cls.find_many(query=query, limit=7, sort=[("created_at", pymongo.DESCENDING)])
+        result = await cls.find_many(query=query, limit=10, sort=[("created_at", pymongo.DESCENDING)])
         return result
 
     @classmethod
@@ -37,3 +38,16 @@ class NotificationCRUD(BaseMongoCRUD):
         )
         return True
 
+    @classmethod
+    async def watch_notification(cls, user: User, notification_id: str) -> bool:
+        notification = await cls.find_one(query={
+            "_id": ObjectId(notification_id),
+            "user_id": user.id
+        })
+        if not notification:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Notification not found")
+        await cls.update_one(
+            query={"_id": notification.get("_id")},
+            payload={"watched": True}
+        )
+        return True

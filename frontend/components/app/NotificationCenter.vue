@@ -107,18 +107,18 @@ export default {
     async goToInvoice(msg, list) {
       list.forEach( async e=>{ 
         if(msg.invoice_id == e.invoice_id){
-             await this.$axios.get(`/notification/watch/${e._id}/`)
-              .then(async() => {
-                e.watched = true
-              })
+          let id = e._id ? e._id : e.invoice_id
+          console.log(e);
+          this.$axios.get(`/notification/watch/${id}/`)
+          .then(async() => {
+            e.watched = true
+          })
         }
       })
       this.notif_list.sort((e)=>{
         return  e.watched == true ? 1 : -1 
       })
-        this.$router.push(`/invoice/${msg.invoice_id}`)
-
-     
+      this.$router.push(`/invoice/${msg.invoice_id}`)
     },
     async markAllRead() {
       this.$axios.get('/notification/watch/')

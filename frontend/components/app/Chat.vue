@@ -12,7 +12,7 @@
       PerfectScrollbar(
       :options="{ wheelPropagation: false, minScrollbarLength: 32 }"
       ref="chatScroll")
-        div.chat__content(ref="chatContent")
+        div.chat__content(ref="chatsContent")
           div.chat__message(
           v-for="(msg, i) in chatMessages"
           :key="i"
@@ -51,6 +51,14 @@ export default {
       return this.$store.getters.user;
     }
   },
+  watch:{
+    chatMessages(){
+      setTimeout(() => {
+        let container = this.$refs.chatScroll.$el;
+        container.scrollTop = container.scrollHeight
+      });
+    }
+  },
   methods: {
     playSound(filename) {
       if(this.audio instanceof Audio) {
@@ -76,6 +84,10 @@ export default {
       e.preventDefault()
 
       if(cleanedMsg.length > 0) {
+        setTimeout(() => {
+         let container = this.$refs.chatScroll.$el;
+         container.scrollTop = container.scrollHeight
+        });
         this.ws.send(cleanedMsg)
       }
 
@@ -123,12 +135,10 @@ export default {
     let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);
     this.chatMessages = messages;
     let container = this.$refs.chatScroll.$el;
-    let scrollAtEnd = container.scrollHeight - container.scrollTop === container.clientHeight;
-    if(scrollAtEnd) {
+    let scrollAtEnd = container.scrollTop - container.scrollHeight
       this.$nextTick(() => {
-        container.scrollTo(0, container.scrollHeight)
+        container.scrollTop = container.scrollHeight
       })
-    }
     this.chatConnect()
   }
 }

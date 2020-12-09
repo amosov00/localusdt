@@ -61,7 +61,7 @@
                         <td class="table__data paddingSmall ">
                         {{ data.status }} 
                         </td>
-                        <td  class="table__data paddingNull" style="text-align:center;">
+                        <td class="table__data paddingNull" style="text-align:center;">
                             <Button :disabled="data.status !== 'waiting_for_tokens'" @click.native="freeze(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
@@ -74,7 +74,7 @@
                 </Content>
             </tab>
       </Tabs>
-      <!-- 30 минут -->
+      <!-- 1 -->
   </div>
 </template>
 
@@ -150,7 +150,6 @@ export default {
             try{
                 let res = await this.$axios.put(`/admin/invoice/${id}/rollback/`)
                 console.log(res);
-
             }catch(e){
                 console.log(e);
             }

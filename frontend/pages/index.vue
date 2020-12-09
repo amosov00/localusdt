@@ -14,7 +14,7 @@
               <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
-              {{ paymentMethod(row.payment_method) }}
+              {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
             <td class="table__data">
               {{ spaceSplitting(row.bot_limit) }} -
@@ -48,7 +48,7 @@
               <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
-              {{ paymentMethod(row.payment_method) }}
+              {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
             <td class="table__data">
               {{ spaceSplitting(row.bot_limit) }} -
@@ -84,7 +84,7 @@
               <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
-              {{ paymentMethod(row.payment_method) }}
+              {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
             <td class="table__data">
               {{ spaceSplitting(row.bot_limit) }} -
@@ -118,7 +118,7 @@
               <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
-              {{ paymentMethod(row.payment_method) }}
+              {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
             <td class="table__data">
               {{ spaceSplitting(row.bot_limit) }} -

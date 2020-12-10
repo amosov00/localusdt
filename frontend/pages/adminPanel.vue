@@ -68,7 +68,7 @@
                             <Button :disabled="disabledBtnCancel(data.status)" @click.native="cancel(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button :disabled="disabledBtnConfirm(data.status)" @click.native="confirm(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button :disabled="disabledBtnConfirm(data.status)" @click.native="confirm(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                     </template>
                 </Content>
@@ -91,22 +91,22 @@ export default {
     data(){
         return{
             headersInvoice: [
-                'Дата, время',
-                'Стороны сделки',
-                'Сумма',
-                'Статус',
-                'Заморозить',
-                'Сбросить',
-                'Отправить принудительно',
+                this.$t('adminPanel.headerInvoices.dateTime'),
+                this.$t('adminPanel.headerInvoices.partiesOfTheTransaction'),
+                this.$t('adminPanel.headerInvoices.amount'),
+                this.$t('adminPanel.headerInvoices.status'),
+                this.$t('adminPanel.headerInvoices.freeze'),
+                this.$t('adminPanel.headerInvoices.reset'),
+                this.$t('adminPanel.headerInvoices.sendForcibly'),
             ],
             headersUsers: [
-                'Имя пользователя',
-                'Эл. почта',
-                'Адрес кошелька',
-                'Баланс USDT',
-                'Баланс пользв кошельков',
-                'Баланс ЕТН',
-                'Статус',
+                this.$t('adminPanel.headersUsers.name'),
+                this.$t('adminPanel.headersUsers.mail'),
+                this.$t('adminPanel.headersUsers.walletAddress'),
+                this.$t('adminPanel.headersUsers.balanceUSDT'),
+                this.$t('adminPanel.headersUsers.balanceUserWallet'),
+                this.$t('adminPanel.headersUsers.balanceETH'),
+                this.$t('adminPanel.headersUsers.status'),
             ],
             selctOptions:[
                 { name: 'Активный', value: 1 },
@@ -196,19 +196,10 @@ export default {
                 console.log(e);
             }
         },  
-        async confirm(id){
-            let res = await this.$axios.put(`/admin/invoice/${id}/confirm/`)
+        async confirm(data){
+            let res = await this.$axios.put(`/admin/invoice/${data._id}/transfer/`)
             .then((e)=>{
-                console.log(e);
-            })
-            .catch(()=>{
-                this.invoiceBoolean = false
-                this.$store.dispatch('adminPanel/getInvoices')
-                .then(()=>{
-                    this.dataInvoice = this.$store.getters['adminPanel/getInvoices']
-                    this.invoiceBoolean = true
-                    this.componentInvoice++
-                })
+                this.$store.dispatch('adminPanel/editStatus', {id:data._id, status:'completed'})
             })
         },
         bannedOrActive(active,banned){

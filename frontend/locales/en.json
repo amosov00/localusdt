@@ -297,5 +297,25 @@
     "NBRB": "NBRB",
     "PriceSettingEquation": "To set the price 1 percent higher than the Binance rate, enter in the 'Profit' field - 1. The price in the ad will change dynamically depending on the Binance rate.",
     "PriceSettingEquation2": "To set the price 1 percent higher than the NB RB rate, indicate in the 'Profit' field - 1. The price in the ad will change dynamically depending on the NB RB rate."
+  },
+  "adminPanel":{
+    "headerInvoices":{
+      "dateTime":"Date, time",
+      "partiesOfTheTransaction":"Parties of the transaction",
+      "amount":"Amount",
+      "status":"Status",
+      "freeze":"Freeze",
+      "reset" :"Reset",
+      "sendForcibly":"Send forcibly"
+    },
+    "headersUsers": {
+      "name":"Имя пользователя",
+      "mail":"email",
+      "walletAddress":"Wallet address",
+      "balanceUSDT":"Balance USDT",
+      "balanceUserWallet":"Баланс пользв кошельков",
+      "balanceETH":"Баланс ЕТН",
+      "status":"Status"
+    }
   }
 }

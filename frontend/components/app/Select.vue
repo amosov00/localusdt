@@ -75,7 +75,6 @@ export default {
     selectOption(option) {
       this.selected = option
       this.areOptionsVisible = false
-      console.log(option);
       if(!this.noCurrency)  this.$store.dispatch('fetchCurrencyPrice', option.value)
       if(this.status && this.user) this.$store.dispatch('adminPanel/userStatus', {value: option.value, user:this.user})
       this.$emit('input', option.value)

@@ -18,7 +18,7 @@
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
-                        {{ data.balance_usdt }} + {{ data.usdt_in_invoices }}
+                        {{ data.balance_usdt + data.usdt_in_invoices}}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
                           {{ data.contract_balance }}

@@ -53,10 +53,10 @@ class UserCRUD(BaseMongoCRUD):
         if user and pwd_context.verify(password, user["password"]):
             token = encode_jwt_token({"id": str(user["_id"])})
             if not user.get("is_active"):
-                raise HTTPException(HTTPStatus.BAD_REQUEST, "Активируйте аккаунт через email для входа в аккаунт")
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "activate email or you are blocked")
             return {"token": token, "user": User(**user).dict()}
         else:
-            raise HTTPException(HTTPStatus.BAD_REQUEST, "Неправильно введены данные")
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "wrong input")
 
     @classmethod
     async def autenticate_by_token(cls, token: str) -> Optional[dict]:

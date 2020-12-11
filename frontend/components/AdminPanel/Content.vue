@@ -46,17 +46,20 @@ export default {
     search(){
         this.filterData =  this.dataInvoices.filter(e=> {
             if(this.type === 'users'){
-                if(e.eth_address !== null){
-                    return  e.eth_address.search(this.input) !== -1
-                }else if(e.username !== null){
-                    return e.username.search(this.input) !== -1 || e.email.search(this.input) !== -1
+                if(e.eth_address !== null && e.username !== null){
+                    return  e.eth_address.indexOf(this.input) > -1 ||
+                            e.username.indexOf(this.input) > -1 ||
+                            e.email.indexOf(this.input) > -1 
                 }else{
-                    return e
+                    return e.email.indexOf(this.input) > -1 
                 }
+                
             }
             if(this.type === 'deal'){
                 if(e.buyer_nickname !== null){
-                    return e.buyer_nickname.search(this.input) !== -1 ||  e.seller_nickname.search(this.input) !== -1 || e._id.search(this.input) !== -1
+                    return  e.buyer_nickname.indexOf(this.input) !== -1 ||
+                            e.seller_nickname.indexOf(this.input) !== -1 ||
+                            e._id.indexOf(this.input) !== -1
                 }
             }
         })

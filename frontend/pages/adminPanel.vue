@@ -18,7 +18,7 @@
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
-                        {{ data.balance_usdt }} 
+                        {{ Math.round(data.balance_usdt + data.usdt_in_invoices) }} 
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
                             test    
@@ -167,6 +167,9 @@ export default {
                 case 'waiting_for_payment':
                     return false
                     break
+                case 'frozen':
+                    return false
+                break
                 default:
                     return true
                 break

@@ -13,16 +13,16 @@ from database.crud import (
     InvoiceCRUD,
     LogCRUD
 )
-from core.integrations.crypto import USDTWrapper
-from schemas.ads import AdsInSearch
-from schemas.base import ObjectId
 from schemas.logging import Log
-from schemas.ethereum_wallet import EthereumWalletResponse, ServiceEthereumWalletsResponse
-from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInAdminPanel
-from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
-from schemas import User, UserUpdateNotSafe, UserTransaction
+from schemas.base import ObjectId
+from schemas.ads import AdsInSearch
+from core.integrations.crypto import USDTWrapper
 from schemas.referral import ReferralGeneralInfo
 from schemas.admin_stats import DepositStatistic, AccountWalletInfos
+from schemas import User, UserUpdateNotSafe, UserTransaction, UserAdminView
+from schemas.invoice import InvoiceStatus, InvoiceWithAds, InvoiceInAdminPanel
+from schemas.ethereum_wallet import EthereumWalletResponse, ServiceEthereumWalletsResponse
+from schemas.transaction import USDTTransaction, USDTTransactionStatus, USDTTransactionEvents
 
 __all__ = ["router"]
 
@@ -103,14 +103,23 @@ async def freeze_invoice(
     return await InvoiceCRUD.freeze_invoice(invoice_id)
 
 
-@router.get("/users/", response_model=Optional[List[User]], response_model_exclude={"password"})
+@router.get("/users/", response_model=Optional[List[UserAdminView]], response_model_exclude={"password"})
 async def get_all_users(
     user: User = Depends(user_is_staff_or_superuser)
 ):
     users = await UserCRUD.find_many({})
+
+    wallets = await EthereumWalletCRUD.find_many({})
+    wallet_kw = {}
+
+    for wallet in wallets:
+        wallet_kw[wallet.get("eth_address").lower()] = wallet.get("contract_balance")
+
     for user in users:
-        print(user)
         user["_id"] = str(user["_id"])
+        user["contract_balance"] = wallet_kw.get(user.get("eth_address").lower()) if user.get("eth_address") else None
+        user["ethereum_balance"] = None
+
     return users
 
 

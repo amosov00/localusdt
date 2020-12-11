@@ -14,14 +14,14 @@
                         </td>
                         <td class="table__data paddingSmall ">
                             <p>
-                                {{ data.eth_address }} 
+                                {{ data.eth_address }}
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
-                        {{ data.balance_usdt }} 
+                        {{ data.balance_usdt }} + {{ data.usdt_in_invoices }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            test    
+                          {{ data.contract_balance }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
                             test
@@ -59,7 +59,7 @@
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
-                        {{ data.status }} 
+                        {{ data.status }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
                                 <Button :disabled="disabledBtnFreeze(data.status)" @click.native="freeze(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
@@ -195,7 +195,7 @@ export default {
             }catch(e){
                 console.log(e);
             }
-        },  
+        },
         async confirm(data){
             let res = await this.$axios.put(`/admin/invoice/${data._id}/transfer/`)
             .then((e)=>{
@@ -204,7 +204,7 @@ export default {
         },
         bannedOrActive(active,banned){
             let res;
-           
+
             if(active && banned){
                return  res =  2
             }
@@ -224,7 +224,7 @@ export default {
       users() {
         return this.$store.getters['adminPanel/getUsers']
       },
-      
+
     },
     async created() {
         this.$store.dispatch('adminPanel/getInvoices')

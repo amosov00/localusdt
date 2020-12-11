@@ -2,6 +2,7 @@ import re
 from typing import Optional
 from datetime import datetime
 from enum import IntEnum
+from decimal import Decimal
 
 from pydantic import Field, validator
 from passlib.context import CryptContext
@@ -27,7 +28,8 @@ __all__ = [
     "UserTransaction",
     "UserMakeWithdraw",
     "UserUpdateNotSafe",
-    "UserLanguage"
+    "UserLanguage",
+    "UserAdminView"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -204,3 +206,8 @@ class UserMakeWithdraw(BaseModel):
     to: str = Field(...)
 
     _validate_withdraw_amount = validator("amount", allow_reuse=True)(validate_withdraw_amount)
+
+
+class UserAdminView(User):
+    contract_balance: Optional[Decimal] = Field(default=None)
+    ethereum_balance: Optional[Decimal] = Field(default=None)

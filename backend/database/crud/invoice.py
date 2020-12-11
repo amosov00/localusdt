@@ -378,7 +378,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         invoice = await cls.find_by_id(invoice_id)
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
-        if invoice.get("status") != InvoiceStatus.WAITING_FOR_TOKENS:
+        if invoice.get("status") not in InvoiceStatus.ACTIVE:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice status")
         await InvoiceCRUD.update_one(
             query={

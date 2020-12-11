@@ -14,14 +14,14 @@
                         </td>
                         <td class="table__data paddingSmall ">
                             <p>
-                                {{ data.eth_address }} 
+                                {{ data.eth_address }}
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
-                        {{ data.balance_usdt }} 
+                        {{ data.balance_usdt + data.usdt_in_invoices}}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            test    
+                          {{ data.contract_balance }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
                             test
@@ -29,7 +29,7 @@
                         <td class="table__data paddingSmall" style="text-align:center; padding-right:10px;">
                              <Select
                                 :v-model="data.is_active ? 'Активный': 'Неактивный'"
-                                :width="120"
+                                :width="130"
                                 :options="selctOptions"
                                 noCurrency
                                 status
@@ -59,22 +59,21 @@
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
-                        {{ data.status }} 
+                        {{ data.status }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button :disabled="data.status !== 'waiting_for_tokens'" @click.native="freeze(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                                <Button :disabled="disabledBtnFreeze(data.status)" @click.native="freeze(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button :disabled="data.status == 'cancelled'" @click.native="rollback(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button :disabled="disabledBtnCancel(data.status)" @click.native="cancel(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button @click.native="confirm(data._id)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button :disabled="disabledBtnConfirm(data.status)" @click.native="confirm(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                     </template>
                 </Content>
             </tab>
       </Tabs>
-      <!-- 1 -->
   </div>
 </template>
 
@@ -92,22 +91,22 @@ export default {
     data(){
         return{
             headersInvoice: [
-                'Дата, время',
-                'Стороны сделки',
-                'Сумма',
-                'Статус',
-                'Заморозить',
-                'Сбросить',
-                'Отправить принудительно',
+                this.$t('adminPanel.headerInvoices.dateTime'),
+                this.$t('adminPanel.headerInvoices.partiesOfTheTransaction'),
+                this.$t('adminPanel.headerInvoices.amount'),
+                this.$t('adminPanel.headerInvoices.status'),
+                this.$t('adminPanel.headerInvoices.freeze'),
+                this.$t('adminPanel.headerInvoices.reset'),
+                this.$t('adminPanel.headerInvoices.sendForcibly'),
             ],
             headersUsers: [
-                'Имя пользователя',
-                'Эл. почта',
-                'Адрес кошелька',
-                'Баланс USDT',
-                'Баланс пользв кошельков',
-                'Баланс ЕТН',
-                'Статус',
+                this.$t('adminPanel.headersUsers.name'),
+                this.$t('adminPanel.headersUsers.mail'),
+                this.$t('adminPanel.headersUsers.walletAddress'),
+                this.$t('adminPanel.headersUsers.balanceUSDT'),
+                this.$t('adminPanel.headersUsers.balanceUserWallet'),
+                this.$t('adminPanel.headersUsers.balanceETH'),
+                this.$t('adminPanel.headersUsers.status'),
             ],
             selctOptions:[
                 { name: 'Активный', value: 1 },
@@ -128,22 +127,55 @@ export default {
         Select
     },
     methods:{
-        async freeze(id){
-            let res = await this.$axios.put(`/admin/invoice/${id}/freeze/`);
+        disabledBtnCancel(status){
+            switch(status){
+                case 'frozen':
+                    return false
+                    break
+                case 'waiting_for_tokens':
+                    return false
+                    break
+                case 'waiting_for_payment':
+                    return false
+                    break
+                default:
+                    return true
+                break
+            }
+        },
+        disabledBtnFreeze(status){
+            switch(status){
+                case 'frozen':
+                    return true
+                    break
+                case 'waiting_for_tokens':
+                    return false
+                    break
+                case 'waiting_for_payment':
+                    return false
+                    break
+                default:
+                    return true
+                break
+            }
+        },
+        disabledBtnConfirm(status){
+            switch(status){
+                case 'waiting_for_tokens':
+                    return false
+                    break
+                case 'waiting_for_payment':
+                    return false
+                    break
+                default:
+                    return true
+                break
+            }
+        },
+        async freeze(data){
+            let res = await this.$axios.put(`/admin/invoice/${data._id}/freeze/`);
             if(res.status == 200){
-                this.invoiceBoolean = false
-                // this.dataInvoice = this.dataInvoice.filter(e => e._id !== id)
-                // let data = this.dataInvoice
-                //     data.forEach(e=>{
-                //    if( e._id == id){
-                //        e.status = 'lol'
-                //    }
-                // })
-                // this.dataInvoice = data
-                setTimeout(() => {
-                    this.componentInvoice++
-                    this.invoiceBoolean = true
-                }, 1000);
+                this.$store.dispatch('adminPanel/editStatus', {id: data._id, status:'frozen'})
             }
         },
         async rollback(id){
@@ -154,45 +186,35 @@ export default {
                 console.log(e);
             }
         },
-        async cancel(){
+        async cancel(data){
             try{
-                let res = await this.$axios.put(`/admin/invoice/${id}/cancel/`)
-                console.log(res);
-
+                let res = await this.$axios.put(`/admin/invoice/${data._id}/cancel/`)
+                if(res){
+                    this.$store.dispatch('adminPanel/editStatus', {id:data._id, status:'cancelled'})
+                }
             }catch(e){
                 console.log(e);
             }
-        },  
-        async confirm(id){
-                let res = await this.$axios.put(`/admin/invoice/${id}/confirm/`)
-                .catch(()=>{
-                    this.invoiceBoolean = false
-                    this.$store.dispatch('adminPanel/getInvoices')
-                    .then(()=>{
-                        this.dataInvoice = this.$store.getters['adminPanel/getInvoices']
-                        this.invoiceBoolean = true
-                        this.componentInvoice++
-                    })
-                })
-                
-
         },
-        bannedOrActive(e,y){
+        async confirm(data){
+            let res = await this.$axios.put(`/admin/invoice/${data._id}/transfer/`)
+            .then((e)=>{
+                this.$store.dispatch('adminPanel/editStatus', {id:data._id, status:'completed'})
+            })
+        },
+        bannedOrActive(active,banned){
             let res;
-            if(y == false){
-                res = 1
+
+            if(active && banned){
+               return  res =  2
             }
-            if(y == true){
-                res = 3
+            if(!active){
+                return  res = 3
             }
 
-            if(e == true){
-                res =  1
+            if(active && !banned){
+                return 1
             }
-            if(e == false){
-                res =  2
-            }
-            return res
         }
     },
     computed:{
@@ -202,6 +224,7 @@ export default {
       users() {
         return this.$store.getters['adminPanel/getUsers']
       },
+
     },
     async created() {
         this.$store.dispatch('adminPanel/getInvoices')

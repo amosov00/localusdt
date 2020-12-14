@@ -55,7 +55,8 @@ import InlineSvg from 'vue-inline-svg'
 import formatDate from '~/mixins/formatDate'
 import invoiceStatuses from '~/mixins/invoiceStatuses'
 import formatCurrency from '~/mixins/formatCurrency'
-
+import VueNativeSock from 'vue-native-websocket'
+import Vue from 'vue'
 export default {
   components: { InlineSvg },
   mixins: [formatDate, formatCurrency, invoiceStatuses],
@@ -70,25 +71,21 @@ export default {
   mounted() {
     this.loadNotifictions()
     document.body.addEventListener('click', this.hide, false)
-    this.ws = new WebSocket(`${process.env.API_WS_URL}notification/ws/`)
-    this.ws.onopen = (e) => {
+    Vue.use(VueNativeSock, `${process.env.API_WS_URL}`,{
+      connectManually: true,
+    })
+    this.$connect(`${process.env.API_WS_URL}notification/ws/`)
+    this.$socket.onopen = (e) => {
       this.connected = true
-      this.socketPing = setInterval(() => {
-          // console.log('Ping');
-          console.log('SOCKET');
-          this.ws.send(''); 
-        }, 30000);
+     
     }
-    this.ws.onerror = (e) => {
+    this.$socket.onerror = (e) => {
       this.connected = false
     }
-    this.ws.onmessage = (e) => {
+    this.$socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
       this.notif_list.unshift(data)
       this.notify(data)
-    }
-    this.ws.onclose = async (event) => {
-      clearInterval(this.socketPing);
     }
   },
 
@@ -131,8 +128,8 @@ export default {
     async loadNotifictions() {
       this.$axios.get('/notification/')
         .then(res => {
-          res.data.sort((e)=>{
-            return e.watched == true ? 1 : -1
+          res.data.sort((e, b)=>{
+            return new Date(new Date( e.created_at)) < new Date( b.created_at) && e.watched == true ? 1 : -1
           })
           this.notif_list = res.data
         }).catch(() => {

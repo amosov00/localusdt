@@ -18,7 +18,7 @@
                             </p>
                         </td>
                         <td class="table__data paddingSmall ">
-                        {{ data.balance_usdt + data.usdt_in_invoices}}
+                        {{ Math.round(data.balance_usdt + data.usdt_in_invoices) }} 
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
                           {{ data.contract_balance }}
@@ -46,7 +46,7 @@
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
                             <p>{{ formatDate(data.finished_at) }}</p>
-                            <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{data._id}}</p>
+                            <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{data.ads_id}}</p>
                         </td>
                         <td class="table__data paddingSmall ">
                             <p>
@@ -167,6 +167,9 @@ export default {
                 case 'waiting_for_payment':
                     return false
                     break
+                case 'frozen':
+                    return false
+                break
                 default:
                     return true
                 break

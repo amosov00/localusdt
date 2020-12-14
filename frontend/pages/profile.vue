@@ -11,9 +11,9 @@
         <nuxt-link class="underline-link underline-link--grey" to="/change">
           {{$t('profile.changePass')}}
         </nuxt-link>
-        <nuxt-link class="underline-link underline-link--grey" to="/adminPanel">
-          admin panel
-        </nuxt-link>
+        <nuxt-link v-if="$userIsStaff()" class="underline-link underline-link--grey" to="/adminPanel">
+          {{$t('profile.adminPanel')}}
+        </nuxt-link> 
         <p class="underline-link red" @click="logout()">{{$t('profile.logOut')}}</p>
       </div>
       
@@ -49,7 +49,10 @@
         <AppTable :data="invoices" :headers="headers" pagination>
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
+            <td class="table__data">
+              <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
+              <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{row.ads_id}}</p>
+            </td>
             <td class="table__data" v-if="row.ads_type === 1">{{$t('profile.sellUSDT')}}</td>
             <td class="table__data" v-else-if="row.ads_type === 2">{{$t('profile.buyUSDT')}}</td>
             <td class="table__data">

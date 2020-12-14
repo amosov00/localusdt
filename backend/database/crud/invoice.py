@@ -395,3 +395,5 @@ class InvoiceCRUD(BaseMongoCRUD):
         staff_ids = [i.get("_id") for i in staff]
         await NotificationSender.send_frozen_invoice_notification(staff_ids, invoice_id=invoice_id)
         return True
+
+# 123

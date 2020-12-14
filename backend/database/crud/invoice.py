@@ -52,12 +52,14 @@ class InvoiceCRUD(BaseMongoCRUD):
         adses_kw = {}
         for ads in adses:
             if ads.get("type"):
-                adses_kw[ads["_id"]] = ads["type"]
+                adses_kw[ads["_id"]] = ads
 
         for invoice in result:
             invoice["seller_username"] = users_kw.get(invoice["seller_id"])
             invoice["buyer_username"] = users_kw.get(invoice["buyer_id"])
-            invoice["ads_type"] = adses_kw.get(invoice["ads_id"])
+            invoice["ads_type"] = adses_kw.get(invoice["ads_id"]).get("type")
+            invoice["payment_method"] = adses_kw.get(invoice["ads_id"]).get("payment_method")
+            invoice["other_payment_method"] = adses_kw.get(invoice["ads_id"]).get("other_payment_method")
         return sorted(result, key=lambda i: i["created_at"], reverse=True)
 
     @classmethod
@@ -335,6 +337,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         invoice["top_limit"] = ads["top_limit"]
         invoice["condition"] = ads["condition"]
         invoice["payment_method"] = ads.get("payment_method")
+        invoice["other_payment_method"] = ads.get("other_payment_method")
 
         return invoice
 

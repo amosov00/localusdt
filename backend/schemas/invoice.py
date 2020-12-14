@@ -63,6 +63,8 @@ class InvoiceInSearch(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
     ads_type: AdsType = Field(default=None)
+    payment_method: PaymentMethod = Field(default=None)
+    other_payment_method: str = Field(default=None)
 
 
 class InvoiceWithAds(InvoiceInDB):
@@ -73,6 +75,7 @@ class InvoiceWithAds(InvoiceInDB):
     bot_limit: float = Field(default=None)
     condition: str = Field(default=None)
     payment_method: PaymentMethod = Field(default=None)
+    other_payment_method: str = Field(default=None)
 
 
 class InvoiceCreate(BaseModel):

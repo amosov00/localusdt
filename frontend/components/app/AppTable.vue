@@ -21,7 +21,7 @@
         </button>
         <p>
            <!-- v-show="pagesCount > 40 ?  i > 3 && i < 43 ? false : true : false " -->
-          <button class="pagination__page-button" v-for="page in pagesCount" :key="page" @click="goToPage(page)" :class="{'orange': currentPage === page}">{{page}}</button>
+          <button class="pagination__page-button" v-show="pagesCount > 10 ?  i > 3 && i < pagesCount - 3 ? false : true : false " v-for="(page, i) in pagesCount" :key="page" @click="goToPage(page)" :class="{'orange': currentPage === page}">{{page}}</button>
         </p>
         <button class="pagination__arrow-button" @click="nextPage">
           <InlineSvg class="pagination__arrow-icon" :src="require('~/assets/icons/arrow-right.svg')" />

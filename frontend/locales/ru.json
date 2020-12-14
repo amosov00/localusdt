@@ -183,11 +183,11 @@
   "status": {
     "cancelled": "Отменен",
     "waiting_for_payment": "Ожидание подтверждения платежа покупателем",
-    "approved": "Подтверждено",
+    "approved": "ПодтвержПдено",
     "waiting_for_tokens": "Ожидание отправки токенов",
     "completed": "Завершен",
     "small_waiting_for_payment": "В процессе",
-    "small_approved": "Подтверждено",
+    "small_approved": "Покупатель отправил деньги",
     "small_waiting_for_tokens": "В процессе",
     "small_completed": "Завершен",
     "active": "Активно",

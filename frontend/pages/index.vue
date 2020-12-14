@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Slider/>
     <NonAuthorizedHero v-if="!$userIsLoggedIn()" />
     <Tab :top="top" @selectedTab="selectedOrders($event)" />
     <div v-if="!buyTab">
@@ -152,12 +153,13 @@ import Tab from '~/components/Tab'
 import AppTable from '~/components/app/AppTable'
 import paymentMethod from '~/mixins/paymentMethod'
 import formatCurrency from '~/mixins/formatCurrency'
+import Slider from '@/components/app/SwiperSlider'
 import Button from '~/components/app/Button'
 import Vue from 'vue'
 
 export default {
   mixins: [paymentMethod, formatCurrency],
-  components: { NonAuthorizedHero, Table, Tab, AppTable, Button },
+  components: { NonAuthorizedHero, Table, Tab, AppTable, Button ,Slider},
   name: 'index',
   data() {
     return {
@@ -172,10 +174,13 @@ export default {
     }
   },
   computed: {
+      swiper() {
+        return this.$refs.mySwiper.$swiper
+      },
     top() {
-      let top = 100
+      let top = 316
       if (!this.$userIsLoggedIn()) {
-        top = 300
+        top = 516
       }
       return this.isToastActive ? top + 50 : top
     },

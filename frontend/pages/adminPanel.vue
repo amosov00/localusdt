@@ -62,13 +62,13 @@
                         {{ data.status }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                                <Button :disabled="disabledBtnFreeze(data.status)" @click.native="freeze(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button :disabled="disabledBtnFreeze(data.status)" :class="disabledBtnFreeze(data.status) ? null : 'green'" @click.native="freeze(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px;" rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button :disabled="disabledBtnCancel(data.status)" @click.native="cancel(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button :disabled="disabledBtnCancel(data.status)" :class="disabledBtnCancel(data.status) ? null : 'green'" @click.native="cancel(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px;" rounded outlined green></Button>
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            <Button :disabled="disabledBtnConfirm(data.status)" @click.native="confirm(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
+                            <Button :disabled="disabledBtnConfirm(data.status)" :class="disabledBtnConfirm(data.status) ? null : 'green'" @click.native="confirm(data)" style="border-radius:50%; padding:0; height:40px;width:40px; margin-top:10px; " rounded outlined green></Button>
                         </td>
                     </template>
                 </Content>
@@ -267,5 +267,8 @@ export default {
         max-width: 150px;
         overflow-wrap:break-word;
         word-wrap: break-word;
+    }
+    .green{
+        background-color: #48B190 !important;
     }
 </style>

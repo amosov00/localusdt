@@ -23,7 +23,7 @@
             <span class="opacity-50">{{$t('sendMoney.payType')}} </span>
           </p>
           <p class="steps-list--left">
-            <span>{{invoice.payment_method ? paymentMethod(invoice.payment_method) : ''}} </span>
+            <span>{{ invoice.other_payment_method ? invoice.other_payment_method : paymentMethod(invoice.payment_method) }} </span>
           </p>
         </div>
       </div>

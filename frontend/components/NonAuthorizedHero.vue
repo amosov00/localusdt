@@ -4,7 +4,7 @@
       span.green  USDT (Tether)
     p.paragraph-1  {{ $t('main.simpleFastSafe') }}
     nuxt-link(to="/signup")
-      Button(orange rounded lg) {{ $t('main.safeReg') }}
+      Button(orange rounded lg) {{ $t('main.safeReg')}}
 </template>
 
 <script>

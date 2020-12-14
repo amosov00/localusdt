@@ -30,10 +30,10 @@ export default {
     redirectPath() {
       switch (this.type) {
         case 2:
-          return '/buy/'
+          return '/buy'
           break
         case 1:
-          return '/sell/'
+          return '/sell'
           break
       }
     }

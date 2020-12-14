@@ -25,6 +25,7 @@
             @click="goToInvoice(msg, notif_list)").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
+                  span
                   span(v-if="!msg.new_status") {{ $t('other.order') }}
                   span(v-if="msg.type === 2") {{ $t('other.replenishment') }}
                   span(v-if="msg.type === 3") {{ $t('other.withdraw') }}
@@ -319,7 +320,7 @@ export default {
     }
 
     &-title {
-      text-transform: capitalize;
+      // text-transform: capitalize;
       font-weight: 500;
       margin-bottom: 5px;
     }

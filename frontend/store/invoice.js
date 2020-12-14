@@ -104,6 +104,7 @@ export const actions = {
   },
   async fetchInvoiceById({ commit }, id) {
     const { data } = await this.$axios.get(`/invoice/${id}/`, { progress: false })
+    console.log(data);
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {
@@ -135,9 +136,15 @@ export const actions = {
         })
       })
       .catch(error => {
+        // this.$toast.showMessage({
+        //   content: $nuxt.$t('store.invoiceConfirmError'),
+        //   red: true
+        // })
+        dispatch('fetchInvoiceById', id)
+        dispatch('fetchUser', null, { root: true })
         this.$toast.showMessage({
-          content: $nuxt.$t('store.invoiceConfirmError'),
-          red: true
+          content: $nuxt.$t('store.waitToken'),
+          green: true
         })
       })
   },

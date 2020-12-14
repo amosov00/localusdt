@@ -37,14 +37,15 @@ export const actions = {
       .then(res => {
         const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
           ws.onopen = () => {
-            console.log('SOCKET');
+            console.log('SOCKET1');
             if(invoiceForm.chatText){
               ws.send(invoiceForm.chatText)
             }
             console.log('SOCKET FIRST SEND');
             setTimeout(() => {
               socketPing = setInterval(() => {
-                this.socket.send('');
+                ws.send('');
+                console.log(1);
               }, 50000);
             }, 2000);
           }

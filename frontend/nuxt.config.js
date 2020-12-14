@@ -40,6 +40,7 @@ export default {
     '~/plugins/vue-clipboard.js',
     '~/plugins/vue-notification.js',
     '~/plugins/i18n.js',
+    {src:'~/plugins/vue-socket.client.js',  mode: 'client', ssr: false }
   ],
   modules: [
     '@nuxtjs/axios',

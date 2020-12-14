@@ -28,9 +28,9 @@ import { PerfectScrollbar } from "vue2-perfect-scrollbar";
 import Textarea from '~/components/app/Textarea'
 import Button from '~/components/app/Button'
 import formatDate from "~/mixins/formatDate";
-// import VueNativeSock from 'vue-native-websocket'
-// import Vue from 'vue'
-// Vue.use(VueNativeSock, 'ws://localhost:9090')
+import VueNativeSock from 'vue-native-websocket'
+import Vue from 'vue'
+
 export default {
   mixins: [formatDate],
   props: ['name','invoice'],
@@ -88,27 +88,22 @@ export default {
          let container = this.$refs.chatScroll.$el;
          container.scrollTop = container.scrollHeight
         });
-        this.ws.send(cleanedMsg)
+        this.$socket.send(cleanedMsg)
       }
 
       this.textArea = ''
     },
     chatConnect() {
       //let token = this.$cookies.get('token')
-      this.ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`);
-      this.ws.onopen = async (e) => {
-         this.socketPing = setInterval(() => {
-          // console.log('Ping');
-          console.log('SOCKET');
-          this.ws.send(''); 
-        }, 50000);
-      }
-      this.ws.onerror = (e) => {
-      }
-      this.ws.onmessage = (e) => {
-        console.log(e.data);
+      Vue.use(VueNativeSock, `${process.env.API_WS_URL}`, {
+        connectManually: true,
+      })
+      this.$connect(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`, { format: 'json' })
+      console.log(this.$socket);
+      
+      this.$socket.onmessage = (e) => {
         const data = JSON.parse(e.data);
-        
+        console.log('DATA');
         if(this.user.username !== data.sender) {
           this.playSound('soft_notification.mp3');
         } else {
@@ -116,20 +111,22 @@ export default {
         }
 
         this.chatMessages.push(data)
-        let container = this.$refs.chatScroll.$el;
-        let scrollAtEnd = container.scrollHeight - container.scrollTop === container.clientHeight;
-        if(scrollAtEnd) {
-          this.$nextTick(() => {
-            let chatContent = document.querySelector('.chat__content');
-            chatContent.lastChild.scrollIntoView();
-            chatContent.scrollTop = 1000000
-          })
+        if(this.$refs.chatScroll){
+          let container = this.$refs.chatScroll.$el;
+          let scrollAtEnd = container.scrollHeight - container.scrollTop === container.clientHeight;
+          if(scrollAtEnd) {
+            this.$nextTick(() => {
+              let chatContent = document.querySelector('.chat__content');
+              chatContent.lastChild.scrollIntoView();
+              chatContent.scrollTop = 1000000
+            })
+          }
         }
-      },
-      this.ws.onclose = async (event) => {
-        clearInterval(this.socketPing);
+        
       }
+      this.$socket.onclose = async (event) => {
       }
+    }
   },
   async mounted() {
     let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);

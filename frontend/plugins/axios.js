@@ -4,7 +4,9 @@ export default function ({$axios, app}) {
     $axios.onError(error => {
       switch (error.response.status) {
         case 401:
-          app.$authLogout()
+          setTimeout(() => {
+            app.$authLogout()
+          }, 10000);
           break
         default:
           break

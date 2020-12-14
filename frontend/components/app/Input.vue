@@ -115,7 +115,8 @@ export default {
   &__hint {
     position: absolute;
     top: 40%;
-    right: -70%;
+    left: 109%;
+    width: 330px;
     font-style: italic;
     opacity: .5;
   }

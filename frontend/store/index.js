@@ -91,6 +91,7 @@ export const actions = {
         this.$router.push({ path: '/' })
       })
       .catch(error => {
+        console.log(error);
         this.$toast.showMessage({
           content: $nuxt.$t('store.signInError'),
           red: true

@@ -9,7 +9,7 @@ export default {
         case 3:
           return `${this.$t('main.bankTransfer')} ${this.$t('main.alfa')}`
         case 4:
-          return `${this.$t('main.otherWay')}}`
+          return `${this.$t('main.otherWay')}`
         case 5:
           return `${this.$t('main.all')}`
         case 6:

@@ -14,7 +14,8 @@ export default ({ app, redirect }, inject) => {
 			});
 			redirect('/');
 			return true
-		}).catch(_ => {
+		}).catch((e) => {
+			console.log(e);
 		  return false;
     })
 	});

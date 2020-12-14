@@ -23,7 +23,7 @@
     "orderDelete": "Объявление успешно удалено!",
     "orderDeleteError": "Ошибка: не удалось удалить объявление",
     "courseError": "Невозможно получить актуальный курс USDT/RUB",
-    "signInError": "Неправильно введены данные",
+    "signInError": "Учётна запись заблокирована, обратитесь в техподдержку",
     "signUpEmailError": "Пользователь с таким email уже существует",
     "signUpError": "Ошибка регистрации нового пользователя!",
     "invoiceCancelError": "Ошибка при отмене заявки!",
@@ -196,6 +196,7 @@
     "frozen": "Спор"
   },
   "profile": {
+    "adminPanel": "Админ панель",
     "changePass": "Изменить пароль",
     "logOut": "Выйти",
     "about": "О себе",
@@ -304,8 +305,8 @@
       "partiesOfTheTransaction":"Стороны сделки",
       "amount":"Сумма",
       "status":"Статус",
-      "freeze":"Заморозить",
-      "reset" :"Сбросить",
+      "freeze":"Спор",
+      "reset" :"Отменить",
       "sendForcibly":"Отправить принудительно"
     },
     "headersUsers": {

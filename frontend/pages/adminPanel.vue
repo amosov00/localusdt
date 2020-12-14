@@ -46,7 +46,7 @@
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
                             <p>{{ formatDate(data.finished_at) }}</p>
-                            <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{data._id}}</p>
+                            <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{data.ads_id}}</p>
                         </td>
                         <td class="table__data paddingSmall ">
                             <p>

@@ -196,6 +196,7 @@
     "frozen": "Dispute"
   },
   "profile": {
+    "adminPanel": "Admin panel",
     "changePass": "Change password",
     "logOut": "Log out",
     "about": "About me",
@@ -304,8 +305,8 @@
       "partiesOfTheTransaction":"Parties of the transaction",
       "amount":"Amount",
       "status":"Status",
-      "freeze":"Freeze",
-      "reset" :"Reset",
+      "freeze":"Dispute",
+      "reset" :"Cancel",
       "sendForcibly":"Send forcibly"
     },
     "headersUsers": {

@@ -15,9 +15,9 @@
             <Button @click.native="search" green>{{ $t('main.search') }}</Button>
         </div>
         <AppTable :propsContPage="6"  maxWidth="900px" :data="filterData" :headers="[...headers]" pagination>
-        <template slot-scope="{ row }">
-            <slot :data="row"></slot>
-        </template>
+            <template slot-scope="{ row }">
+                <slot :data="row"></slot>
+            </template>
         </AppTable>
     </div>
 </div>    

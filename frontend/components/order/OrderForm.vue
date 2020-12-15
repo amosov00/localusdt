@@ -1,6 +1,6 @@
 <template>
   <form class="order-form">
-    <h2 v-if="order.type === 2">{{ $t('orderForm.wantToBuy') }}</h2>
+    <h2 v-if="order.type === 2  && $userIsLoggedIn()">{{ $t('orderForm.wantToBuy') }}</h2>
     <h2 v-else>{{ $t('orderForm.wantToSell') }}</h2>
     <div v-if="$userIsLoggedIn()">
       <Input

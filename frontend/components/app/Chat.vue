@@ -94,9 +94,11 @@ export default {
       this.textArea = ''
     },
     chatConnect() {
-      //let token = this.$cookies.get('token')
+      //let token = this.$cookies.get('token');
       Vue.use(VueNativeSock, `${process.env.API_WS_URL}`, {
         connectManually: true,
+        reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
+        reconnectionDelay: 3000,
       })
       this.$connect(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`, { format: 'json' })
       console.log(this.$socket);

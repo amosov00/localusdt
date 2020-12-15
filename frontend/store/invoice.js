@@ -37,7 +37,6 @@ export const actions = {
       .then(res => {
         const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
           ws.onopen = () => {
-            console.log('SOCKET1');
             if(invoiceForm.chatText){
               ws.send(invoiceForm.chatText)
             }
@@ -64,6 +63,12 @@ export const actions = {
       })
       .catch(error => {
         // TEMPORARY BAD ASS SOLUTION, WILL BE FIXED
+        if(error.response.status == 403){
+          this.$toast.showMessage({
+            content: $nuxt.$t('store.freeze'),
+            red: true
+          })
+        }
         switch (error.response.data[0].message) {
           case 'You have exceeded the lower limit':
             this.$toast.showMessage({
@@ -104,7 +109,6 @@ export const actions = {
   },
   async fetchInvoiceById({ commit }, id) {
     const { data } = await this.$axios.get(`/invoice/${id}/`, { progress: false })
-    console.log(data);
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {

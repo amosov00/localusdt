@@ -66,9 +66,10 @@ export default {
 
   methods: {
     async login() {
-      await this.$store.dispatch('logIn', this.loginForm)
-
-      await this.$store.dispatch('changeProfile', { language: this.localeId })
+	  this.$store.dispatch('logIn', this.loginForm)
+	  .then(()=>{
+		  this.$store.dispatch('changeProfile', { language: this.localeId })
+	  })
     },
   },
 }

@@ -20,7 +20,7 @@
     </div>
     <div class="bio">
       <div class="bio__container">
-        <h2 class="bio__title">{{$t('profile.about')}}</h2>
+        <h3 class="bio__title">{{$t('profile.about')}}</h3>
         <Textarea v-model="condition" />
         <Button @click.native="setCondition" class="mt-20" green>
           {{$t('profile.save')}}

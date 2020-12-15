@@ -30,7 +30,11 @@ import Button from '~/components/app/Button'
 import formatDate from "~/mixins/formatDate";
 import VueNativeSock from 'vue-native-websocket'
 import Vue from 'vue'
-
+Vue.use(VueNativeSock, `${process.env.API_WS_URL}`, {
+  connectManually: true,
+  reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
+  reconnectionDelay: 3000,
+})
 export default {
   mixins: [formatDate],
   props: ['name','invoice'],
@@ -45,6 +49,8 @@ export default {
     ws: null,
     audio: null,
     socketPing: null,
+    connect: true
+    
   }),
   computed: {
     user() {
@@ -95,12 +101,10 @@ export default {
     },
     chatConnect() {
       //let token = this.$cookies.get('token');
-      Vue.use(VueNativeSock, `${process.env.API_WS_URL}`, {
-        connectManually: true,
-        reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
-        reconnectionDelay: 3000,
-      })
-      this.$connect(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`, { format: 'json' })
+      if(this.connect){
+        this.$connect(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`, { format: 'json' })
+        this.connect = false
+      }
       console.log(this.$socket);
       
       this.$socket.onmessage = (e) => {

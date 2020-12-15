@@ -160,7 +160,11 @@ export default {
           invoice_id: data.invoice_id
         }
       })
-      this.playSound('notification-1.mp3')
+      try{
+        this.playSound('notification-1.mp3')
+      }catch(e){
+        console.log(e);
+      }
     },
     playSound(filename) {
       if (this.audio instanceof Audio) {

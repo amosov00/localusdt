@@ -3,7 +3,7 @@
     <div class="step-1">
       <p>
         <span class="opacity-50">{{$t('sendMoney.step')}} 1: </span>
-        {{$t('sendMoney.payToSeller')}}
+        {{$t('sendMoney.payToSeller')}} фыовр
       </p>
       <p>
         {{$t('sendMoney.text1', {msg: invoice.seller_username})}}

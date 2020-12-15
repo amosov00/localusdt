@@ -6,7 +6,7 @@
       <!--<div>{{ order }}</div>-->
       <div class="order__header-additional">
         <div class="order__subtitle flex-1"> {{ order.other_payment_method ? order.other_payment_method : paymentMethod(order.payment_method) }}</div>
-        <div class="flex-1 order__header-actions" v-if="order.status < 3 && order.username === user.username">
+        <div class="flex-1 order__header-actions" v-if=" user && order.status < 3 && order.username === user.username">
           <n-link class="order__link order__link--edit" :to="`/bid/${isSell ? 'sell' : 'buy' }?edit=${id}`">
             <InlineSvg :src="require('~/assets/icons/pen.svg')"></InlineSvg>
             <span>{{$t('order.edit')}}</span>
@@ -21,7 +21,7 @@
         </div>
       </div>
     </header>
-    <div class="mt-30 mb-30" v-if="order.status < 3 && user.username === order.username">
+    <div class="mt-30 mb-30">
       <label for="radio-online" class="radio mr-15">
         <input id="radio-online" type="radio" name="status" value="on" v-model="adStatus">
         <span class="radio__check"></span>
@@ -34,7 +34,7 @@
       </label>
     </div>
     <OrderInfo :order="order" />
-    <div class="order__footer" v-if="user.username !== order.username">
+    <div class="order__footer">
       <OrderForm :order="order" />
     </div>
     <Confirm :title="$t('order.question')" :show="showModal" @toggleModal="showModal = $event">

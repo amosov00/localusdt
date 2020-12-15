@@ -15,7 +15,8 @@
           >{{ link.title }}
           </nuxt-link
           >
-          <nuxt-link class="nav__item" to="/bid" v-if="$userIsLoggedIn()">
+          
+          <nuxt-link class="nav__item" :to="$userIsLoggedIn() ? '/bid' : '/signup'">
             {{ $t('navbar.newOrder')}}
           </nuxt-link>
         </ul>

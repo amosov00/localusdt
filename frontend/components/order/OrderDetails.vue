@@ -66,16 +66,15 @@ export default {
       currencyPrice: 'currencyPrice',
     }),
     role() {
-      if (
-        (this.orderDetails.ads_type || this.orderDetails.type === 1) &&
-        this.orderDetails.seller_username === this.user.username
-      ) {
+      if(this.user){
+        if ((this.orderDetails.ads_type || this.orderDetails.type === 1) && this.orderDetails.seller_username === this.user.username ) {
         return 'bayer'
-      } else if (
-        (this.orderDetails.ads_type || this.orderDetails.type === 2) &&
-        this.orderDetails.buyer_username === this.user.username
-      ) {
-        return 'seller'
+        } else if (
+          (this.orderDetails.ads_type || this.orderDetails.type === 2) &&
+          this.orderDetails.buyer_username === this.user.username
+        ) {
+          return 'seller'
+        }
       }
     },
     roleHumanize() {

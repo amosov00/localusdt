@@ -12,7 +12,6 @@
             <td class="table__data">
               {{ row.username }}
               <span class="status green--bg" />
-              <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
@@ -46,7 +45,6 @@
             <td class="table__data">
               {{ row.username }}
               <span class="status green--bg" />
-              <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
@@ -82,7 +80,6 @@
             <td class="table__data">
               {{ row.username }}
               <span class="status green--bg" />
-              <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
@@ -116,7 +113,6 @@
             <td class="table__data">
               {{ row.username }}
               <span class="status green--bg" />
-              <span class="orders-count">(10+)</span>
             </td>
             <td class="table__data">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}

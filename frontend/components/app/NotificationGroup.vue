@@ -9,7 +9,7 @@
               {{props.item.title}}
             </div>
             <div v-else class="title title--blue">
-              {{ $t('other.new') }}
+              {{ $t('other.new') }} 
             </div>
           </div>
           <span class="close" @click.prevent.stop="props.close">

@@ -79,7 +79,7 @@ export const actions = {
       })
       .then(({ data }) => {
         const { token, user } = data;
-
+        
         this.$axios.setToken(token, 'Bearer')
         this.$cookies.set('token', token, cookieOpts)
 
@@ -91,7 +91,13 @@ export const actions = {
         this.$router.push({ path: '/' })
       })
       .catch(error => {
-        console.log(error);
+        if(error.response.data[0].message == 'activate email or you are blocked'){
+          this.$toast.showMessage({
+            content: $nuxt.$t('store.signInError'),
+            red: true
+          })
+          throw new Error("Ошибка!")
+        }
         this.$toast.showMessage({
           content: $nuxt.$t('store.signInError'),
           red: true
@@ -113,6 +119,7 @@ export const actions = {
     commit('setBalance', data.balance_usdt)
   },
   async changeProfile({}, data) {
+    console.log('/account/user/');
     return await this.$axios
       .put('/account/user/', data)
       .then(_ => {
@@ -187,6 +194,7 @@ export const actions = {
       })
   },
   async changeCondition({ dispatch }, condition) {
+    console.log('/account/user/');
     await this.$axios
       .put('/account/user/', {
         about_me: condition

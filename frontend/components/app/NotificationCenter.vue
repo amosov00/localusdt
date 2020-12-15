@@ -25,7 +25,6 @@
             @click="goToInvoice(msg, notif_list)").notify-center__msg
               div(v-if="msg.amount")
                 div.notify-center__msg-title
-                  span
                   span(v-if="!msg.new_status") {{ $t('other.order') }}
                   span(v-if="msg.type === 2") {{ $t('other.replenishment') }}
                   span(v-if="msg.type === 3") {{ $t('other.withdraw') }}
@@ -103,13 +102,13 @@ export default {
 
   methods: {
     async goToInvoice(msg, list) {
-      list.forEach( async e=>{ 
+      list.forEach( async e=>{
         if(msg.invoice_id == e.invoice_id){
           let id = e._id ? e._id : e.invoice_id
-          console.log(e);
           this.$axios.get(`/notification/watch/${id}/`)
           .then(async() => {
             e.watched = true
+            return
           })
         }
       })

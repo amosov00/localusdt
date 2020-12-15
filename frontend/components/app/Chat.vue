@@ -117,7 +117,7 @@ methods: {
         if(scrollAtEnd) {
             this.$nextTick(() => {
             let chatContent = document.querySelector('.chat__content');
-            chatContent.lastChild.scrollIntoView();
+            // chatContent.lastChild.scrollIntoView();
             chatContent.scrollTop = 1000000
             })
         }

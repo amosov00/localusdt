@@ -1,26 +1,26 @@
 <template lang="pug">
-div.chat
-    h2 {{ $t('chat.sendMessage') }}
-    =' '
-    span.orange {{ name }}
-    Textarea(v-model="textArea" class="w-100 mt-20"
-    :placeholder="$t('chat.placeholder')"
-    @keydown.enter.native="sendMessage" ref="chatText")
-    Button(green @click.native="sendMessage").mt-20.mr-15 {{ $t('chat.send') }}
-    main.chat__box
-    div(v-if="chatMessages.length <= 0").mt-20.mb-15.text-center.chat__empty {{ $t('chat.empty') }}
-    PerfectScrollbar(
-    :options="{ wheelPropagation: false, minScrollbarLength: 32 }"
-    ref="chatScroll")
-        div.chat__content(ref="chatsContent")
-        div.chat__message(
-        v-for="(msg, i) in chatMessages"
-        :key="i"
-        :class="{'chat__message--me' : msg.sender === user.username }")
-            div.chat__message-header
-            span.chat__username {{ msg.sender }}
-            span.chat__date  {{ formatDate(msg.created_at) }}
-            div.chat__message-body {{ msg.message_body }}
+    div.chat
+        h2 {{ $t('chat.sendMessage') }}
+        =' '
+        span.orange {{ name }}
+        Textarea(v-model="textArea" class="w-100 mt-20"
+            :placeholder="$t('chat.placeholder')"
+            @keydown.enter.native="sendMessage" ref="chatText")
+        Button(green @click.native="sendMessage").mt-20.mr-15 {{ $t('chat.send') }}
+        main.chat__box
+            div(v-if="chatMessages.length <= 0").mt-20.mb-15.text-center.chat__empty {{ $t('chat.empty') }}
+            PerfectScrollbar(
+            :options="{ wheelPropagation: false, minScrollbarLength: 32 }"
+            ref="chatScroll")
+                div.chat__content(ref="chatsContent")
+                    div.chat__message(
+                    v-for="(msg, i) in chatMessages"
+                    :key="i"
+                    :class="{'chat__message--me' : msg.sender === user.username }")
+                        div.chat__message-header
+                            span.chat__username {{ msg.sender }}
+                            span.chat__date  {{ formatDate(msg.created_at) }}
+                            div.chat__message-body {{ msg.message_body }}
 </template>
 
 <script>
@@ -117,7 +117,7 @@ methods: {
         if(scrollAtEnd) {
             this.$nextTick(() => {
             let chatContent = document.querySelector('.chat__content');
-            chatContent.lastChild.scrollIntoView();
+            // chatContent.lastChild.scrollIntoView();
             chatContent.scrollTop = 1000000
             })
         }

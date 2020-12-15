@@ -7,7 +7,7 @@ ENV NUXT_HOST=0.0.0.0
 ENV NUXT_PORT=3000
 ENV API_URL=https://localusdt.com/api/
 ENV API_URL_BROWSER=https://localusdt.com/api/
-ENV SENTRY_DSN=https://0af76331465c474db03105bfa9b3dd92@sentry.elastoo.com/11
+ENV SENTRY_DSN=https://905f54d0abc44d54ace2ead8e0a33f28@sentry.elastoo.com/17
 ENV API_WS_URL=wss://localusdt.com/api/
 
 COPY ./frontend/ /app/

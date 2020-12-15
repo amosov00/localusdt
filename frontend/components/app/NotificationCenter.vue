@@ -170,6 +170,9 @@ export default {
 
       this.audio = new Audio(require(`~/assets/sounds/${filename}`))
       this.audio.play()
+      setTimeout(()=>{
+        this.audio.pause()
+      }, 1000)
     },
   }
 }

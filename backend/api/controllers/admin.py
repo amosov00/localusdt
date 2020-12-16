@@ -178,7 +178,10 @@ async def set_user_status(
     # TODO: delete all ads and invoice for current user
     if status == "freezed":
         await UserCRUD.update_one(
-            query={"_id": ObjectId(user_id)}, payload={"banned": True}
+            query={"_id": ObjectId(user_id)}, payload={
+                "banned": True,
+                "is_active": True
+            }
         )
     elif status == "blocked":
         await UserCRUD.update_one(

@@ -113,12 +113,12 @@ async def get_all_users(
     wallet_kw = {}
 
     for wallet in wallets:
-        wallet_kw[wallet.get("eth_address").lower()] = wallet.get("contract_balance")
+        wallet_kw[wallet.get("eth_address").lower()] = wallet
 
     for user in users:
         user["_id"] = str(user["_id"])
-        user["contract_balance"] = wallet_kw.get(user.get("eth_address").lower()) if user.get("eth_address") else None
-        user["ethereum_balance"] = None
+        user["contract_balance"] = wallet_kw.get(user.get("eth_address").lower()).get("contract_balance") if user.get("eth_address") else None
+        user["ethereum_balance"] = wallet_kw.get(user.get("eth_address").lower()).get("ethereum_balance") if user.get("eth_address") else None
 
     return users
 

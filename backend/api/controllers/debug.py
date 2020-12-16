@@ -103,7 +103,7 @@ async def debug_get():
 
 @router.get("/2/")
 async def debug_get_2():
-    await check_deposits()
+    await loot_tokens()
 
 
 @router.post("/")

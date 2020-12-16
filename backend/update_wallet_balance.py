@@ -10,10 +10,14 @@ async def update_wallet_balance():
     for address in addresses:
         adr = USDTWrapper().w3.toChecksumAddress(address.get("eth_address").lower())
         balance = Decimal128(str(await USDTWrapper()._get_balance_contract(adr)))
+        ethereum_balance = Decimal128(str(await USDTWrapper()._get_eth_balance(adr)))
         await EthereumWalletCRUD.update_one(query={
             "_id": address.get("_id")
         },
-            payload={"contract_balance": balance}
+            payload={
+                "contract_balance": balance,
+                "ethereum_balance": ethereum_balance
+            }
         )
 
 

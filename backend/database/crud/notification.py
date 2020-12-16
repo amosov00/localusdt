@@ -6,7 +6,7 @@ from fastapi import HTTPException
 
 from schemas.user import User
 from database.crud.base import BaseMongoCRUD
-from schemas.notification import Notification
+from schemas.notification import Notification, NotificationWatch
 
 
 class NotificationCRUD(BaseMongoCRUD):
@@ -50,4 +50,18 @@ class NotificationCRUD(BaseMongoCRUD):
             query={"_id": notification.get("_id")},
             payload={"watched": True}
         )
+        return True
+
+    @classmethod
+    async def watch_notifications_selectively(cls, user: User, payload: NotificationWatch):
+        for notification_id in payload.notification_ids:
+            notification = await cls.find_one(query={
+                "_id": ObjectId(notification_id),
+                "user_id": user.id
+            })
+            if notification:
+                await cls.update_one(
+                    query={"_id": ObjectId(notification.get("_id"))},
+                    payload={"watched": True}
+                )
         return True

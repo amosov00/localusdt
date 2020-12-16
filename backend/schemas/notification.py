@@ -7,7 +7,13 @@ from schemas.base import BaseModel, ObjectIdPydantic
 from schemas.invoice import InvoiceStatus
 
 
-__all__ = ["NotificationType", "Notification", "NotificationInDB", "Notifications"]
+__all__ = [
+    "NotificationType",
+    "Notification",
+    "NotificationInDB",
+    "Notifications",
+    "NotificationWatch"
+]
 
 
 class NotificationType(IntEnum):
@@ -47,3 +53,7 @@ class NotificationInDB(Notification):
 
 class Notifications(BaseModel):
     notifications: List[Notification] = Field(default=[])
+
+
+class NotificationWatch(BaseModel):
+    notification_ids: List[str] = Field(default=[])

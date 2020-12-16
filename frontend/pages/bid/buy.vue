@@ -52,11 +52,14 @@
           span {{$t('bid.fixed')}}
       Input.create-order__input(
       v-model="adForm.price"
+      
       :header="$t('bid.price')"
       :placeholder="$t('bid.price')"
       v-if="adForm.fixed_price")
       Input.create-order__input(
       v-model="adForm.profit"
+      @input="editTokenPrice"
+      @keydown.native.delete="keyPressBackspace"
       :header="$t('bid.profit')"
       :placeholder="$t('bid.profit')"
       type="number"
@@ -74,7 +77,7 @@
       v-if="profitMode === 'formula'")
       p.create-order__token-price {{$t('bid.actualCourse')}}
         =' '
-        span.green {{commaSplitting(currencyPrice)}}
+        span.green(v-if="actualPrice") {{ commaSplitting(actualPrice)}}
         span {{ returnCurrency }}/USDT
       div.create-order__gap
         Input.mr-30(
@@ -154,10 +157,14 @@ export default {
         { name: `${this.$t('main.webMoney')}`, value: 12 },
       ],
       showModal: false,
-      checkbox: false
+      checkbox: false,
+      actualPrice: null
     }
   },
   watch: {
+    currencyPrice(){
+      this.actualPrice = this.currencyPrice
+    },
     profitMode() {
       if (this.profitMode === 'fixed') {
         this.adForm.fixed_price = true
@@ -167,7 +174,6 @@ export default {
         this.adForm.price = 0
       }
     },
-
     checkbox: function() {
       if (this.checkbox) {
         this.adForm.condition = this.user.about_me
@@ -182,6 +188,10 @@ export default {
       currencyPrice: 'currencyPrice',
       currencyFullData: 'currencyFullData'
     }),
+    currencyPriceC(){
+      this.actualPrice  = this.currencyPrice
+      return this.actualPrice
+    },
     returnCurrency(){
       switch(this.currencyFullData.type){
         case 1:
@@ -212,6 +222,13 @@ export default {
     }
   },
   methods: {
+    keyPressBackspace(){
+      this.adForm.profit = 0
+      this.actualPrice = this.currencyPrice
+    },
+    editTokenPrice(){
+      this.actualPrice =  this.currencyPrice + (+this.adForm.profit * this.currencyPrice / 100)
+    },
     async createAd(save = false) {
       if (this.adForm.fixed_price) {
         if (isNaN(Number(this.adForm.price)) || Number(this.adForm.price) <= 0) {
@@ -312,6 +329,9 @@ export default {
     return {
       adForm
     }
+  },
+  mounted(){
+    this.actualPrice = this.currencyPrice
   }
 }
 </script>

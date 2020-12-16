@@ -21,7 +21,7 @@
         </div>
       </div>
     </header>
-    <div v-if="user" class="mt-30 mb-30">
+    <div v-if="user && order.status < 3 && user.username === order.username" class="mt-30 mb-30">
       <label for="radio-online" class="radio mr-15">
         <input id="radio-online" type="radio" name="status" value="on" v-model="adStatus">
         <span class="radio__check"></span>

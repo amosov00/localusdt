@@ -102,16 +102,18 @@ export default {
 
   methods: {
     async goToInvoice(msg, list) {
-      list.forEach( async e=>{
+      let mass = list.map( e=>{
         if(msg.invoice_id == e.invoice_id){
-          let id = e._id ? e._id : e.invoice_id
-          this.$axios.get(`/notification/watch/${id}/`)
-          .then(async() => {
-            e.watched = true
-            return
-          })
+            if(e.invoice_id){
+              e.watched = true
+            }
+            return e._id
         }
-      })
+      }).filter(e=> e !== undefined)
+      let data = {
+        notification_ids : mass
+      }
+      this.$axios.put(`/notification/watch/`, data)
       this.notif_list.sort((e)=>{
         return  e.watched == true ? 1 : -1 
       })

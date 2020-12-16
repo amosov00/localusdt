@@ -136,11 +136,11 @@ computed: {
 },
 created() {
     this.interval = setInterval(async() => {
-    await this.$store.dispatch('invoice/fetchInvoiceById', this.invoiceId)
-    if (this.invoice === 'waiting_for_tokens') {
-        clearInterval(this.interval)
-    }
-    }, 3000)
+        await this.$store.dispatch('invoice/fetchInvoiceById', this.invoiceId)
+        if (this.invoice === 'waiting_for_tokens') {
+            clearInterval(this.interval)
+        }
+    }, 10000)
 },
 mounted() {
     this.timer = setInterval(() => {

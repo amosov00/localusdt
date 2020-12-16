@@ -1,7 +1,7 @@
 <template>
   <section class="order">
     <header class="order__header">
-      <h1 v-if="order.type === 1" class="order__title" >{{$t('profile.buyUSDT')}}</h1>
+      <h1 v-if="order.type === 2" class="order__title" >{{$t('profile.buyUSDT')}}</h1>
       <h1 v-else class="order__title">{{$t('profile.sellUSDT')}}</h1>
       <!--<div>{{ order }}</div>-->
       <div class="order__header-additional">

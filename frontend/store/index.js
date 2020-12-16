@@ -91,6 +91,7 @@ export const actions = {
         this.$router.push({ path: '/' })
       })
       .catch(error => {
+        console.log('mess', error.response.data[0].message);
         if(error.response.data[0].message == 'activate email or you are blocked'){
           this.$toast.showMessage({
             content: $nuxt.$t('store.signInError'),
@@ -119,7 +120,6 @@ export const actions = {
     commit('setBalance', data.balance_usdt)
   },
   async changeProfile({}, data) {
-    console.log('/account/user/');
     return await this.$axios
       .put('/account/user/', data)
       .then(_ => {

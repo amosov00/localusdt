@@ -11,12 +11,15 @@
         :selectedOptionProp="adForm.payment_method"
         v-model="adForm.payment_method"
         :width="350"
+        noCurrency
         :header="$t('bid.payType')"
         )
         Select(
         :options="currencyOptions"
         v-model="adForm.currency"
         :width="80"
+        @defaultProfit="resetProfit"
+        profitForm
         :header="$t('bid.currency')"
         hideArrow)
       Input.create-order__input(
@@ -40,6 +43,7 @@
           type="radio"
           value="formula"
           name="profit-mode"
+          @click="defaultRate"
           v-model="profitMode")
           span {{$t('bid.formula')}}
         label(for="profit-is-fixed")
@@ -48,6 +52,7 @@
           type="radio"
           value="fixed"
           name="profit-mode"
+          @click="defaultRate"
           v-model="profitMode")
           span {{$t('bid.fixed')}}
       Input.create-order__input(
@@ -222,6 +227,14 @@ export default {
     }
   },
   methods: {
+    resetProfit(){
+      console.log(1111);
+      this.adForm.profit = 0
+      console.log(this.adForm.profit);
+    },
+    defaultRate(){
+      this.actualPrice = this.currencyPrice
+    },
     keyPressBackspace(){
       this.adForm.profit = 0
       this.actualPrice = this.currencyPrice

@@ -84,7 +84,7 @@ export default {
       if (this.user) {
         await this.$store.dispatch('fetchBalance')
       }
-    }, 5000)
+    }, 10000)
   },
   beforeDestroy() {
     clearInterval(this.interval)

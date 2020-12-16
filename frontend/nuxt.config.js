@@ -39,8 +39,7 @@ export default {
     '~/plugins/vee-validate.js',
     '~/plugins/vue-clipboard.js',
     '~/plugins/vue-notification.js',
-    '~/plugins/i18n.js',
-    {src:'~/plugins/vue-socket.client.js',  mode: 'client', ssr: false }
+    '~/plugins/i18n.js'
   ],
   modules: [
     '@nuxtjs/axios',

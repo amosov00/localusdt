@@ -40,11 +40,9 @@ export const actions = {
             if(invoiceForm.chatText){
               ws.send(invoiceForm.chatText)
             }
-            console.log('SOCKET FIRST SEND');
             setTimeout(() => {
               socketPing = setInterval(() => {
                 ws.send('');
-                console.log(1);
               }, 50000);
             }, 2000);
           }

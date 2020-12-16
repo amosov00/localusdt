@@ -5,14 +5,14 @@ let cookieOpts = {
   maxAge: 60 * 60 * 24 * 7,
 }
 
-// if (process.env.NODE_ENV === 'production') {
-//   const additional = {
-//     sameSite: 'none',
-//     secure: true
-//   }
+if (process.env.NODE_ENV === 'production') {
+  const additional = {
+    sameSite: 'none',
+    secure: true
+  }
 
-//   cookieOpts = { ...additional }
-// }
+  cookieOpts = { ...additional }
+}
 
 export const state = () => ({
   user: null,

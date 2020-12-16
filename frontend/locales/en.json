@@ -106,7 +106,7 @@
     "subtitle": "Select the type of deal",
     "buyUSDT": "Buy USDT",
     "sellUSDT": "Sell USDT",
-    "actualCourse": "Current token rate",
+    "actualCourse": "Token rate",
     "payType": "Payment method",
     "currency": "Currencies",
     "otherVariant": "Your own variant",

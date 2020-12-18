@@ -83,7 +83,6 @@ export default {
     }
     this.$socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
-      console.log(data.id);
       let resFind = this.notif_list.find((e, i, a)=>{
         return e._id == data.id
       })

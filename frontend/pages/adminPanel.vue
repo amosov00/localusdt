@@ -24,7 +24,7 @@
                           {{ data.contract_balance }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            test
+                            {{data.ethereum_balance ? data.ethereum_balance / (10**18) : null}}
                         </td>
                         <td class="table__data paddingSmall" style="text-align:center; padding-right:10px;">
                              <Select

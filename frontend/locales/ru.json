@@ -185,13 +185,13 @@
   "status": {
     "cancelled": "Отменен",
     "waiting_for_payment": "Ожидание подтверждения платежа покупателем",
-    "approved": "ПодтвержПдено",
+    "approved": "Подтверждено",
     "waiting_for_tokens": "Ожидание отправки токенов",
     "completed": "Завершен",
     "small_waiting_for_payment": "В процессе",
     "small_approved": "Покупатель отправил деньги",
     "small_waiting_for_tokens": "В процессе",
-    "small_completed": "Завершен",
+    "small_completed": "Сделка завершена",
     "active": "Активно",
     "notActive": "Не активно",
     "deleted": "Удален",
@@ -258,7 +258,8 @@
     "sell": "Продать Tether",
     "reg": "Регистрация",
     "signIn": "Вход",
-    "newOrder": "Разместить объявление"
+    "newOrder": "Разместить объявление",
+    "rates":"Тарифы"
   },
   "main": {
     "buyUSDT": "Купить USDT",

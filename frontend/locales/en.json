@@ -25,7 +25,7 @@
     "orderDeleteError": "Error: Failed to delete ad",
     "courseError": "Unable to get the current USDT/RUB rate",
     "signInError": "Unable to login. Please check the spelling of your login and password",
-    "signInError": "activate email or you are blocked, please contact technical support",
+    "signInBlocked": "activate email or you are blocked, please contact technical support",
     "signUpEmailError": "User with this email already exists",
     "signUpError": "New user registration failed!",
     "invoiceCancelError": "Error while canceling order!",
@@ -189,9 +189,9 @@
     "waiting_for_tokens": "Waiting for tokens to be sent",
     "completed": "Completed",
     "small_waiting_for_payment": "In progress",
-    "small_approved": "Approved",
+    "small_approved": "Buyer sent money",
     "small_waiting_for_tokens": "In progress",
-    "small_completed": "Completed",
+    "small_completed": "Deal completed",
     "active": "Active",
     "notActive": "Not active",
     "deleted": "Deleted",
@@ -258,7 +258,8 @@
     "sell": "Sell Tether",
     "reg": "Registration",
     "signIn": "Sign in",
-    "newOrder": "Create ad"
+    "newOrder": "Create ad",
+    "rates":"Rates"
   },
   "main": {
     "buyUSDT": "Buy USDT",

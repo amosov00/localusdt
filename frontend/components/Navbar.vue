@@ -15,9 +15,11 @@
           >{{ link.title }}
           </nuxt-link
           >
-          
           <nuxt-link class="nav__item" :to="$userIsLoggedIn() ? '/bid' : '/signup'">
             {{ $t('navbar.newOrder')}}
+          </nuxt-link>
+          <nuxt-link class="nav__item" :to="'/rates'">
+            {{ $t('navbar.rates')}}
           </nuxt-link>
         </ul>
       </nav>

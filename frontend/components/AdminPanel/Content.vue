@@ -7,7 +7,7 @@
         <div class="adminPanel__wrapper_searchForm">
             <Input
             type="test"
-            :header="'Найти сделку'"
+            :header="inputTitle"
             style="margin-right:30px;"
             :width="500"
             v-model="input"
@@ -29,7 +29,7 @@ import Input from '@/components/app/Input'
 import AppTable from '@/components/app/AppTable'
 
 export default {
-    props:['title', 'dataInvoices', 'headers', 'type'],
+    props:['title', 'dataInvoices', 'headers', 'type', 'inputTitle'],
     name:'Content',
     data(){
         return{

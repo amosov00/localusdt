@@ -77,15 +77,20 @@ export default {
     this.$connect(`${process.env.API_WS_URL}notification/ws/`)
     this.$socket.onopen = (e) => {
       this.connected = true
-     
     }
     this.$socket.onerror = (e) => {
       this.connected = false
     }
     this.$socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
-      this.notif_list.unshift(data)
-      this.notify(data)
+      console.log(data);
+      let resFind = this.notif_list.find((e, i, a)=>{
+        return e._id == data.id
+      })
+      if(!resFind){
+        this.notif_list.unshift(data)
+        this.notify(data)
+      }
     }
   },
 
@@ -102,16 +107,18 @@ export default {
 
   methods: {
     async goToInvoice(msg, list) {
-      list.forEach( async e=>{
+      let mass = list.map( e=>{
         if(msg.invoice_id == e.invoice_id){
-          let id = e._id ? e._id : e.invoice_id
-          this.$axios.get(`/notification/watch/${id}/`)
-          .then(async() => {
-            e.watched = true
-            return
-          })
+            if(e.invoice_id){
+              e.watched = true
+            }
+            return e._id
         }
-      })
+      }).filter(e=> e !== undefined)
+      let data = {
+        notification_ids : mass
+      }
+      this.$axios.put(`/notification/watch/`, data)
       this.notif_list.sort((e)=>{
         return  e.watched == true ? 1 : -1 
       })
@@ -146,7 +153,13 @@ export default {
     },
 
     notify(data) {
-      const title = this.invoiceStatusShort(data.new_status)
+      let title;
+      if(data.type == 5){
+        title = this.$t('status.newMessage')
+      }else{
+        title = this.invoiceStatusShort(data.new_status)
+      }
+      
       const text = `${data.invoice_id}<div class="time">${this.formatDate(data.created_at)}</div>`
 
       this.$notify({

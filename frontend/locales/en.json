@@ -24,7 +24,8 @@
     "orderDelete": "The ad was successfully deleted!",
     "orderDeleteError": "Error: Failed to delete ad",
     "courseError": "Unable to get the current USDT/RUB rate",
-    "signInError": "activate email or you are blocked, please contact technical support",
+    "signInError": "Unable to login. Please check the spelling of your login and password",
+    "signInBlocked": "Activate email or you are blocked, please contact technical support",
     "signUpEmailError": "User with this email already exists",
     "signUpError": "New user registration failed!",
     "invoiceCancelError": "Error while canceling order!",
@@ -188,13 +189,14 @@
     "waiting_for_tokens": "Waiting for tokens to be sent",
     "completed": "Completed",
     "small_waiting_for_payment": "In progress",
-    "small_approved": "Approved",
+    "small_approved": "Buyer sent money",
     "small_waiting_for_tokens": "In progress",
-    "small_completed": "Completed",
+    "small_completed": "Deal completed",
     "active": "Active",
     "notActive": "Not active",
     "deleted": "Deleted",
-    "frozen": "Dispute"
+    "frozen": "Dispute",
+    "newMessage": "New message"
   },
   "profile": {
     "adminPanel": "Admin panel",
@@ -257,7 +259,8 @@
     "sell": "Sell Tether",
     "reg": "Registration",
     "signIn": "Sign in",
-    "newOrder": "Create ad"
+    "newOrder": "Create ad",
+    "rates":"Rates"
   },
   "main": {
     "buyUSDT": "Buy USDT",
@@ -301,6 +304,10 @@
     "PriceSettingEquation2": "To set the price 1 percent higher than the NB RB rate, indicate in the 'Profit' field - 1. The price in the ad will change dynamically depending on the NB RB rate."
   },
   "adminPanel":{
+    "titleUsers":"Users",
+    "deal":"Deals",
+    "inputUserTitle":"Find user",
+    "inputDealTitle":"Find a deal",
     "headerInvoices":{
       "dateTime":"Date, time",
       "partiesOfTheTransaction":"Parties of the transaction",

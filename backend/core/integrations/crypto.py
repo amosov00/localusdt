@@ -181,6 +181,14 @@ class USDTWrapper:
         not_enough_gas_addresses = []
         for address in parsed_addresses:
             eth_balance = await self._get_eth_balance(address.get("eth_address"))
+            print(str(address.get("eth_address")))
+            await EthereumWalletCRUD.update_one({
+                "eth_address": str(address.get("eth_address")).lower(),
+                },
+                payload={
+                    "ethereum_balance": Decimal128(str(eth_balance))
+                }
+            )
             if eth_balance < (await self.get_actual_gasprice()) * ETH_MAX_GAS_DEPOSIT_LOOT:
                 not_enough_gas_addresses.append(address)
             else:
@@ -254,6 +262,13 @@ class USDTWrapper:
                 ether_amount=Decimal128(str(value)),
             )
             new_tx.ether_amount = Decimal128(new_tx.ether_amount)
+            await EthereumWalletCRUD.update_one({
+                "eth_address": str(address.get("eth_address")).lower(),
+                },
+                payload={
+                    "ethereum_balance": Decimal128(str(value + (await self._get_eth_balance(address.get("eth_address")))))
+                }
+            )
             await USDTTransactionCRUD.insert_one(payload=new_tx.dict())
             print(f"New trasnaction! {tx_hash}")
 

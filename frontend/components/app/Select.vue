@@ -44,7 +44,8 @@ export default {
     },
     header: String,
     width: Number,
-    hideArrow: Boolean
+    hideArrow: Boolean,
+    profitForm:Boolean
   },
   data() {
     return {
@@ -77,6 +78,7 @@ export default {
       this.areOptionsVisible = false
       if(!this.noCurrency)  this.$store.dispatch('fetchCurrencyPrice', option.value)
       if(this.status && this.user) this.$store.dispatch('adminPanel/userStatus', {value: option.value, user:this.user})
+      if(this.profitForm) this.$emit('defaultProfit')
       this.$emit('input', option.value)
     },
     hideSelect() {

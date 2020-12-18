@@ -2,7 +2,7 @@
   <div>
       <Tabs>
             <tab name="Пользователи" :selected="true">
-                <Content v-if="users" title="Сделки" type="users" :dataInvoices="users" :headers="headersUsers">
+                <Content v-if="users" :title="$t('adminPanel.titleUsers')" :inputTitle="$t('adminPanel.inputUserTitle')"  type="users" :dataInvoices="users" :headers="headersUsers">
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
                             <p>{{ data.username }}</p>
@@ -24,7 +24,7 @@
                           {{ data.contract_balance }}
                         </td>
                         <td class="table__data paddingNull" style="text-align:center;">
-                            test
+                            {{data.ethereum_balance ? data.ethereum_balance / (10**18) : null}}
                         </td>
                         <td class="table__data paddingSmall" style="text-align:center; padding-right:10px;">
                              <Select
@@ -42,7 +42,7 @@
                 </Content>
             </tab>
             <tab name="Сделки" >
-                <Content :key="componentInvoice" v-if="invoiceBoolean" title="Сделки" type="deal" :dataInvoices="dataInvoice" :headers="headersInvoice">
+                <Content :key="componentInvoice" v-if="invoiceBoolean" :title="$t('adminPanel.deal')" :inputTitle="$t('adminPanel.inputDealTitle')" type="deal" :dataInvoices="dataInvoice" :headers="headersInvoice">
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
                             <p>{{ formatDate(data.finished_at) }}</p>

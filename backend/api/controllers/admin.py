@@ -113,12 +113,12 @@ async def get_all_users(
     wallet_kw = {}
 
     for wallet in wallets:
-        wallet_kw[wallet.get("eth_address").lower()] = wallet.get("contract_balance")
+        wallet_kw[wallet.get("eth_address").lower()] = wallet
 
     for user in users:
         user["_id"] = str(user["_id"])
-        user["contract_balance"] = wallet_kw.get(user.get("eth_address").lower()) if user.get("eth_address") else None
-        user["ethereum_balance"] = None
+        user["contract_balance"] = wallet_kw.get(user.get("eth_address").lower()).get("contract_balance") if user.get("eth_address") else None
+        user["ethereum_balance"] = wallet_kw.get(user.get("eth_address").lower()).get("ethereum_balance") if user.get("eth_address") else None
 
     return users
 
@@ -178,7 +178,10 @@ async def set_user_status(
     # TODO: delete all ads and invoice for current user
     if status == "freezed":
         await UserCRUD.update_one(
-            query={"_id": ObjectId(user_id)}, payload={"banned": True}
+            query={"_id": ObjectId(user_id)}, payload={
+                "banned": True,
+                "is_active": True
+            }
         )
     elif status == "blocked":
         await UserCRUD.update_one(

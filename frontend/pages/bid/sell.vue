@@ -10,6 +10,7 @@
         :selectedOptionProp="adForm.payment_method"
         v-model="adForm.payment_method"
         :width="350"
+        noCurrency
         :header="$t('bid.payType')"
         )
         Select(

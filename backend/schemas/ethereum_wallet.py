@@ -15,6 +15,7 @@ __all__ = [
 class EthereumWallet(BaseModel):
     eth_address: Optional[str] = Field(default=None)
     contract_balance: Optional[Decimal] = Field(default=None)
+    ethereum_balance: Optional[Decimal] = Field(default=None)
 
 
 class EthereumWalletResponse(EthereumWallet):

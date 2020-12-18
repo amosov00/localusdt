@@ -83,10 +83,10 @@ export default {
     }
     this.$socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
+      console.log(data);
       let resFind = this.notif_list.find((e, i, a)=>{
         return e._id == data.id
       })
-      console.log('resFind',resFind);
       if(!resFind){
         this.notif_list.unshift(data)
         this.notify(data)
@@ -153,7 +153,13 @@ export default {
     },
 
     notify(data) {
-      const title = this.invoiceStatusShort(data.new_status)
+      let title;
+      if(data.type == 5){
+        title = this.$t('status.newMessage')
+      }else{
+        title = this.invoiceStatusShort(data.new_status)
+      }
+      
       const text = `${data.invoice_id}<div class="time">${this.formatDate(data.created_at)}</div>`
 
       this.$notify({

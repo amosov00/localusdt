@@ -195,7 +195,8 @@
     "active": "Активно",
     "notActive": "Не активно",
     "deleted": "Удален",
-    "frozen": "Спор"
+    "frozen": "Спор",
+    "newMessage": "Новое сообщение"
   },
   "profile": {
     "adminPanel": "Админ панель",

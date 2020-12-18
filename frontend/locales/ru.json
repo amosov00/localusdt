@@ -304,6 +304,10 @@
     "PriceSettingEquation2": "Чтобы выставить цену на 1 процент выше курса, НБ РБ, укажите в поле 'Прибыль' - 1. Цена в объявлении будет меняться динамически в зависимости от курса НБ РБ"
   },
   "adminPanel":{
+    "titleUsers":"Пользователи",
+    "deal":"Сделки",
+    "inputUserTitle":"Найти пользователя",
+    "inputDealTitle":"Найти сделку",
     "headerInvoices":{
       "dateTime":"Дата, время",
       "partiesOfTheTransaction":"Стороны сделки",

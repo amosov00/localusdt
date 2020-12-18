@@ -304,6 +304,10 @@
     "PriceSettingEquation2": "To set the price 1 percent higher than the NB RB rate, indicate in the 'Profit' field - 1. The price in the ad will change dynamically depending on the NB RB rate."
   },
   "adminPanel":{
+    "titleUsers":"Users",
+    "deal":"Deals",
+    "inputUserTitle":"Find user",
+    "inputDealTitle":"Find a deal",
     "headerInvoices":{
       "dateTime":"Date, time",
       "partiesOfTheTransaction":"Parties of the transaction",

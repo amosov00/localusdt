@@ -25,7 +25,7 @@
     "orderDeleteError": "Error: Failed to delete ad",
     "courseError": "Unable to get the current USDT/RUB rate",
     "signInError": "Unable to login. Please check the spelling of your login and password",
-    "signInBlocked": "activate email or you are blocked, please contact technical support",
+    "signInBlocked": "Activate email or you are blocked, please contact technical support",
     "signUpEmailError": "User with this email already exists",
     "signUpError": "New user registration failed!",
     "invoiceCancelError": "Error while canceling order!",

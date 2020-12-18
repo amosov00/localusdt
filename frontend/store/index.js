@@ -94,7 +94,7 @@ export const actions = {
         console.log('mess', error.response.data[0].message);
         if(error.response.data[0].message == 'activate email or you are blocked'){
           this.$toast.showMessage({
-            content: $nuxt.$t('store.signInError'),
+            content: $nuxt.$t('store.signInBlocked'),
             red: true
           })
           throw new Error("Ошибка!")

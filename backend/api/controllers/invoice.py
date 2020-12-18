@@ -1,3 +1,5 @@
+import asyncio
+
 from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Body, Path, WebSocket, status
@@ -9,6 +11,7 @@ from core.integrations.chat import ChatWrapper
 from core.mechanics.notification_manager import NotificationSender
 from database.crud.invoice import InvoiceCRUD
 from database.crud.chat import ChatRoomCRUD, ChatMessageCRUD
+from database.crud import UserCRUD
 from api.dependencies import get_user, get_user_websocket, user_not_banned
 from schemas.invoice import (
     InvoiceCreate,
@@ -17,8 +20,9 @@ from schemas.invoice import (
     InvoiceInSearch,
     InvoiceWithAds
 )
+from core.utils import MailGunEmail
 from schemas.chat import ChatRoomResponse
-from schemas.user import User
+from schemas.user import User, UserLanguage
 
 __all__ = ["router"]
 
@@ -79,12 +83,22 @@ async def websocket_endpoint(
             }
             if not message["message_body"]:
                 continue
+
+            invoice = await InvoiceCRUD.find_one(query={
+                "chat_id": chatroom.get("_id")
+            })
+            if not (await ChatMessageCRUD.find_many({"chatroom_id": ObjectId(chatroom_id)})):
+                for user_id in chatroom.get("participants"):
+                    if user.id != user_id:
+                        user_to = await UserCRUD.find_by_id(user_id)
+                        asyncio.create_task(
+                            MailGunEmail(
+                                user_to.get("language") if user_to.get("language") else UserLanguage.RU
+                            ).send_new_message_notification(to=user_to.get("email"), invoice_id=invoice.get("_id"))
+                        )
             await ChatMessageCRUD.insert_one({
                 **message,
                 "chatroom_id": ObjectId(chatroom_id)
-            })
-            invoice = await InvoiceCRUD.find_one(query={
-                "chat_id": chatroom.get("_id")
             })
             for user_id in chatroom.get("participants"):
                 if user.id != user_id:

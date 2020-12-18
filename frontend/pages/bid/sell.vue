@@ -17,6 +17,8 @@
         :options="currencyOptions"
          :selectedOptionProp="adForm.currency"
         v-model="adForm.currency"
+        @defaultProfit="resetProfit"
+        profitForm
         :width="80"
         :header="$t('bid.currency')"
         )
@@ -38,6 +40,7 @@
       div.radio-group
         label(for="profit-is-formula")
           input(id="profit-is-formula"
+           @click="defaultRate"
           type="radio"
           value="formula"
           name="profit-mode"
@@ -49,6 +52,7 @@
           type="radio"
           value="fixed"
           name="profit-mode"
+           @click="defaultRate"
           v-model="profitMode")
           span {{$t('bid.fixed')}}
       Input.create-order__input(
@@ -237,6 +241,13 @@ export default {
     }
   },
   methods: {
+    resetProfit(){
+      this.adForm.profit = 0
+    },
+    defaultRate(){
+      this.adForm.profit = 0
+      this.actualPrice = this.currencyPrice
+    },
     keyPressBackspace(){
       this.adForm.profit = 0
       this.actualPrice = this.currencyPrice

@@ -227,3 +227,18 @@ class MailGunEmail:
         await self._send_message(msg)
 
         return None
+
+    async def send_new_message_notification(self, to: str, invoice_id: str) -> None:
+        link = MailGunEmail._get_link(invoice_id=invoice_id, method="notification")
+        msg_body = self._get_template_body('message_notification', link=link, to=to)
+
+        msg = self.create_message(
+            to,
+            msg_body,
+            msg_body,
+            "new message"
+        )
+
+        await self._send_message(msg)
+
+        return None

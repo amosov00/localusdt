@@ -228,11 +228,10 @@ export default {
   },
   methods: {
     resetProfit(){
-      console.log(1111);
       this.adForm.profit = 0
-      console.log(this.adForm.profit);
     },
     defaultRate(){
+      this.adForm.profit = 0
       this.actualPrice = this.currencyPrice
     },
     keyPressBackspace(){

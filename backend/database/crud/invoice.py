@@ -177,6 +177,8 @@ class InvoiceCRUD(BaseMongoCRUD):
                 invoice_id=invoice["_id"],
                 new_status=status,
             )
+            return
+
         if user.id != seller["_id"]:
             await NotificationSender.send_invoice_status_change(
                 seller["_id"],

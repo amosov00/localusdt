@@ -77,15 +77,21 @@ export default {
     this.$connect(`${process.env.API_WS_URL}notification/ws/`)
     this.$socket.onopen = (e) => {
       this.connected = true
-     
     }
     this.$socket.onerror = (e) => {
       this.connected = false
     }
     this.$socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
-      this.notif_list.unshift(data)
-      this.notify(data)
+      console.log(data.id);
+      let resFind = this.notif_list.find((e, i, a)=>{
+        return e._id == data.id
+      })
+      console.log('resFind',resFind);
+      if(!resFind){
+        this.notif_list.unshift(data)
+        this.notify(data)
+      }
     }
   },
 

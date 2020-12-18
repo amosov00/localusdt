@@ -50,6 +50,7 @@ export const actions = {
           ws.onclose = async (event) => {
             clearInterval(socketPing);
           };
+          
         this.$toast.showMessage({
           content: $nuxt.$t('store.invoiceCreate'),
           green: true

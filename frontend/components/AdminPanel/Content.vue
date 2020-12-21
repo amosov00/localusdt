@@ -20,7 +20,7 @@
             </template>
         </AppTable>
     </div>
-</div>    
+</div>
 </template>
 
 <script>
@@ -43,17 +43,11 @@ export default {
         AppTable
     },
     methods:{
-    search(){
-        this.filterData =  this.dataInvoices.filter(e=> {
+    async search(){
+        let data = this.dataInvoices.filter(e=> {
             if(this.type === 'users'){
-                if(e.eth_address !== null && e.username !== null){
-                    return  e.eth_address.indexOf(this.input) > -1 ||
-                            e.username.indexOf(this.input) > -1 ||
-                            e.email.indexOf(this.input) > -1 
-                }else{
-                    return e.email.indexOf(this.input) > -1 
-                }
-                
+                    return  e.email?.indexOf(this.input) > -1 ||
+                            e.username?.indexOf(this.input) > -1
             }
             if(this.type === 'deal'){
                 if(e.buyer_nickname !== null){
@@ -63,6 +57,11 @@ export default {
                 }
             }
         })
+        if(data.length > 0) this.filterData = data
+        if(data.length < 1){
+          let result = await this.$axios.get(`/admin/users/?eth_address=${this.input}`);
+          if(result.data.length > 0) this.filterData = result.data
+        }
         this.$emit('clickPageOne', 1)
     }
     },

@@ -89,7 +89,7 @@ export default {
       })
       if(!resFind){
         this.notif_list.unshift(data)
-        this.Пр(data)
+        this.notify(data)
       }
     }
   },

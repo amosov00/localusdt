@@ -2,6 +2,7 @@
   <div>
       <Tabs>
             <tab name="Пользователи" :selected="true">
+                <!-- tab USER -->
                 <Content v-if="users" :title="$t('adminPanel.titleUsers')" :inputTitle="$t('adminPanel.inputUserTitle')"  type="users" :dataInvoices="users" :headers="headersUsers">
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
@@ -42,11 +43,12 @@
                 </Content>
             </tab>
             <tab name="Сделки" >
+                <!-- tab Deal -->
                 <Content :key="componentInvoice" v-if="invoiceBoolean" :title="$t('adminPanel.deal')" :inputTitle="$t('adminPanel.inputDealTitle')" type="deal" :dataInvoices="dataInvoice" :headers="headersInvoice">
                     <template slot-scope="{ data }">
                         <td class="table__data paddingSmall ">
                             <p>{{ formatDate(data.finished_at) }}</p>
-                            <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{data.ads_id}}</p>
+                            <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{data._id}}</p>
                         </td>
                         <td class="table__data paddingSmall ">
                             <p>

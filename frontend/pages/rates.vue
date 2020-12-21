@@ -1,7 +1,7 @@
 <template>
   <section>
         <h1 class="rate_H">
-            Тарифы и комиссии на LocalUsdt.com
+            Тарифы и комиссии на LocalUsdt.com <br>
             В целях продвижения платформы, мы не берем комиссии за покупку-продажу USDT
             до 10 февраля 2020г.
         </h1>
@@ -18,7 +18,7 @@
         </div>
         <div class="rate_p">
             <h3 class="rate_p">
-                Продажа USDT 
+                Продажа USDT
             </h3>
             <p class="rate_p">Размер комиссии различается в зависимости от способа продажи.</p>
             <ul style="margin-left:30px">
@@ -34,7 +34,7 @@
             </ul>
         </div>
         <h3 class="rate_p">
-            Пополнение и вывод USDT на внешние кошельки 
+            Пополнение и вывод USDT на внешние кошельки
         </h3>
         <p class="rate_p">Размер комиссии различается в зависимости от способа продажи.</p>
         <ul class="rate_p" style="margin-left:30px">
@@ -43,7 +43,7 @@
             </li>
              <li>
                  <p>
-                    Комиссия за вывод USDT на внешний кошелек зависит от суммы транзакции 
+                    Комиссия за вывод USDT на внешний кошелек зависит от суммы транзакции
                  </p>
                  <p>
                     $0 - $19,99 = 1 USDT
@@ -68,20 +68,24 @@ export default {
 }
 </script>
 
-<style>
-    .rate_H{
-        padding-top: 40px;
-        padding-bottom: 40px;
-        text-align: center;
-        border-bottom: 2px solid #f3f3f3;
-    }
-    .rate_H2{
-        font-size: 25px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        margin-top: 40px;
-    }
-    .rate_p{
-        margin-bottom: 20px;
-    }
+<style   scoped>
+.rate_H{
+    padding-top: 40px;
+    padding-bottom: 40px;
+    text-align: center;
+    border-bottom: 2px solid #f3f3f3;
+}
+.rate_H2{
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+.rate_p{
+    margin-bottom: 20px;
+}
+ul > li {
+  line-height: 30px;
+  margin-bottom: 15px;
+}
 </style>

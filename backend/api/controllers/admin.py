@@ -105,9 +105,13 @@ async def freeze_invoice(
 
 @router.get("/users/", response_model=Optional[List[UserAdminView]], response_model_exclude={"password"})
 async def get_all_users(
-    user: User = Depends(user_is_staff_or_superuser)
+    user: User = Depends(user_is_staff_or_superuser),
+    eth_address: str = Query(default=None)
 ):
-    users = await UserCRUD.find_many({})
+    if eth_address:
+        users = await UserCRUD.find_many({"eth_address": eth_address.lower()})
+    else:
+        users = await UserCRUD.find_many({})
 
     wallets = await EthereumWalletCRUD.find_many({})
     wallet_kw = {}

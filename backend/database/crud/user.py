@@ -54,7 +54,7 @@ class UserCRUD(BaseMongoCRUD):
             token = encode_jwt_token({"id": str(user["_id"])})
             if not user.get("is_active"):
                 raise HTTPException(HTTPStatus.BAD_REQUEST, "activate email or you are blocked")
-            return {"token": token, "user": User(**user).dict()}
+            return {"token": token, "user": user}
         else:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "wrong input")
 

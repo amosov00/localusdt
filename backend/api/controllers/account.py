@@ -26,7 +26,7 @@ __all__ = ["router"]
 router = APIRouter()
 
 
-@router.post("/login/", response_model=UserLoginResponse, response_model_exclude={"_id"})
+@router.post("/login/", response_model=UserLoginResponse)
 async def account_login(data: UserLogin = Body(...)):
     return await UserCRUD.authenticate(data.email, data.password)
 

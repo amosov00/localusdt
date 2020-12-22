@@ -82,7 +82,7 @@ export const actions = {
         
         this.$axios.setToken(token, 'Bearer')
         this.$cookies.set('token', token, cookieOpts)
-
+        console.log('login', user);
         commit('setUser', user)
         this.$toast.showMessage({
           content: $nuxt.$t('store.login'),

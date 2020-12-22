@@ -34,16 +34,16 @@
                   span.notify-center__amount(v-else) {{ $t('other.new') }}
                   span(v-if="msg.new_status")
                     = ': '
-                  span.color-green {{ invoiceStatusShort(msg.new_status) }}
+                  span.color-green {{ msg.type !== 5 ? invoiceStatusShort(msg.new_status) : $t('status.newMessage') }}
                 div.notify-center__msg-body
                   div.notify-center__msg-content {{ msg.invoice_id }}
                   div.notify-center__msg-time {{ formatDate(msg.created_at) }}
               div(v-else)
                 div.notify-center__msg-title
                   span {{ $t('other.order') }}
-                  span(v-if="msg.new_status")
+                  span(v-if="msg.new_status || msg.type == 5")
                     = ': '
-                  span.color-green {{invoiceStatusShort(msg.new_status) }}
+                  span.color-green {{ msg.type !== 5 ? invoiceStatusShort(msg.new_status) : $t('status.newMessage') }}
                 div.notify-center__msg-body
                   div.notify-center__msg-content {{ msg.invoice_id }}
                   div.notify-center__msg-time {{ formatDate(msg.created_at) }}
@@ -83,9 +83,9 @@ export default {
     }
     this.$socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
-      console.log(data);
       let resFind = this.notif_list.find((e, i, a)=>{
-        return e._id == data.id
+        if(e.id && e.id == data.id ) return true
+        if(e._id && e._id == data.id ) return true
       })
       if(!resFind){
         this.notif_list.unshift(data)
@@ -154,6 +154,7 @@ export default {
 
     notify(data) {
       let title;
+      console.log(data);
       if(data.type == 5){
         title = this.$t('status.newMessage')
       }else{

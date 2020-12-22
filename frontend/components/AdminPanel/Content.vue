@@ -46,14 +46,14 @@ export default {
     async search(){
         let data = this.dataInvoices.filter(e=> {
             if(this.type === 'users'){
-                    return  e.email?.indexOf(this.input) > -1 ||
-                            e.username?.indexOf(this.input) > -1
+                    return  e.email?.toLowerCase().indexOf(this.input.toLowerCase()) > -1 ||
+                            e.username?.toLowerCase().indexOf(this.input.toLowerCase()) > -1
             }
             if(this.type === 'deal'){
                 if(e.buyer_nickname !== null){
-                    return  e.buyer_nickname.indexOf(this.input) !== -1 ||
-                            e.seller_nickname.indexOf(this.input) !== -1 ||
-                            e._id.indexOf(this.input) !== -1
+                    return  e.buyer_nickname?.toLowerCase().indexOf(this.input.toLowerCase()) !== -1 ||
+                            e.seller_nickname?.toLowerCase().indexOf(this.input.toLowerCase()) !== -1 ||
+                            e._id?.toLowerCase().indexOf(this.input.toLowerCase()) !== -1
                 }
             }
         })

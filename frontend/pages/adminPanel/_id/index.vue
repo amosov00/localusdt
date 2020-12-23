@@ -11,7 +11,7 @@
             <td class="table__data" v-if="row.ads_type === 1">{{$t('profile.sellUSDT')}}</td>
             <td class="table__data" v-else-if="row.ads_type === 2">{{$t('profile.buyUSDT')}}</td>
             <td class="table__data">
-              {{ getUsername(row.seller_username, row.buyer_username)}}
+              {{ row.seller_username}} / {{row.buyer_username}}
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
             </td>
@@ -127,8 +127,7 @@ export default {
       return { ...this.$store.getters.user }
     },
     invoices() {
-      let inv = this.$store.getters['invoice/invoices']
-      return inv.filter(e=> e.seller_id == this.$route.params.id || e.buyer_id == this.$route.params.id)
+      return  this.$store.getters['adminPanel/getAdminInvoices']
     },
     orders() {
       return this.$store.getters['adminPanel/getOrders']
@@ -143,7 +142,7 @@ export default {
     AppTable
   },
   created(){
-    this.$store.dispatch('invoice/fetchInvoices')
+    this.$store.dispatch('adminPanel/getAdminInvoices', this.$route.params.id)
     this.$store.dispatch('adminPanel/byOrderUserId', this.$route.params.id)
     this.$store.dispatch('adminPanel/fetchIdTransactions', this.$route.params.id)
   }

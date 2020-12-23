@@ -2,11 +2,11 @@
     div.chat
         h2 {{ $t('chat.sendMessage') }}
         =' '
-        span.orange {{ name }}
-        Textarea(v-model="textArea" class="w-100 mt-20"
+        span(v-if="!adminChat").orange {{ name }}
+        Textarea( v-if="!adminChat" v-model="textArea" class="w-100 mt-20"
             :placeholder="$t('chat.placeholder')"
             @keydown.enter.native="sendMessage" ref="chatText")
-        Button(green @click.native="sendMessage").mt-20.mr-15 {{ $t('chat.send') }}
+        Button( v-if="!adminChat" green @click.native="sendMessage").mt-20.mr-15 {{ $t('chat.send') }}
         main.chat__box
             div(v-if="chatMessages.length <= 0").mt-20.mb-15.text-center.chat__empty {{ $t('chat.empty') }}
             PerfectScrollbar(
@@ -37,7 +37,7 @@ reconnectionDelay: 3000,
 })
 export default {
 mixins: [formatDate],
-props: ['name','invoice'],
+props: ['name','invoice','adminChat'],
 components: {
     PerfectScrollbar,
     Textarea,
@@ -50,7 +50,7 @@ data: () => ({
     audio: null,
     socketPing: null,
     connect: true
-    
+
 }),
 computed: {
     user() {
@@ -102,7 +102,7 @@ methods: {
     //let token = this.$cookies.get('token');
         this.$connect(`${process.env.API_WS_URL}invoice/ws/${this.invoice.chat_id}/`, { format: 'json' })
         this.connect = false
-    
+
     this.$socket.onmessage = (e) => {
         const data = JSON.parse(e.data);
         if(this.user.username !== data.sender) {
@@ -126,6 +126,11 @@ methods: {
     }
 },
 async mounted() {
+  if(this.adminChat){
+    let res = await this.$axios.get(`/admin/users/chat/${this.$route.params.id}/`)
+    this.chatMessages = res.data.messages
+    return
+  }
     let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);
     this.chatMessages = messages;
     let container = this.$refs.chatScroll.$el;

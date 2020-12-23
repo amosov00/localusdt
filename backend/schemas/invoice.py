@@ -84,5 +84,5 @@ class InvoiceCreate(BaseModel):
 
 
 class InvoiceInAdminPanel(InvoiceInDB):
-    seller_nickname: str = Field(default=None)
-    buyer_nickname: str = Field(default=None)
+    seller_username: str = Field(default=None)
+    buyer_username: str = Field(default=None)

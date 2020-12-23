@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from fastapi import HTTPException
 from http import HTTPStatus
 
@@ -25,5 +25,17 @@ class ChatWrapper:
 
         if ObjectId(user_id) not in chatroom["participants"]:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Access denied")
+
+        return chatroom
+
+    @staticmethod
+    async def get_chatroom_with_messages_unsafe(chatroom_id: str) -> ChatRoomResponse:
+        messages = await ChatMessageCRUD.get_messages_chatroom(chatroom_id)
+        chatroom = await ChatRoomCRUD.find_by_id(chatroom_id)
+
+        if not chatroom:
+            raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong chatroom")
+
+        chatroom["messages"] = messages
 
         return chatroom

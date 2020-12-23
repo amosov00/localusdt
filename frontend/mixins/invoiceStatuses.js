@@ -44,6 +44,19 @@ export default {
           break
       }
     },
+    invoiceStatusNumber(status) {
+      switch (status) {
+        case 1:
+          return 'IN_PROGRESS'
+          break
+        case 2:
+          return 'CANCELLED'
+          break
+        case 3:
+          return 'DONE'
+          break
+      }
+    },
     statusColor(status) {
       switch (status) {
         case 'approved':

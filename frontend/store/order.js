@@ -52,11 +52,8 @@ export const actions = {
     commit('setOrdersByUser', data)
   },
   async searchOrders({ commit }, params) {
-    console.log(params.currency);
     let url = `/order/?order_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}${params.payment_method == 5 ? '' : `&payment_method=${params.payment_method}`}&currency=${params.currency}`
-    console.log('url', url);
     const { data } = await this.$axios.get(url)
-    console.log('data', data);
     data.forEach(e => {
       e.setCurrency = params.currency
     });

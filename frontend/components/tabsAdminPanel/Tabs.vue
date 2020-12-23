@@ -1,8 +1,10 @@
 <template>
     <div>
-        <div class="tabs">
-            <ul class="list-type-none tabs__ul">
-                <li v-for="(tab, i) in tabs" @click="selectTab(tab)" :class="{ 'active': tab.isActive }" class="tabs__li" :key="i">
+        <div :class="{'tabs': vertical}">
+            <ul class="list-type-none " :class="{'tabs__ul' : vertical, 'tabs__ul2' : !vertical } ">
+                <li v-for="(tab, i) in tabs" @click="selectTab(tab)"
+                    :class="{ 'active': tab.isActive, 'tabs__li' : vertical, 'tabs__li2': !vertical  }"
+                    :key="i">
                     <div  :class="{ 'circle__select active': tab.isActive }" class="circle__select">{{tab.name}}</div>
                 </li>
             </ul>
@@ -16,6 +18,9 @@
 <script>
 export default {
     name:'Tabs',
+    props:{
+      vertical: Boolean
+    },
     data: ()=>({
         tabs:[]
     }),
@@ -34,7 +39,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
     .tabs{
         display: flex;
     }
@@ -50,10 +54,24 @@ export default {
         padding-top: 150px;
         line-height: 50px;
     }
+    .tabs__ul2{
+      list-style-type: none;
+      background-color:transparent;
+      display: flex;
+      justify-content: center;
+      padding-top: 30px;
+    }
     .tabs__li{
         height: 50px;
         padding-right: 20px;
         cursor: pointer;
+    }
+    .tabs__li2{
+      line-height: 40px;
+      min-width: 100px;
+      text-align: center;
+      padding: 0 20px;
+      cursor: pointer;
     }
     .active{
          background-color: #48B190;

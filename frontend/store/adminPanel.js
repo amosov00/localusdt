@@ -1,6 +1,8 @@
 export const state = () => ({
     invoices:null,
     users:null,
+    transactions:null,
+    orders:null
 })
 
 export const getters = {
@@ -9,6 +11,12 @@ export const getters = {
     },
     getUsers(state){
         return state.users
+    },
+    geTransactions(state){
+      return state.transactions
+    },
+    getOrders(state){
+      return state.orders
     }
 }
 
@@ -25,6 +33,12 @@ export const mutations = {
                 e.status = payload.status
             }
         })
+    },
+    fetchIdTransactions(state, payload){
+      state.transactions = payload
+    },
+    byOrderUserId(state,payload){
+      state.orders = payload
     }
 }
 
@@ -52,5 +66,13 @@ export const actions = {
     },
     async editStatus({commit}, payload){
         commit('editStatus', payload)
+    },
+    async byOrderUserId({commit}, payload){
+      const { data } = await this.$axios.get(`/admin/users/orders/${payload}/`)
+      commit('byOrderUserId', data)
+    },
+    async fetchIdTransactions({commit}, payload){
+      const { data } = await this.$axios.get(`/admin/users/transactions/${payload}/`)
+      commit('fetchIdTransactions', data)
     }
 }

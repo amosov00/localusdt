@@ -24,5 +24,6 @@ export const actions = {
   async fetchTransactions({ commit }) {
     const { data } = await this.$axios.get('/account/transactions/')
     commit('setTransactions', data)
-  }
+  },
+
 }

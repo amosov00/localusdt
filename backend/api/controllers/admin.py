@@ -11,12 +11,15 @@ from database.crud import (
     AdsCRUD,
     UserCRUD,
     InvoiceCRUD,
-    LogCRUD
+    LogCRUD,
+    ChatMessageCRUD
 )
 from schemas.logging import Log
 from schemas.base import ObjectId
 from schemas.ads import AdsInSearch
 from core.integrations.crypto import USDTWrapper
+from core.integrations.chat import ChatWrapper
+from schemas.chat import ChatRoomResponse
 from schemas.referral import ReferralGeneralInfo
 from schemas.admin_stats import DepositStatistic, AccountWalletInfos
 from schemas import User, UserUpdateNotSafe, UserTransaction, UserAdminView
@@ -62,7 +65,7 @@ async def get_all_invoices(
 
 
 @router.get("/invoice/{invoice_id}/", response_model=InvoiceWithAds)
-async def get_all_invoices(
+async def get_invoice_by_id(
     user: User = Depends(user_is_staff_or_superuser), invoice_id: str = Path(...)
 ):
     return await InvoiceCRUD.get_invoice(user, invoice_id)
@@ -151,6 +154,43 @@ async def get_user_transactions(
         raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad user id")
     user = User(**user)
     return await UserCRUD.get_transactions(user)
+
+
+@router.get("/users/orders/{user_id}/", response_model=List[AdsInSearch])
+async def get_user_orders(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: str = Path(...)
+):
+    user = await UserCRUD.find_by_id(user_id)
+    if not user:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad user id")
+    user = User(**user)
+    return await AdsCRUD.find_by_user_obj(user)
+
+
+@router.get("/users/invoices/{user_id}/", response_model=List[InvoiceInAdminPanel])
+async def get_user_invoices(
+    user: User = Depends(user_is_staff_or_superuser),
+    user_id: str = Path(...)
+):
+    user = await UserCRUD.find_by_id(user_id)
+    if not user:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad user id")
+    user = User(**user)
+    return await InvoiceCRUD.find_by_user_id(user.id)
+
+
+@router.get("/users/chat/{invoice_id}/", response_model=ChatRoomResponse)
+async def get_invoice_chat(
+    user: User = Depends(user_is_staff_or_superuser),
+    invoice_id: str = Path(...)
+):
+    invoice = await InvoiceCRUD.find_by_id(invoice_id)
+    if not invoice:
+        raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad invoice id")
+    chatroom_id = invoice.get("chat_id")
+    chatroom = await ChatWrapper.get_chatroom_with_messages_unsafe(chatroom_id)
+    return chatroom
 
 
 @router.get("/users/info/{user_id}", response_model=User)

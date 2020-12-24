@@ -1,46 +1,46 @@
 <template>
   <div>
-      <Tabs>
+      <Tabs vertical>
             <tab name="Пользователи" :selected="true">
-                <!-- tab USER -->
-                <Content v-if="users" :title="$t('adminPanel.titleUsers')" :inputTitle="$t('adminPanel.inputUserTitle')"  type="users" :dataInvoices="users" :headers="headersUsers">
-                    <template slot-scope="{ data }">
-                        <td class="table__data paddingSmall ">
-                            <p>{{ data.username }}</p>
-                        </td>
-                        <td class="table__data paddingSmall ">
-                            <p>
-                                {{ data.email }}
-                            </p>
-                        </td>
-                        <td class="table__data paddingSmall ">
-                            <p>
-                                {{ data.eth_address }}
-                            </p>
-                        </td>
-                        <td class="table__data paddingSmall ">
-                        {{ Math.round(data.balance_usdt + data.usdt_in_invoices) }} 
-                        </td>
-                        <td class="table__data paddingNull" style="text-align:center;">
-                          {{ data.contract_balance }}
-                        </td>
-                        <td class="table__data paddingNull" style="text-align:center;">
-                            {{data.ethereum_balance ? data.ethereum_balance / (10**18) : null}}
-                        </td>
-                        <td class="table__data paddingSmall" style="text-align:center; padding-right:10px;">
-                             <Select
-                                :v-model="data.is_active ? 'Активный': 'Неактивный'"
-                                :width="130"
-                                :options="selctOptions"
-                                noCurrency
-                                status
-                                :user="data._id"
-                                :hideArrow="true"
-                                :selectedOptionProp="bannedOrActive(data.is_active, data.banned)"
-                            />
-                        </td>
-                    </template>
-                </Content>
+              <!-- tab USER -->
+              <Content v-if="users" :title="$t('adminPanel.titleUsers')" :inputTitle="$t('adminPanel.inputUserTitle')"  type="users" :dataInvoices="users" :headers="headersUsers">
+                  <template slot-scope="{ data }">
+                      <td class="table__data paddingSmall ">
+                        <nuxt-link :to="`/adminPanel/${data._id}`"> <p>{{ data.username }}</p></nuxt-link>
+                      </td>
+                      <td class="table__data paddingSmall ">
+                          <p>
+                              {{ data.email }}
+                          </p>
+                      </td>
+                      <td class="table__data paddingSmall ">
+                          <p>
+                              {{ data.eth_address }}
+                          </p>
+                      </td>
+                      <td class="table__data paddingSmall ">
+                      {{ Math.round(data.balance_usdt + data.usdt_in_invoices) }}
+                      </td>
+                      <td class="table__data paddingNull" style="text-align:center;">
+                        {{ data.contract_balance }}
+                      </td>
+                      <td class="table__data paddingNull" style="text-align:center;">
+                          {{data.ethereum_balance ? data.ethereum_balance / (10**18) : null}}
+                      </td>
+                      <td class="table__data paddingSmall" style="text-align:center; padding-right:10px;">
+                            <Select
+                              :v-model="data.is_active ? 'Активный': 'Неактивный'"
+                              :width="130"
+                              :options="selctOptions"
+                              noCurrency
+                              status
+                              :user="data._id"
+                              :hideArrow="true"
+                              :selectedOptionProp="bannedOrActive(data.is_active, data.banned)"
+                          />
+                      </td>
+                  </template>
+              </Content>
             </tab>
             <tab name="Сделки" >
                 <!-- tab Deal -->
@@ -80,9 +80,9 @@
 </template>
 
 <script>
-import Tabs from '../components/tabsAdminPanel/Tabs'
-import Tab from '../components/tabsAdminPanel/Tab'
-import Content from '../components/AdminPanel/Content'
+import Tabs from '@/components/tabsAdminPanel/Tabs'
+import Tab from '@/components/tabsAdminPanel/Tab'
+import Content from '@/components/AdminPanel/Content'
 import Button from '@/components/app/Button'
 import Input from '@/components/app/Input'
 import Select from '@/components/app/Select'

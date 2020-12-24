@@ -225,7 +225,9 @@
     "copied": "Copied code",
     "signUpByLink": "Registered by link:",
     "earn": "Income from the referral program:",
-    "people": "person"
+    "people": "person",
+    "address":"Address",
+    "event": "Event"
   },
   "signup": {
     "reg": "Registration",

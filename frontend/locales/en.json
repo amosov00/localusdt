@@ -86,7 +86,7 @@
     "transferAmount": "Transfer amount",
     "receivingAddress": "Receiving address",
     "withdraw": "Withdraw",
-    "topUp": "Top up USDT",
+    "topUp": "Receive USDT",
     "topUp2": "USDT top-up",
     "balanceAddress": "Use this address to top up your balance",
     "editSum": "Enter amount",
@@ -100,7 +100,9 @@
     "status": "Status",
     "done": "Done",
     "processed": "Processed",
-    "canceled": "Canceled"
+    "canceled": "Canceled",
+    "description": "You are sending USDT tokens in ERC20 format. Please check that the receiving address works with ERC20 tokens.",
+    "descriptionReceive": "Please note that you can receive USDT tokens in ERC20 format only (Ethereum net)."
   },
   "bid": {
     "title": "What do you want?",

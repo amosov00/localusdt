@@ -6,7 +6,7 @@
               <Content v-if="users" :title="$t('adminPanel.titleUsers')" :inputTitle="$t('adminPanel.inputUserTitle')"  type="users" :dataInvoices="users" :headers="headersUsers">
                   <template slot-scope="{ data }">
                       <td class="table__data paddingSmall ">
-                        <nuxt-link :to="`/adminPanel/${data._id}`"> <p>{{ data.username }}</p></nuxt-link>
+                        <nuxt-link class="table__link" :to="`/adminPanel/${data._id}`"> <p>{{ data.username }}</p></nuxt-link>
                       </td>
                       <td class="table__data paddingSmall ">
                           <p>
@@ -272,5 +272,14 @@ export default {
     }
     .green{
         background-color: #48B190 !important;
+    }
+    .table__link{
+      text-decoration: underline;
+      color:#48B190;
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
 </style>

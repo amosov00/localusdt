@@ -1,5 +1,6 @@
 <template>
 <section class="order">
+  <button class="backButton" @click="()=> this.$router.go(-1)">назад</button>
     <header class="order__header">
     <h1 class="ad__title">{{$t('invoice.contact')}} № {{ invoice._id }}</h1>
     <div class="order__info">
@@ -42,6 +43,7 @@
 </template>
 
 <script>
+let fromPath  = null
 import { mapGetters } from 'vuex'
 import formatCurrency from '~/mixins/formatCurrency'
 import formatDate from '~/mixins/formatDate'
@@ -69,6 +71,7 @@ components: {
 },
 data() {
     return {
+    path:fromPath,
     cancelModal: false,
     invoiceId: this.$route.params.id,
     interval: null,

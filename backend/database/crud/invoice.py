@@ -126,6 +126,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             status_changed_at=datetime.utcnow(),
             currency=ads.get("currency"),
             amount=ads["price"] * payload.amount_usdt,
+            condition=ads["condition"],
         )
 
         if payload.amount_usdt < ads.get("bot_limit"):
@@ -327,7 +328,6 @@ class InvoiceCRUD(BaseMongoCRUD):
         invoice["ads_type"] = ads.get("type")
         invoice["bot_limit"] = ads["bot_limit"]
         invoice["top_limit"] = ads["top_limit"]
-        invoice["condition"] = ads["condition"]
         invoice["payment_method"] = ads.get("payment_method")
         invoice["other_payment_method"] = ads.get("other_payment_method")
 

@@ -7,15 +7,14 @@
           <template slot-scope="header"></template>
             <template slot-scope="{ row }">
               <td class="table__data">
-                <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
+                 <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
                 <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{row._id}}</p>
               </td>
-              <td class="table__data" v-if="row.ads_type === 1">{{$t('profile.sellUSDT')}}</td>
-              <td class="table__data" v-else-if="row.ads_type === 2">{{$t('profile.buyUSDT')}}</td>
+              <td class="table__data" v-if="row.seller_username === user.username">{{$t('profile.sellUSDT')}}</td>
+              <td class="table__data" v-else>{{$t('profile.buyUSDT')}}</td>
               <td class="table__data">
-                {{ row.seller_username}} / {{row.buyer_username}}
+                {{ row.buyer_username}} / {{row.seller_username}}
                 <span class="status green--bg" />
-                <span class="orders-count">(10+)</span>
               </td>
               <td class="table__data">
                 <span class="grey-dark fw-400">
@@ -82,6 +81,7 @@ export default {
     return {
       headers: [
         this.$t('profile.dateTime'),
+        this.$t('profile.type'),
         this.$t('profile.buyerSeller'),
         this.$t('profile.sum'),
         this.$t('profile.status'),

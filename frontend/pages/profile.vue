@@ -13,10 +13,10 @@
         </nuxt-link>
         <nuxt-link v-if="$userIsStaff()" class="underline-link underline-link--grey" to="/adminPanel">
           {{$t('profile.adminPanel')}}
-        </nuxt-link> 
+        </nuxt-link>
         <p class="underline-link red" @click="logout()">{{$t('profile.logOut')}}</p>
       </div>
-      
+
     </div>
     <div class="bio">
       <div class="bio__container">
@@ -53,8 +53,8 @@
               <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
               <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{row._id}}</p>
             </td>
-            <td class="table__data" v-if="row.ads_type === 1">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data" v-else-if="row.ads_type === 2">{{$t('profile.buyUSDT')}}</td>
+            <td class="table__data" v-if="row.seller_username === user.username">{{$t('profile.sellUSDT')}}</td>
+            <td class="table__data" v-else>{{$t('profile.buyUSDT')}}</td>
             <td class="table__data">
               {{ getUsername(row.seller_username, row.buyer_username)}}
               <span class="status green--bg" />
@@ -146,6 +146,7 @@ export default {
       return { ...this.$store.getters.user }
     },
     invoices() {
+      console.log(this.$store.getters['invoice/invoices']);
       return this.$store.getters['invoice/invoices']
     },
     orders() {
@@ -168,13 +169,13 @@ export default {
         break
         case 2:
           return 'Br'
-        break 
+        break
         case 3:
           return '$'
-        break 
+        break
         case 4:
           return '€'
-        break 
+        break
       }
     },
     getUsername(seller, buyer) {

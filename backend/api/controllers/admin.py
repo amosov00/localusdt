@@ -58,8 +58,8 @@ async def get_all_invoices(
         user_kw[str(user.get("_id"))] = user.get("username")
 
     for invoice in result:
-        invoice["seller_nickname"] = user_kw.get(str(invoice.get("seller_id")))
-        invoice["buyer_nickname"] = user_kw.get(str(invoice.get("buyer_id")))
+        invoice["seller_username"] = user_kw.get(str(invoice.get("seller_id")))
+        invoice["buyer_username"] = user_kw.get(str(invoice.get("buyer_id")))
 
     return result
 

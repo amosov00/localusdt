@@ -272,7 +272,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             if invoice.get("status") not in (InvoiceStatus.WAITING_FOR_TOKENS, InvoiceStatus.FROZEN, InvoiceStatus.WAITING_FOR_PAYMENT):
                 raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad invoice status")
         else:
-            if invoice.get("seller_id") != user.id or invoice.get("status") not in InvoiceStatus.WAITING_FOR_TOKENS:
+            if invoice.get("seller_id") != user.id or invoice.get("status") != InvoiceStatus.WAITING_FOR_TOKENS:
                 raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad invoice status or user role")
 
         buyer = await UserCRUD.find_by_id(invoice["buyer_id"])

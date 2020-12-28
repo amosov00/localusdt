@@ -86,3 +86,4 @@ class InvoiceCreate(BaseModel):
 class InvoiceInAdminPanel(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
+    ads_type: AdsType = Field(default=None)

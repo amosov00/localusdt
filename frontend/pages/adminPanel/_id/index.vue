@@ -7,11 +7,11 @@
           <template slot-scope="header"></template>
             <template slot-scope="{ row }">
               <td class="table__data">
-                 <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
+                <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
                 <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{row._id}}</p>
               </td>
-              <td class="table__data" v-if="row.seller_username === user.username">{{$t('profile.sellUSDT')}}</td>
-              <td class="table__data" v-else>{{$t('profile.buyUSDT')}}</td>
+              <td class="table__data" v-if="row.ads_type === 1">{{$t('profile.sellUSDT')}}</td>
+              <td class="table__data" v-else-if="row.ads_type === 2">{{$t('profile.buyUSDT')}}</td>
               <td class="table__data">
                 {{ row.buyer_username}} / {{row.seller_username}}
                 <span class="status green--bg" />

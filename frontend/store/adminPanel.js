@@ -56,7 +56,6 @@ export const actions = {
     },
     async getAdminInvoices({commit}, payload){
       let result =  await this.$axios.get(`/admin/users/invoices/${payload}/`)
-      console.log(result.data);
       commit('getAdminInvoices', result.data)
   },
     async getUsers({commit}){

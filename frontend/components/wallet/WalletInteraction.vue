@@ -6,8 +6,11 @@
         <p class="withdraw__subtitle">
           {{$t('wallet.minSend')}} <span class="orange">1 USDT</span>
         </p>
-      </div>
 
+      </div>
+      <p style="margin-left:0;margin-top:10px;" class="withdraw__subtitle">
+        {{$t('wallet.description')}}
+      </p>
       <form class="withdraw__form">
         <div class="row">
           <Input
@@ -36,6 +39,9 @@
     </div>
     <div class="add">
       <h2 class="add__title">{{$t('wallet.topUp')}}</h2>
+       <p style="margin-left:0; margin-top:10px;" class="withdraw__subtitle">
+          {{$t('wallet.descriptionReceive')}}
+        </p>
       <Input
         class="mt-50"
         type="text"

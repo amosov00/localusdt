@@ -38,6 +38,7 @@ class Invoice(BaseModel):
     currency: CurrencyType = Field(..., description="1 -- RUB, 2 -- BYN")
     amount: float = Field(default=None)
     amount_usdt: float = Field(...)
+    condition: str = Field(default=None)
     status: Literal[InvoiceStatus.ALL] = Field( # noqa
         ...,
         description="Status of Invoice: created, waiting, processing, completed, cancelled",
@@ -86,3 +87,4 @@ class InvoiceCreate(BaseModel):
 class InvoiceInAdminPanel(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
+    ads_type: AdsType = Field(default=None)

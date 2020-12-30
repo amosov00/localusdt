@@ -330,5 +330,10 @@
       "balanceETH":"Баланс ЕТН",
       "status":"Status"
     }
+  },
+  "rates": {
+    "rateH": "LocalUsdt.com fee",
+    "rateContentTop": "We do not charge any fees during promotional period ending 21 February 2021.",
+    "rateContentBot": "Incoming USDT transfers and withdrawals are also free of charge, customers have to pay only a small fee applied by Ethereum net."
   }
 }

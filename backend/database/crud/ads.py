@@ -124,12 +124,13 @@ class AdsCRUD(BaseMongoCRUD):
         if ads["status"] == status:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Order already has that status")
 
+        current_user = await UserCRUD.find_one({"_id": user.id})
         if status == AdsStatuses.DELETED and ads["type"] == AdsType.SELL:
             await UserCRUD.update_one(
                 query={"_id": user.id},
                 payload={
-                    "balance_usdt": user.balance_usdt + ads["amount_usdt"],
-                    "usdt_in_invoices": user.usdt_in_invoices - ads["amount_usdt"]
+                    "balance_usdt": current_user.get("balance_usdt") + ads["amount_usdt"],
+                    "usdt_in_invoices": current_user.get("usdt_in_invoices") - ads["amount_usdt"]
                 }
             )
 

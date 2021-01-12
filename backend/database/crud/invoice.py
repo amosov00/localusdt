@@ -291,7 +291,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         ads_in_db = await AdsCRUD.find_by_id(invoice_in_db["ads_id"])
         await cls._send_status_notification(user, invoice_in_db, InvoiceStatus.COMPLETED)
 
-        if ads.get("amount_usdt") * ads.get("price") <= ads["bot_limit"]:
+        if ads_in_db.get("amount_usdt") <= ads_in_db.get("bot_limit"):
             invoices = await cls.find_many(query={
                 "ads_id": ads_in_db["_id"]
             })

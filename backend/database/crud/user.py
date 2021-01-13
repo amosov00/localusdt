@@ -7,6 +7,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from fastapi.exceptions import HTTPException
+from fastapi import Request
 
 from .base import ObjectId
 from database.crud.base import BaseMongoCRUD
@@ -233,3 +234,7 @@ class UserCRUD(BaseMongoCRUD):
             payload={"balance_usdt": user.balance_usdt - payload.amount}
         )
         return await USDTWrapper().withdraw(user, payload.to, Decimal(payload.amount * 1000000))
+
+    @classmethod
+    async def store_ip(cls, request: Request):
+        await cls.update_one({"_id": request.user.id}, {"current_ip": request.client.host})

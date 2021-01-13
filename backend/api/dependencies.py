@@ -50,6 +50,7 @@ async def get_user(request: Request):
 
     else:
         await UserCRUD.set_online(request.user)
+        await UserCRUD.store_ip(request)
         return request.user
 
 

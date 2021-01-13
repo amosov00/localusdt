@@ -105,6 +105,7 @@ class User(BaseModel):
     language: Optional[UserLanguage] = Field(default=None, description="1 -- RU, 2 -- ENG")
     created_at: Optional[datetime] = Field(default=None)
     about_me: str = Field(default="", description="About me field")
+    current_ip: str = Field(default=None)
 
 
 class UserVerify(BaseModel):

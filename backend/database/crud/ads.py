@@ -191,13 +191,13 @@ class AdsCRUD(BaseMongoCRUD):
             ads_price = current_rate * (float(payload.profit if payload.profit else 0) / 100. + 1.)
         elif payload.fixed_price is True and payload.price is not None:
             ads_price = payload.price
-        elif payload.fixed_price is None:
+        else:
             ads_price = ads["price"]
 
         await cls.update_one(
             query={"_id": ads["_id"]},
             payload={
-                **payload.dict(exclude_unset=True),
+                **payload.dict(exclude_unset=True, exclude_none=True),
                 "price": ads_price
             }
         )

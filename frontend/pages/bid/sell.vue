@@ -69,8 +69,8 @@
       type="number"
       endIcon="procent"
       hint v-if="!adForm.fixed_price")
-      
-      
+
+
       Input.create-order__input(
       disabled
       :value="equation"
@@ -211,13 +211,13 @@ export default {
         break
         case 2:
           return 'Br'
-        break 
+        break
         case 3:
           return '$'
-        break 
+        break
         case 4:
           return '€'
-        break 
+        break
       }
       }
     },
@@ -342,7 +342,7 @@ export default {
           profitMode = 'fixed'
         }
         this.adForm = adForm
-        
+        this.editMode = true
       }
     }
 

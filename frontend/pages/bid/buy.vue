@@ -1,6 +1,6 @@
 <template lang="pug">
   div.create-order
-    
+
     header.create-order__navigation
       h1 {{$t('bid.buyUSDT')}}
     hr
@@ -57,7 +57,7 @@
           span {{$t('bid.fixed')}}
       Input.create-order__input(
       v-model="adForm.price"
-      
+
       :header="$t('bid.price')"
       :placeholder="$t('bid.price')"
       v-if="adForm.fixed_price")
@@ -204,13 +204,13 @@ export default {
         break
         case 2:
           return 'Br'
-        break 
+        break
         case 3:
           return '$'
-        break 
+        break
         case 4:
           return '€'
-        break 
+        break
       }
     },
     equation() {
@@ -353,5 +353,5 @@ export default {
   margin-bottom: 20px;
   font-size: 30px;
 }
-  
+
 </style>

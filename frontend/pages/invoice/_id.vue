@@ -155,13 +155,13 @@ methods: {
         break
         case 2:
         return 'Br'
-        break 
+        break
         case 3:
         return '$'
-        break 
+        break
         case 4:
         return '€'
-        break 
+        break
     }
     },
     checkTime() {

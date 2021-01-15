@@ -6,6 +6,7 @@ from celery_app.tasks.crypto.deposits import check_deposits
 from celery_app.tasks.crypto.currency import update_currency_rate
 from celery_app.tasks.crypto.loot_tokens import loot_tokens
 from core.integrations.crypto import USDTWrapper
+from core.utils import IPApiWrapper
 
 __all__ = ["router"]
 
@@ -98,7 +99,7 @@ html2 = """
 
 @router.get("/")
 async def debug_get():
-    await update_currency_rate()
+    return await IPApiWrapper().get_location("178.120.69.127")
 
 
 @router.get("/2/")

@@ -2,7 +2,7 @@
   <section>
     <h1 class="table-section__title mt-330">{{$t('main.buyUSDT')}}</h1>
     <Tab :nav="false" :outsideParams="$route.query" :type="2" />
-    <AppTable class="mb-80" :data="orders" :headers="headers" pagination>
+    <AppTable v-if="ordersData" class="mb-80" :data="ordersData" :headers="headers" pagination>
       <template slot-scope="header"></template>
       <template slot-scope="{ row }">
         <td class="table__data">
@@ -52,7 +52,8 @@ export default {
         this.$t('main.limit'),
         this.$t('main.quantity'),
         this.$t('main.cost'),
-      ]
+      ],
+      ordersData:null
     }
   },
   methods:{
@@ -63,13 +64,13 @@ export default {
         break
         case 2:
           return 'Br'
-        break 
+        break
         case 3:
           return '$'
-        break 
+        break
         case 4:
           return '€'
-        break 
+        break
       }
     },
   },
@@ -77,6 +78,16 @@ export default {
     ...mapGetters({
       orders: 'order/orders'
     })
+  },
+  created(){
+    let obj = JSON.stringify(this.orders)
+    obj = JSON.parse(obj)
+    this.ordersData = obj.sort((a, b) => {
+      if(b.price > a.price){
+        return -1
+      }
+    })
+    console.log(this.ordersData);
   },
   asyncData({ store, query }) {
 
@@ -95,7 +106,6 @@ export default {
       sort: -1,
       currency:1,
     })
-  
   }
 }
 </script>

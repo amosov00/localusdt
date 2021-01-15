@@ -5,7 +5,9 @@ export const state = () => ({
 })
 
 export const getters = {
-  orders: s => s.orders,
+  orders: s => {
+    return s.orders
+  },
   orderById: s => s.orderById,
   ordersByUser: s => s.ordersByUser,
   buyOrders: s => s.orders.filter(order => order.type === 1),
@@ -14,12 +16,15 @@ export const getters = {
       .filter(order => order.type === 2)
       .sort((a, b) => b.price - a.price),
   buyOrdersWithLimit: s => limit => {
-    return s.orders.filter(order => order.type === 1).slice(0, limit)
+    return s.orders
+      .filter(order => order.type === 1)
+      .sort((a, b) => b.price - a.price)
+      .slice(0, limit)
   },
   sellOrdersWithLimit: s => limit => {
     return s.orders
       .filter(order => order.type === 2)
-      .sort((a, b) => b.price - a.price)
+      .sort((a, b) => b.price + a.price)
       .slice(0, limit)
   }
 }
@@ -52,11 +57,17 @@ export const actions = {
     commit('setOrdersByUser', data)
   },
   async searchOrders({ commit }, params) {
-    let url = `/order/?order_type=${params.ad_type}&bot_limit=${params.bot_limit}&top_limit=${params.top_limit}${params.payment_method == 5 ? '' : `&payment_method=${params.payment_method}`}&currency=${params.currency}`
+    let url = `/order/?order_type=${params.ad_type}&bot_limit=${
+      params.bot_limit
+    }&top_limit=${params.top_limit}${
+      params.payment_method == 5
+        ? ''
+        : `&payment_method=${params.payment_method}`
+    }&currency=${params.currency}`
     const { data } = await this.$axios.get(url)
     data.forEach(e => {
       e.setCurrency = params.currency
-    });
+    })
     commit('setOrders', data)
   },
 
@@ -65,7 +76,9 @@ export const actions = {
       .put(`/order/${payload.id}/${payload.endpoint}/`)
       .then(() => {
         this.$toast.showMessage({
-          content: `${$nuxt.$t('store.statusChange')} ${payload.endpoint.toUpperCase()}`,
+          content: `${$nuxt.$t(
+            'store.statusChange'
+          )} ${payload.endpoint.toUpperCase()}`,
           green: true
         })
         return true
@@ -119,18 +132,18 @@ export const actions = {
       })
       .catch(error => {
         switch (error.response.data[0].message) {
-          case 'Can\'t get currency rate.':
+          case "Can't get currency rate.":
             this.$toast.showMessage({
               content: $nuxt.$t('store.courseError'),
               red: true
             })
-            break;
+            break
           case 'Not enough USDT':
             this.$toast.showMessage({
               content: $nuxt.$t('store.statusError4'),
               red: true
             })
-            break;
+            break
           default:
             this.$toast.showMessage({
               content: $nuxt.$t('store.orderCreateError'),

@@ -7,6 +7,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from fastapi.exceptions import HTTPException
+from fastapi import Request
 
 from .base import ObjectId
 from database.crud.base import BaseMongoCRUD
@@ -15,6 +16,7 @@ from database.crud.transaction import USDTTransactionCRUD
 from core.integrations.crypto import USDTWrapper
 from core.utils.jwt import decode_jwt_token, encode_jwt_token
 from core.utils.email import MailGunEmail
+from core.utils import IPApiWrapper
 from schemas.user import (
     User,
     UserCreationSafe,
@@ -45,7 +47,25 @@ class UserCRUD(BaseMongoCRUD):
         )
 
     @classmethod
-    async def authenticate(cls, email: str, password: str) -> dict:
+    async def update_user_location(cls, ip: str, user_id: ObjectId):
+        location = await IPApiWrapper().get_location(ip)
+
+        if not location:
+            return
+
+        await cls.update_one(
+            {"_id": user_id},
+            {
+                "location": {
+                    "country_name": location.get("country_name"),
+                    "country_code": location.get("country_code"),
+                    "region": location.get("region"),
+                }
+            }
+        )
+
+    @classmethod
+    async def authenticate(cls, email: str, password: str, ip: str) -> dict:
         email = email.lower()
 
         user = await super().find_one(query={"email": email})
@@ -54,6 +74,7 @@ class UserCRUD(BaseMongoCRUD):
             token = encode_jwt_token({"id": str(user["_id"])})
             if not user.get("is_active"):
                 raise HTTPException(HTTPStatus.BAD_REQUEST, "activate email or you are blocked")
+            asyncio.create_task(cls.update_user_location(ip, user.get("_id")))
             return {"token": token, "user": user}
         else:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "wrong input")
@@ -233,3 +254,4 @@ class UserCRUD(BaseMongoCRUD):
             payload={"balance_usdt": user.balance_usdt - payload.amount}
         )
         return await USDTWrapper().withdraw(user, payload.to, Decimal(payload.amount * 1000000))
+

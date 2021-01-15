@@ -29,7 +29,8 @@ __all__ = [
     "UserMakeWithdraw",
     "UserUpdateNotSafe",
     "UserLanguage",
-    "UserAdminView"
+    "UserAdminView",
+    "UserLocation"
 ]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -83,6 +84,12 @@ class UserLanguage(IntEnum):
     ENG = 2
 
 
+class UserLocation(BaseModel):
+    country_name: Optional[str] = Field(default=None)
+    country_code: Optional[str] = Field(default=None)
+    region: Optional[str] = Field(default=None)
+
+
 class User(BaseModel):
     id: ObjectIdPydantic = Field(default=None, alias="_id", title="_id")
     email: str = Field(default=None)
@@ -105,6 +112,7 @@ class User(BaseModel):
     language: Optional[UserLanguage] = Field(default=None, description="1 -- RU, 2 -- ENG")
     created_at: Optional[datetime] = Field(default=None)
     about_me: str = Field(default="", description="About me field")
+    location: UserLocation = Field(default=None, description="User last location")
 
 
 class UserVerify(BaseModel):

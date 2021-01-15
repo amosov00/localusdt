@@ -16,7 +16,8 @@ __all__ = [
     "user_is_superuser",
     "get_user_websocket",
     "user_is_staff_or_superuser",
-    "user_not_banned"
+    "user_not_banned",
+    "get_ip"
 ]
 
 
@@ -78,3 +79,8 @@ async def user_not_banned(request: Request):
         raise HTTPException(403, "User has been banned")
     else:
         return user
+
+
+async def get_ip(request: Request):
+    user_ip = request.headers.get("x-real-ip") or request.headers.get("x-forwarded-for") or request.client.host
+    return user_ip

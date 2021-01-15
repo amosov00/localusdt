@@ -4,7 +4,6 @@
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.price') }}</p>
       <p class="order-details__cell">
         {{price}}
-        
         {{returnCurrency(orderDetails)}}/USDT
       </p>
     </div>
@@ -14,6 +13,15 @@
       </p>
       <p class="order-details__cell">
         {{ roleUser }}
+      </p>
+    </div>
+    <div class="order-details__row" v-if="orderDetails.buyer_location !== undefined && orderDetails.seller_location !== undefined">
+      <p class="order-details__cell grey-dark">
+      {{$t('orderDetails.currentAdress')}}
+      </p>
+      <p class="order-details__cell">
+        {{role == 'seller' && orderDetails.buyer_location !== null && orderDetails.seller_location !== null  ? orderDetails.buyer_location.country_name  + ' ' + orderDetails.buyer_location.region  :
+                            orderDetails.seller_location.country_name  + ' ' +  orderDetails.seller_location.region}}
       </p>
     </div>
     <div class="order-details__row">
@@ -111,17 +119,18 @@ export default {
         break
         case 2:
           return 'Br'
-        break 
+        break
         case 3:
           return '$'
-        break 
+        break
         case 4:
           return '€'
-        break 
+        break
       }
     },
   },
   async mounted(){
+    console.log(this.orderDetails);
     await this.$store.dispatch('fetchCurrencyPrice' , this.orderDetails.currency)
     this.price = this.currencyPrice.toFixed(2)
   }

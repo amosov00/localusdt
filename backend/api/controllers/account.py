@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, Body
 
-from api.dependencies import get_user
+from api.dependencies import get_user, get_ip
 from database.crud import UserCRUD, ReferralCRUD
 from schemas.user import (
     UserLogin,
@@ -27,8 +27,8 @@ router = APIRouter()
 
 
 @router.post("/login/", response_model=UserLoginResponse)
-async def account_login(data: UserLogin = Body(...)):
-    return await UserCRUD.authenticate(data.email, data.password)
+async def account_login(data: UserLogin = Body(...), ip: str = Depends(get_ip)):
+    return await UserCRUD.authenticate(data.email, data.password, ip)
 
 
 @router.post("/signup/")

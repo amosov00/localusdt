@@ -6,6 +6,7 @@ from pydantic import Field, validator
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
 from schemas.ads import AdsType, PaymentMethod
+from schemas.user import UserLocation
 from schemas.currency import CurrencyType
 
 __all__ = [
@@ -71,6 +72,8 @@ class InvoiceInSearch(InvoiceInDB):
 class InvoiceWithAds(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
+    seller_location: UserLocation = Field(default=None)
+    buyer_location: UserLocation = Field(default=None)
     ads_type: AdsType = Field(default=None)
     top_limit: float = Field(default=None)
     bot_limit: float = Field(default=None)

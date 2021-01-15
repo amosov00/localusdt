@@ -166,7 +166,8 @@
     "min": "minutes",
     "bayer": "Buyer",
     "seller": "Seller",
-    "terms": "Terms of the deal"
+    "terms": "Terms of the deal",
+    "currentAdress": "His current address"
   },
   "chat": {
     "sendMessage": "Send message",

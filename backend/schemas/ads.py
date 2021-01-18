@@ -21,8 +21,8 @@ __all__ = [
 ]
 
 
-def validate_profit(v: Optional[int]) -> int:
-    if v > 100 or v < -100:
+def validate_profit(v: Optional[float]) -> float:
+    if v > 100.0 or v < -100.0:
         raise ValueError("Incorrect profit")
     return v
 
@@ -71,7 +71,7 @@ class Ads(BaseModel):
     price: float = Field(default=None, description="Price for 1 usdt token")
     bot_limit: int = Field(default=None)
     top_limit: int = Field(default=None)
-    profit: int = Field(default=None)
+    profit: float = Field(default=None)
 
     # Extra info
     payment_method: PaymentMethod = Field(default=None)
@@ -116,7 +116,7 @@ class AdsCreate(BaseModel):
     currency: CurrencyType = Field(default=CurrencyType.RUB, description='1 -- RUB, 2 -- BYN, 3 -- USD, 4 -- EUR')
     condition: str = Field(default="", description="Condition of the Ads")
 
-    profit: int = Field(default=0)
+    profit: float = Field(default=0)
 
     _validate_profit = validator("profit", allow_reuse=True)(validate_profit)
     _validate_amount = validator("amount_usdt", allow_reuse=True)(validate_amount)
@@ -138,7 +138,7 @@ class AdsUpdate(BaseModel):
 
     expiration_timestamp: int = Field(default=None, description="Timestamp delta of expiration")
 
-    profit: int = Field(default=None)
+    profit: float = Field(default=None)
 
     fixed_price: bool = Field(default=None, description="If true - show price_field, else - show profit field")
     price: float = Field(default=None)

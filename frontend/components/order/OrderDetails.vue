@@ -3,8 +3,10 @@
     <div class="order-details__row fz-20">
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.price') }}</p>
       <p class="order-details__cell">
-        {{price}}
+        <!-- {{price}} -->
+        {{orderDetails.price.toFixed(2)}}
         {{returnCurrency(orderDetails)}}/USDT
+
       </p>
     </div>
     <div class="order-details__row" v-if="role && roleUser">

@@ -342,8 +342,11 @@ export default {
       adForm
     }
   },
+  created(){
+    console.log(this.adForm.price);
+    this.actualPrice = this.adForm ? this.adForm.price : this.currencyPrice
+  },
   mounted(){
-    this.actualPrice = this.currencyPrice
   }
 }
 </script>

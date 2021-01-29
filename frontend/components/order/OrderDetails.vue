@@ -22,8 +22,8 @@
       {{$t('orderDetails.currentAdress')}}
       </p>
       <p class="order-details__cell">
-        {{role == 'seller' && orderDetails.buyer_location !== null && orderDetails.seller_location !== null  ? orderDetails.buyer_location.country_name  + ' ' + orderDetails.buyer_location.region  :
-                            orderDetails.seller_location.country_name  + ' ' +  orderDetails.seller_location.region}}
+        {{role == 'seller' && orderDetails.buyer_location !== null && orderDetails.seller_location !== null  ? orderDetails.seller_location.country_name  + ' ' + orderDetails.seller_location.region  :
+                            orderDetails.buyer_location.country_name  + ' ' +  orderDetails.buyer_location.region}}
       </p>
     </div>
     <div class="order-details__row">

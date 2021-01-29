@@ -6,6 +6,7 @@ from pydantic import Field, validator
 from enum import IntEnum
 from schemas.base import BaseModel, ObjectIdPydantic
 from schemas.ads import AdsType, PaymentMethod
+from schemas.user import UserLocation
 from schemas.currency import CurrencyType
 
 __all__ = [
@@ -38,6 +39,7 @@ class Invoice(BaseModel):
     currency: CurrencyType = Field(..., description="1 -- RUB, 2 -- BYN")
     amount: float = Field(default=None)
     amount_usdt: float = Field(...)
+    condition: str = Field(default=None)
     status: Literal[InvoiceStatus.ALL] = Field( # noqa
         ...,
         description="Status of Invoice: created, waiting, processing, completed, cancelled",
@@ -70,6 +72,8 @@ class InvoiceInSearch(InvoiceInDB):
 class InvoiceWithAds(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
+    seller_location: UserLocation = Field(default=None)
+    buyer_location: UserLocation = Field(default=None)
     ads_type: AdsType = Field(default=None)
     top_limit: float = Field(default=None)
     bot_limit: float = Field(default=None)
@@ -86,3 +90,4 @@ class InvoiceCreate(BaseModel):
 class InvoiceInAdminPanel(InvoiceInDB):
     seller_username: str = Field(default=None)
     buyer_username: str = Field(default=None)
+    ads_type: AdsType = Field(default=None)

@@ -126,6 +126,7 @@ class InvoiceCRUD(BaseMongoCRUD):
             status_changed_at=datetime.utcnow(),
             currency=ads.get("currency"),
             amount=ads["price"] * payload.amount_usdt,
+            condition=ads["condition"],
         )
 
         if payload.amount_usdt < ads.get("bot_limit"):
@@ -234,17 +235,12 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if invoice.get("buyer_id") != user.id:
-            if not user.is_staff:
-                raise HTTPException(
-                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-                )
-
-        if invoice.get("status") != InvoiceStatus.WAITING_FOR_PAYMENT:
-            if not user.is_staff:
-                raise HTTPException(
-                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-                )
+        if user.is_staff:
+            if invoice.get("status") not in (InvoiceStatus.FROZEN, InvoiceStatus.WAITING_FOR_PAYMENT):
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad invoice status")
+        else:
+            if invoice.get("buyer_id") != user.id or invoice.get("status") not in InvoiceStatus.WAITING_FOR_PAYMENT:
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad invoice status or user role")
 
         await cls.update_one(
             query={"_id": invoice["_id"]},
@@ -273,17 +269,12 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not invoice:
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
 
-        if invoice.get("seller_id") != user.id:
-            if not user.is_staff:
-                raise HTTPException(
-                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-                )
-
-        if invoice.get("status") not in (InvoiceStatus.WAITING_FOR_TOKENS, InvoiceStatus.FROZEN):
-            if not user.is_staff:
-                raise HTTPException(
-                    HTTPStatus.BAD_REQUEST, "Wrong user role or invoice status"
-                )
+        if user.is_staff:
+            if invoice.get("status") not in (InvoiceStatus.WAITING_FOR_TOKENS, InvoiceStatus.FROZEN, InvoiceStatus.WAITING_FOR_PAYMENT):
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad invoice status")
+        else:
+            if invoice.get("seller_id") != user.id or invoice.get("status") != InvoiceStatus.WAITING_FOR_TOKENS:
+                raise HTTPException(HTTPStatus.BAD_REQUEST, "Bad invoice status or user role")
 
         buyer = await UserCRUD.find_by_id(invoice["buyer_id"])
         if not buyer:
@@ -300,7 +291,7 @@ class InvoiceCRUD(BaseMongoCRUD):
         ads_in_db = await AdsCRUD.find_by_id(invoice_in_db["ads_id"])
         await cls._send_status_notification(user, invoice_in_db, InvoiceStatus.COMPLETED)
 
-        if ads.get("amount_usdt") * ads.get("price") <= ads["bot_limit"]:
+        if ads_in_db.get("amount_usdt") <= ads_in_db.get("bot_limit"):
             invoices = await cls.find_many(query={
                 "ads_id": ads_in_db["_id"]
             })
@@ -330,14 +321,15 @@ class InvoiceCRUD(BaseMongoCRUD):
         if not (invoice.get("seller_id") == user.id or invoice.get("buyer_id") == user.id or user.is_staff):
             raise HTTPException(HTTPStatus.BAD_REQUEST, "Wrong invoice id")
         ads = await AdsCRUD.find_by_id(invoice["ads_id"])
-        buyer_username = (await UserCRUD.find_by_id(invoice.get("buyer_id"))).get("username")
-        seller_username = (await UserCRUD.find_by_id(invoice.get("seller_id"))).get("username")
-        invoice["buyer_username"] = buyer_username
-        invoice["seller_username"] = seller_username
+        buyer = await UserCRUD.find_by_id(invoice.get("buyer_id"))
+        seller = await UserCRUD.find_by_id(invoice.get("seller_id"))
+        invoice["buyer_username"] = buyer.get("username")
+        invoice["seller_username"] = seller.get("username")
+        invoice["buyer_location"] = buyer.get("location")
+        invoice["seller_location"] = seller.get("location")
         invoice["ads_type"] = ads.get("type")
         invoice["bot_limit"] = ads["bot_limit"]
         invoice["top_limit"] = ads["top_limit"]
-        invoice["condition"] = ads["condition"]
         invoice["payment_method"] = ads.get("payment_method")
         invoice["other_payment_method"] = ads.get("other_payment_method")
 

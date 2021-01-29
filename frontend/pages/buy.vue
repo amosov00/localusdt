@@ -25,8 +25,6 @@
         </td>
       </template>
     </AppTable>
-     {{orders}}
-    sad
   </section>
 </template>
 

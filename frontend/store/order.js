@@ -17,12 +17,14 @@ export const getters = {
       .sort((a, b) => b.price - a.price),
   buyOrdersWithLimit: s => limit => {
     return s.orders
+      .filter(order => order.currency === 1)
       .filter(order => order.type === 1)
       .sort((a, b) => b.price - a.price)
       .slice(0, limit)
   },
   sellOrdersWithLimit: s => limit => {
     return s.orders
+      .filter(order => order.currency === 1)
       .filter(order => order.type === 2)
       .sort((a, b) => b.price + a.price)
       .slice(0, limit)
@@ -65,6 +67,7 @@ export const actions = {
         : `&payment_method=${params.payment_method}`
     }&currency=${params.currency}`
     const { data } = await this.$axios.get(url)
+    console.log(data)
     data.forEach(e => {
       e.setCurrency = params.currency
     })

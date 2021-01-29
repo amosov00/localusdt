@@ -56,6 +56,17 @@ export default {
       ordersData:null
     }
   },
+  watch:{
+    orders(){
+      let obj = JSON.stringify(this.orders)
+      obj = JSON.parse(obj)
+      this.ordersData = obj.sort((a, b) => {
+      if(b.price > a.price){
+        return -1
+      }
+    })
+    }
+  },
   methods:{
     returnCurrency(row){
       switch(row.currency){

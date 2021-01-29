@@ -23,7 +23,7 @@
             <td class="table__data">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
                 <Button rounded outlined green>{{ $t('main.buy') }}</Button>
@@ -91,7 +91,7 @@
             <td class="table__data">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }}₽</td>
+            <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
                 <Button rounded outlined green>{{ $t('main.sell') }}</Button>
@@ -124,7 +124,7 @@
             <td class="table__data">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} ₽</td>
+            <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
             <td class="table__data">
               <nuxt-link :to="`/order/${row._id}`">
                 <Button rounded outlined green>{{ $t('main.buy') }}</Button>
@@ -198,13 +198,13 @@ export default {
         break
         case 2:
           return 'Br'
-        break 
+        break
         case 3:
           return '$'
-        break 
+        break
         case 4:
           return '€'
-        break 
+        break
       }
     },
     selectedOption(option) {

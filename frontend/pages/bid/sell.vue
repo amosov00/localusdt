@@ -342,6 +342,7 @@ export default {
           profitMode = 'fixed'
         }
         this.adForm = adForm
+        this.actualPrice = this.adForm ? this.adForm.price : this.currencyPrice
         this.editMode = true
       }
     }

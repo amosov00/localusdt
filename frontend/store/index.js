@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 let cookieOpts = {
   path: '/',
-  maxAge: 60 * 60 * 24 * 7,
+  maxAge: 60 * 60 * 24 * 7
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'production') {
 export const state = () => ({
   user: null,
   currencyPrice: null,
-  currencyFullData: null,
+  currencyFullData: null
 })
 
 export const getters = {
@@ -30,11 +30,11 @@ export const mutations = {
   setUser: (state, user) => (state.user = user),
   setBalance: (state, balance) => (state.user.balance_usdt = balance),
   deleteUser: state => (state.user = false),
-  setCurrencyPrice: (state, payload) => (state.currencyPrice = payload.current_rate),
-  currencyFullData(state, payload){
+  setCurrencyPrice: (state, payload) =>
+    (state.currencyPrice = payload.current_rate),
+  currencyFullData(state, payload) {
     state.currencyFullData = payload
   }
-
 }
 
 export const actions = {
@@ -49,7 +49,7 @@ export const actions = {
         this.$toast.showMessage({
           content: $nuxt.$t('store.register'),
           green: true,
-          timeout: 60000,
+          timeout: 60000
         })
         return this.$router.push('/')
       })
@@ -63,9 +63,9 @@ export const actions = {
             break
           default:
             this.$toast.showMessage({
-            content: $nuxt.$t('store.signUpError'),
-            red: true
-          })
+              content: $nuxt.$t('store.signUpError'),
+              red: true
+            })
         }
       })
   },
@@ -78,11 +78,11 @@ export const actions = {
         repeat_password: passwordRepeat
       })
       .then(({ data }) => {
-        const { token, user } = data;
-        
+        const { token, user } = data
+
         this.$axios.setToken(token, 'Bearer')
         this.$cookies.set('token', token, cookieOpts)
-        console.log('login', user);
+        console.log('login', user)
         commit('setUser', user)
         this.$toast.showMessage({
           content: $nuxt.$t('store.login'),
@@ -91,13 +91,15 @@ export const actions = {
         this.$router.push({ path: '/' })
       })
       .catch(error => {
-        console.log('mess', error.response.data[0].message);
-        if(error.response.data[0].message == 'activate email or you are blocked'){
+        console.log('mess', error.response.data[0].message)
+        if (
+          error.response.data[0].message == 'activate email or you are blocked'
+        ) {
           this.$toast.showMessage({
             content: $nuxt.$t('store.signInBlocked'),
             red: true
           })
-          throw new Error("Ошибка!")
+          throw new Error('Ошибка!')
         }
         this.$toast.showMessage({
           content: $nuxt.$t('store.signInError'),
@@ -133,11 +135,10 @@ export const actions = {
     return await this.$axios
       .post('/account/change_password/', data)
       .then(_ => {
-        this.$toast.showMessage(
-          {
-            content: $nuxt.$t('store.passChange'),
-            green: true
-          })
+        this.$toast.showMessage({
+          content: $nuxt.$t('store.passChange'),
+          green: true
+        })
         this.$router.push('/profile')
       })
       .catch(error => {
@@ -194,7 +195,7 @@ export const actions = {
       })
   },
   async changeCondition({ dispatch }, condition) {
-    console.log('/account/user/');
+    console.log('/account/user/')
     await this.$axios
       .put('/account/user/', {
         about_me: condition
@@ -214,20 +215,20 @@ export const actions = {
       })
   },
   async fetchCurrencyPrice({ commit }, payload = 1) {
-    let  result = await this.$axios.get(`/currency/?currency=${payload}`)
-    console.log(1);
-      commit('setCurrencyPrice', result.data)
-      commit('currencyFullData', result.data)
+    let result = await this.$axios.get(`/currency/?currency=${payload}`)
+    commit('setCurrencyPrice', result.data)
+    commit('currencyFullData', result.data)
   },
   async fetchReferralInfo({}) {
-    return this.$axios.get('/account/referral_info/')
+    return this.$axios
+      .get('/account/referral_info/')
       .then(res => res.data)
-      .catch((e) => {
+      .catch(e => {
         console.log(e)
         this.$toast.showMessage({
           content: $nuxt.$t('store.refError'),
           red: true
         })
       })
-  },
+  }
 }

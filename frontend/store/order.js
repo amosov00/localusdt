@@ -65,6 +65,7 @@ export const actions = {
         : `&payment_method=${params.payment_method}`
     }&currency=${params.currency}`
     const { data } = await this.$axios.get(url)
+    console.log(data)
     data.forEach(e => {
       e.setCurrency = params.currency
     })

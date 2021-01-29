@@ -25,6 +25,8 @@
         </td>
       </template>
     </AppTable>
+     {{orders}}
+    sad
   </section>
 </template>
 
@@ -54,6 +56,17 @@ export default {
         this.$t('main.cost'),
       ],
       ordersData:null
+    }
+  },
+  watch:{
+    orders(){
+      let obj = JSON.stringify(this.orders)
+      obj = JSON.parse(obj)
+      this.ordersData = obj.sort((a, b) => {
+      if(b.price > a.price){
+        return -1
+      }
+    })
     }
   },
   methods:{

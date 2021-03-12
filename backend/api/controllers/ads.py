@@ -44,7 +44,7 @@ async def ads_fetch_all(
         order_type: Optional[AdsType] = None,
         price_bot: Optional[float] = None,
         price_top: Optional[float] = None,
-        currency: Optional[CurrencyType] = None,
+        currency: Optional[CurrencyType] = CurrencyType.RUB,
         payment_method: Optional[PaymentMethod] = None,
         sort: Optional[AdsSort] = AdsSort.ASC,
         limit: int = 10000

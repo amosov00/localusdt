@@ -47,6 +47,10 @@ class AdsCRUD(BaseMongoCRUD):
                     "status": AdsStatuses.NOT_ACTIVE,
                     "user_id": user.id
                 },
+                {
+                    "status": AdsStatuses.DELETED,
+                    "user_id": user.id
+                }
             ]
         })
         for ads in result:

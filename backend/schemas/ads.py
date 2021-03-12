@@ -103,7 +103,8 @@ class AdsCreate(BaseModel):
 
     amount_usdt: float = Field(...)
 
-    expiration_timestamp: int = Field(default=24*3*3600, description="Timestamp delta of expiration")
+    #TODO: remove expiration at all
+    expiration_timestamp: int = Field(default=24*365*3600, description="Timestamp delta of expiration")
 
     fixed_price: bool = Field(default=False, description="If true - show price_field, else - show profit field")
     price: float = Field(default=None)

@@ -22,22 +22,28 @@
         type="number"
         :header="$t('main.cost')"
         placeholder="0,00"
+        class="tab-body__item"
       />
-      <Input v-model="searchForm.top_limit" type="number" placeholder="0,00" />
+      <Input
+        v-model="searchForm.top_limit"
+        type="number"
+        placeholder="0,00"
+        class="tab-body__item"
+      />
       <Select
         v-model="searchForm.currency"
-        :width="80"
         :options="currencyOptions"
         :selectedOptionProp="outsideParams ? outsideParams.currency : '1'"
+        class="tab-body__item tab-body__currency"
       />
       <Select
         v-model="searchForm.payment_method"
-        :width="370"
         :options="paymentOptions"
         noCurrency
         :selectedOptionProp="outsideParams ?  outsideParams.payment_method ? outsideParams.payment_method : '5' : '5'"
+        class="tab-body__item tab-body__payment_method"
       />
-      <Button green @click.native="searchOrders"> {{ $t('main.search') }}</Button>
+      <Button green @click.native="searchOrders" class="tab-body__item tab-body__button"> {{ $t('main.search') }}</Button>
     </div>
   </div>
 </template>
@@ -145,13 +151,10 @@ export default {
 
 <style lang="scss">
 .tab {
-  position: absolute;
-  top: 100px;
-  right: 0;
   width: 100%;
-  margin-top: 50px;
-  margin-bottom: 50px;
   transition: all .5s;
+  max-width: 1200px;
+  margin: 70px auto 70px auto;
 
   .tab-nav {
     display: flex;
@@ -187,11 +190,38 @@ export default {
     align-items: flex-start;
     justify-content: center;
     padding-top: 50px;
+    @media (max-width: 916px) {
+      display: block;
+      height: auto;
+      &__item {
+        margin-bottom: 20px;
+      }
+    }
+    .tab-body__currency {
+      width: 80px;
+      @media (max-width: 916px) {
+        width: auto;
+      }
+    }
+
+    .tab-body__payment_method {
+      width: 370px;
+      @media (max-width: 916px) {
+        width: auto;
+      }
+    }
 
     & > * {
       margin-left: 25px;
+      @media (max-width: 916px) {
+        margin-right: 25px;
+      }
       &:last-child {
         margin-left: 70px;
+        @media (max-width: 916px) {
+          margin-left: 25px;
+          display: block;
+        }
       }
     }
   }

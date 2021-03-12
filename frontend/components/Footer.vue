@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="footer__container">
-      <nuxt-link to="/">
+      <nuxt-link to="/" class="footer__logowrapper">
         <img class="footer__logo" src="~/assets/icons/logo.svg" alt="Logo" />
       </nuxt-link>
       <nav class="footer__nav">
@@ -52,14 +52,34 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      .footer__logowrapper {
+        margin-right: auto;
+        margin-top: 15px;
+        margin-bottom: 15px;
+      }
+    }
   }
 
   &__nav {
+    @media (max-width: 768px) {
+      margin-right: auto;
+    }
     .nav {
       display: flex;
       align-items: center;
       height: 100%;
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+      }
       &__item {
+        @media (max-width: 768px) {
+          margin-top: 5px;
+          margin-bottom: 5px;
+          margin-left: 0;
+        }
         margin-left: 40px;
         list-style: none;
         opacity: 0.5;
@@ -73,6 +93,11 @@ export default {
 
   &__copyright {
     opacity: 0.5;
+    @media (max-width: 768px) {
+      margin-right: auto;
+      margin-top: 15px;
+      padding-bottom: 20px;
+    }
   }
 }
 </style>

@@ -46,12 +46,19 @@
       <div class="header__lang">
         <LangSwitcher />
       </div>
+      <NotificationCenter class="mr-15" style="margin-left: auto;" v-if="$userIsLoggedIn()"></NotificationCenter>
       <button
         class="navbar-toggle"
         @click="dialog = !dialog"
-        :class="{
+        :class="[
+        {
           'navbar-toggle-active': dialog
-        }"
+        },
+        {
+          'navbar-margin': !$userIsLoggedIn()
+        }
+        ]"
+
       >
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -88,7 +95,6 @@
         </ul>
       </nav>
       <div class="actions">
-        <NotificationCenter class="mr-15" v-if="$userIsLoggedIn()"></NotificationCenter>
         <div v-if="!$userIsLoggedIn()">
           <nuxt-link class="header__action disabled" to="/signup" @click.native="dialog = false"
           >{{$t('navbar.reg')}}
@@ -162,6 +168,9 @@ export default {
 </script>
 
 <style lang="scss">
+.navbar-margin {
+  margin-left: auto;
+}
 .header {
   height: 70px;
   width: 100%;
@@ -288,7 +297,6 @@ export default {
     background-color: #ddd !important;
   }
   .navbar-toggle {
-    margin-left: auto;
     position: relative;
     float: right;
     padding: 9px 10px;

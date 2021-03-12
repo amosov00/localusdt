@@ -120,7 +120,7 @@ export default {
       }
       this.$axios.put(`/notification/watch/`, data)
       this.notif_list.sort((e)=>{
-        return  e.watched == true ? 1 : -1 
+        return  e.watched == true ? 1 : -1
       })
       this.$router.push(`/invoice/${msg.invoice_id}`)
     },
@@ -160,7 +160,7 @@ export default {
       }else{
         title = this.invoiceStatusShort(data.new_status)
       }
-      
+
       const text = `${data.invoice_id}<div class="time">${this.formatDate(data.created_at)}</div>`
 
       this.$notify({
@@ -370,6 +370,17 @@ export default {
   }
 
   &__popup {
+    @media (max-width: 916px) {
+      left: -248px;
+      width: 360px;
+      &:before {
+        right: 80px !important;
+      }
+
+      &:after {
+        right: 81px !important;
+      }
+    }
     border: 1px solid #cccccc;
     border-radius: 5px;
     left: -320px;

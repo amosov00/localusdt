@@ -5,10 +5,11 @@ let cookieOpts = {
   maxAge: 60 * 60 * 24 * 7
 }
 
+
 if (process.env.NODE_ENV === 'production') {
   const additional = {
     sameSite: 'none',
-    secure: true
+    secure: false
   }
 
   cookieOpts = { ...additional }

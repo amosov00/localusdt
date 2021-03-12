@@ -48,9 +48,10 @@ hr {
 }
 
 .auth-form {
-  width: 390px;
+  max-width: 390px;
   margin: auto;
   padding-top: 100px;
+  padding-bottom: 100px;
 
   &__header {
     margin-bottom: 60px;

@@ -233,6 +233,12 @@ export default {
     margin-top: 50px;
     display: flex;
     justify-content: space-between;
+    @media (max-width: 966px) {
+      display: block;
+      &__container {
+        margin-bottom: 40px;
+      }
+    }
 
     &__title {
       margin-bottom: 35px;

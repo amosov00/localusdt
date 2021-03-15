@@ -42,8 +42,8 @@ export default {
     outline: none;
     border-radius: $border-radius;
     padding: 20px;
-    width: 475px;
-    max-width: 475px;
+    width: 175px;
+    max-width: 175px;
     min-width: 100%;
     min-height: 175px;
     max-height: 500px;

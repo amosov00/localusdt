@@ -7,8 +7,20 @@
         </tr>
       </thead>
       <tbody class="table__body">
-        <template v-for="(item, i) in whichTable" >
-          <tr class="table__row" :style="i % 2 === 0 ? 'background-color:#F5F5F5;' : null" :data-item="i" :key="i">
+        <template v-for="(item, i) in whichTable">
+          <div class="table__trheader green--bg" v-if="walletTX && windowWidth < 1100">
+            <div @click="switchTR(i)">
+              {{item.amount_usdt}} USDT
+            </div>
+            <div>{{regularDate(item.date)}}</div>
+          </div>
+          <tr
+            class="table__row"
+            :class="{'none-class': walletTX && windowWidth < 1100}"
+            :style="i % 2 === 0 ? 'background-color:#F5F5F5;' : null"
+            :data-item="i"
+            :key="i"
+          >
             <slot :row="item" />
           </tr>
         </template>
@@ -27,7 +39,7 @@
           <InlineSvg class="pagination__arrow-icon" :src="require('~/assets/icons/arrow-right.svg')" />
         </button>
       </div>
-      <div class="pagination__quantity">
+      <div class="pagination__quantity" :class="{'pagination__quantity-mobile': windowWidth < 716}">
         <button class="pagination__quantity-button" :class="{'black': contentPerPage === 15}" @click="setContentPerPage(15)"> 15 </button>
         <button class="pagination__quantity-button" :class="{'black': contentPerPage === 25}" @click="setContentPerPage(25)"> 25 </button>
         <button class="pagination__quantity-button" :class="{'black': contentPerPage === 50}" @click="setContentPerPage(50)"> 50 </button>
@@ -42,6 +54,7 @@ import InlineSvg from 'vue-inline-svg'
 import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
 import paymentMethod from '~/mixins/paymentMethod'
+import formatDate from "@/mixins/formatDate";
 export default {
   name:'AppTable',
   props: {
@@ -56,9 +69,13 @@ export default {
     },
     propsContPage:{
       default:15,
+    },
+    walletTX: {
+      type: Boolean,
+      default: false
     }
   },
-  mixins: [formatCurreny, paymentMethod],
+  mixins: [formatCurreny, paymentMethod, formatDate],
   components: {
     Button,
     InlineSvg,
@@ -66,7 +83,8 @@ export default {
   data() {
     return {
       currentPage: 1,
-      contentPerPage: this.propsContPage
+      contentPerPage: this.propsContPage,
+      windowWidth: window.innerWidth
     }
   },
   computed: {
@@ -96,6 +114,13 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
+  },
   methods: {
     prevPage() {
       if (this.currentPage <= 1) {
@@ -116,7 +141,14 @@ export default {
     goToPage(page) {
       this.currentPage = page;
     },
-     
+    switchTR(i) {
+      const tr = document.querySelector(`[data-item="${i}"]`)
+      if (tr.style.display === 'table-row') {
+        tr.style.display = 'none'
+      } else  {
+        tr.style.display = 'table-row'
+      }
+    }
   },
   created() {
     this.$parent.$on('clickPageOne', this.goToPage);
@@ -125,6 +157,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.none-class {
+  display: none;
+}
 .table {
   border-collapse: collapse;
   margin: 25px 0;
@@ -132,7 +167,7 @@ export default {
   overflow-wrap:break-word;
   &__head {
     .table__row {
-       word-wrap: break-word;
+      word-wrap: break-word;
       color: #000;
       opacity: 0.3;
       font-weight: 500;
@@ -147,6 +182,16 @@ export default {
     font-size: 16px;
   }
   &__body {
+    .table__trheader {
+      text-align: left !important;
+      padding: 25px;
+      border-radius: 5px;
+      color: white;
+      margin: 5px 0;
+      div:first-child {
+        font-size: 35px;
+      }
+    }
     .table__row {
       overflow-wrap:break-word;
        word-wrap: break-word;
@@ -214,6 +259,12 @@ export default {
     &:not(:last-child) {
       margin-right: 30px;
     }
+  }
+
+  &__quantity-mobile {
+    transform: translate(-50%, -50%);
+    top: 50% !important;
+    left: 50% !important;
   }
 
   &__quantity {

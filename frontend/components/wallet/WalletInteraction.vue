@@ -43,13 +43,12 @@
           {{$t('wallet.descriptionReceive')}}
         </p>
       <Input
-        class="mt-50"
+        class="mt-50 input-width"
         type="text"
         :header="$t('wallet.balanceAddress')"
         :value="user.eth_address"
         disabled
         endIcon="copy"
-        :width="400"
       />
     </div>
     <WalletTxModal :show="show" @toggleModal="show = $event" />
@@ -116,8 +115,19 @@ export default {
 </script>
 
 <style lang="scss">
+.input-width {
+  //max-width: 400px;
+  //width: 100%;
+  //display: block;
+  @media (max-width: 606px) {
+    margin-right: 0;
+  }
+}
 .interaction {
   margin-top: 50px;
+  @media (max-width: 966px) {
+    display: block;
+  }
   display: flex;
   justify-content: space-between;
 
@@ -125,6 +135,9 @@ export default {
   border-bottom: 1px solid #e7e8e8;
 
   .withdraw {
+    @media (max-width: 966px) {
+      margin-bottom: 40px;
+    }
     .row {
       display: flex;
       align-items: flex-start;
@@ -151,6 +164,9 @@ export default {
 
   .add {
     margin-right: 130px;
+    @media (max-width: 650px) {
+      margin-right: 0;
+    }
     &__title {
       font-weight: 500;
     }

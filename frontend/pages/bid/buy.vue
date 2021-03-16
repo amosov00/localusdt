@@ -10,14 +10,14 @@
         :options="paymentOptions"
         :selectedOptionProp="adForm.payment_method"
         v-model="adForm.payment_method"
-        :width="350"
         noCurrency
         :header="$t('bid.payType')"
+        class="select-buy"
         )
         Select(
         :options="currencyOptions"
         v-model="adForm.currency"
-        :width="80"
+        class="select-buy"
         @defaultProfit="resetProfit"
         profitForm
         :header="$t('bid.currency')"
@@ -87,13 +87,15 @@
       div.create-order__gap
         Input.mr-30(
         v-model="adForm.bot_limit"
-        :width="250"
+        class="input-gap"
         type="number"
+        :limitInput="true"
         :header="$t('bid.minLimit')")
 
         Input(
         v-model="adForm.top_limit"
-        :width="250"
+        :limitInput="true"
+        class="input-gap"
         type="number"
         :header="$t('bid.maxLimit')")
         span.extra-text USDT
@@ -356,5 +358,25 @@ export default {
   margin-bottom: 20px;
   font-size: 30px;
 }
+.input-gap {
+  @media (min-width: 607px) {
+    width: 250px;
+  }
+  @media (max-width: 607px) {
+    margin-bottom: 40px;
+  }
+}
+
+.select-buy:first-child {
+  @media (min-width: 607px) {
+    width: 350px;
+  }
+}
+.select-buy:last-child {
+  @media (min-width: 607px) {
+    width: 70px;
+  }
+}
+
 
 </style>

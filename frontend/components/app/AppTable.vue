@@ -160,6 +160,10 @@ export default {
 .none-class {
   display: none;
 }
+.none-class .table__data:not(:last-child) {
+  border-right: 0 solid #808080;
+}
+
 .table {
   border-collapse: collapse;
   margin: 25px 0;
@@ -209,7 +213,6 @@ export default {
 
   &__data {
     text-align: left;
-    padding-left: 30px;
     font-weight: normal;
 
     .status {

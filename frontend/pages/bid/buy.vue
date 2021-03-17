@@ -371,10 +371,13 @@ export default {
   @media (min-width: 607px) {
     width: 350px;
   }
+  @media (max-width: 607px) {
+    margin-bottom: 20px;
+  }
 }
 .select-buy:last-child {
   @media (min-width: 607px) {
-    width: 70px;
+    width: 80px;
   }
 }
 

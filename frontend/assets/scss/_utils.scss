@@ -83,6 +83,9 @@
 }
 .mr-30 {
   margin-right: 30px;
+  @media (max-width: 607px) {
+    margin-right: 0;
+  }
 }
 .ml-15 {
   margin-left: 15px;

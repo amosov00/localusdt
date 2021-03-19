@@ -12,15 +12,20 @@
         <td class="table__data">
           {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
         </td>
-        <td class="table__data">
+        <td class="table__data" v-if="windowWidth > 998">
           {{ spaceSplitting(row.bot_limit) }} -
           {{ spaceSplitting(row.top_limit) }} USDT
         </td>
-        <td class="table__data">{{ commaSplitting(row.amount_usdt) }} USDT</td>
-        <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
-        <td class="table__data">
+        <td class="table__data" v-if="windowWidth > 998">{{ commaSplitting(row.amount_usdt) }} USDT</td>
+        <td
+          class="table__data fw-500"
+          :class="{center: windowWidth < 998}"
+        >{{ commaSplitting(row.price) }} {{returnCurrency(row)}}
+        </td>
+        <td class="table__data" style="text-align: center">
           <nuxt-link :to="`/order/${row._id}`">
-            <Button rounded outlined green>{{$t('main.buy')}}</Button>
+            <Button rounded outlined green v-if="windowWidth > 998">{{$t('main.buy')}}</Button>
+            <img :src="require('@/assets/icons/shopping-cart.png')" alt="buy" v-if="windowWidth < 998">
           </nuxt-link>
         </td>
       </template>
@@ -46,14 +51,8 @@ export default {
   },
   data() {
     return {
-      headers: [
-        this.$t('main.seller'),
-        this.$t('main.payType'),
-        this.$t('main.limit'),
-        this.$t('main.quantity'),
-        this.$t('main.cost'),
-      ],
-      ordersData:null
+      ordersData:null,
+      windowWidth: window.innerWidth
     }
   },
   watch:{
@@ -88,9 +87,26 @@ export default {
   computed: {
     ...mapGetters({
       orders: 'order/orders'
-    })
+    }),
+    headers() {
+      if (this.windowWidth > 998) {
+        return [
+          this.$t('main.seller'),
+          this.$t('main.payType'),
+          this.$t('main.limit'),
+          this.$t('main.quantity'),
+          this.$t('main.cost'),
+        ]
+      } else {
+        return [
+          this.$t('main.seller'),
+          this.$t('main.payType'),
+          this.$t('main.cost'),
+        ]
+      }
+    }
   },
-  created(){
+  created() {
     let obj = JSON.stringify(this.orders)
     obj = JSON.parse(obj)
     this.ordersData = obj.sort((a, b) => {
@@ -99,6 +115,13 @@ export default {
       }
     })
     console.log(this.ordersData);
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
   },
   asyncData({ store, query }) {
 
@@ -120,3 +143,11 @@ export default {
   }
 }
 </script>
+<style>
+  [alt="buy"] {
+    width: 20px;
+  }
+  .center {
+    text-align: center !important;
+  }
+</style>

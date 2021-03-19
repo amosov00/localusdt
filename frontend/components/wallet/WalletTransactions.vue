@@ -23,15 +23,15 @@
                 <InlineSvg :src="require('~/assets/icons/redirect.svg')" />
               </a>
           </component>
-            <component :is="rowsTag" class="table__data fw-500">
-              <b v-if="mobile">{{$t('wallet.amount')}}: </b>
-              {{ commaSplitting(row.amount_usdt) }} USDT
-            </component>
-            <component
+          <component :is="rowsTag" class="table__data fw-500">
+            <b v-if="mobile">{{$t('wallet.amount')}}: </b>
+            {{ commaSplitting(row.amount_usdt) }} USDT
+          </component>
+          <component
               class="table__data"
               :style="{ color: statusColor(row.status) }"
               :is="rowsTag"
-            >
+          >
               <b v-if="mobile" style="color: black">{{$t('wallet.status')}}: </b>
               {{ transactionStatus(row.status) }}
             </component>

@@ -9,7 +9,8 @@
         <div class="wallet__avaible">
           <p>
             <span class="opacity-50">{{$t('wallet.all')}} </span>
-            {{commaSplitting(user.balance_usdt + user.usdt_in_invoices)}} USDT</p>
+            {{commaSplitting(user.balance_usdt + user.usdt_in_invoices)}} USDT
+          </p>
           <p>
             <span class="opacity-50">{{$t('wallet.inOrders')}}</span>
             {{commaSplitting(user.usdt_in_invoices)}} USDT

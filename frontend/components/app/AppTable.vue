@@ -191,7 +191,7 @@ export default {
       padding: 25px;
       border-radius: 5px;
       color: white;
-      margin: 5px 0;
+      margin-top: 5px;
       div:first-child {
         font-size: 35px;
       }

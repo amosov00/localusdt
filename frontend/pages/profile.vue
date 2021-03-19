@@ -73,23 +73,34 @@
         </AppTable>
       </div>
       <div class="tab-item" v-if="activeTab===2">
-        <AppTable :data="orders" :headers="orderHeaders" pagination>
+        <AppTable :data="orders" :headers="orderHeaders" pagination :walletTX="true" :key="windowWidth">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
-            <td class="table__data" v-if="row.type === 1">{{$t('profile.buyUSDT')}}</td>
-            <td class="table__data" v-else-if="row.type === 2">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data">{{commaSplitting(row.price)}} {{returnCurrency(row)}}</td>
-            <td class="table__data">
+            <component :is="rowsTag" class="table__data">
+              <b v-if="mobile">{{$t('profile.dateTime')}}: </b>{{timestampToUtc(row.created_at)}}
+            </component>
+            <component :is="rowsTag" class="table__data" v-if="row.type === 1">
+              <b v-if="mobile">{{$t('profile.type')}}: </b>{{$t('profile.buyUSDT')}}
+            </component>
+            <component :is="rowsTag" class="table__data" v-else-if="row.type === 2">
+              <b v-if="mobile">{{$t('profile.type')}}: </b>{{$t('profile.sellUSDT')}}
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <b v-if="mobile">{{$t('profile.course')}}: </b>{{commaSplitting(row.price)}} {{returnCurrency(row)}}
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <b v-if="mobile">{{$t('profile.limit')}}: </b>
               <span>
                 {{spaceSplitting(row.bot_limit)}} -
                 {{spaceSplitting(row.top_limit)}} USDT
               </span>
-            </td>
-            <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT </td>
-            <td class="table__data" :style="{ color: orderStatusColor(row.status) }">
-              <nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
-            </td>
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <b v-if="mobile">{{$t('profile.residue')}}: </b>{{spaceSplitting(row.amount_usdt)}} USDT
+            </component>
+            <component :is="rowsTag" class="table__data" :style="{ color: orderStatusColor(row.status) }">
+              <b v-if="mobile" style="color: black">{{$t('profile.status')}}: </b><nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
+            </component>
           </template>
         </AppTable>
       </div>
@@ -121,14 +132,7 @@ export default {
   data() {
     return {
       activeTab: 1,
-      orderHeaders: [
-        this.$t('profile.dateTime'),
-        this.$t('profile.type'),
-        this.$t('profile.course'),
-        this.$t('profile.limit'),
-        this.$t('profile.residue'),
-        this.$t('profile.status'),
-      ],
+      windowWidth: window.innerWidth,
       headers: [
         this.$t('profile.dateTime'),
         this.$t('profile.orderType'),
@@ -142,6 +146,28 @@ export default {
     this.$store.dispatch('order/fetchOrdersByUser')
   },
   computed: {
+    rowsTag() {
+      if (this.windowWidth < 1100) {
+        return 'div'
+      } else {
+        return 'td'
+      }
+    },
+    mobile() {
+      return this.windowWidth < 1100
+    },
+    orderHeaders() {
+      if (this.windowWidth > 1100) {
+        return [
+          this.$t('profile.dateTime'),
+          this.$t('profile.type'),
+          this.$t('profile.course'),
+          this.$t('profile.limit'),
+          this.$t('profile.residue'),
+          this.$t('profile.status')
+        ]
+      }
+    },
     user() {
       return { ...this.$store.getters.user }
     },
@@ -160,6 +186,13 @@ export default {
         this.user.about_me = value
       }
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
   },
   methods: {
      returnCurrency(row){

@@ -106,7 +106,7 @@ export default {
       }
     }
   },
-  created(){
+  created() {
     let obj = JSON.stringify(this.orders)
     obj = JSON.parse(obj)
     this.ordersData = obj.sort((a, b) => {

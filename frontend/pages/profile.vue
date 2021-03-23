@@ -45,61 +45,61 @@
           {{$t('profile.orders')}}
         </div>
       </nav>
-      <div class="tab-item" v-if="activeTab===1">
-        <AppTable :data="invoices" :headers="headers" pagination>
+      <div class="tab-item" v-show="activeTab===1">
+        <AppTable :incomingData="invoices" :headers="headers" pagination :walletTX="true">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">
+            <component :is="rowsTag" class="table__data">
               <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
               <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{row._id}}</p>
-            </td>
-            <td class="table__data" v-if="row.seller_username === user.username">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data" v-else>{{$t('profile.buyUSDT')}}</td>
-            <td class="table__data">
+            </component>
+            <component :is="rowsTag" class="table__data" v-if="row.seller_username === user.username">{{$t('profile.sellUSDT')}}</component>
+            <component :is="rowsTag" class="table__data" v-else>{{$t('profile.buyUSDT')}}</component>
+            <component :is="rowsTag" class="table__data">
               {{ getUsername(row.seller_username, row.buyer_username)}}
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
-            </td>
-            <td class="table__data">
+            </component>
+            <component :is="rowsTag" class="table__data">
                <span class="grey-dark fw-400">
                  {{commaSplitting(row.amount_usdt)}} USDT {{$t('profile.for')}}
               </span>
                 {{commaSplitting(row.amount)}}{{returnCurrency(row)}}
-            </td>
-            <td class="table__data" :style="{ color: statusColor(row.status) }">
+            </component>
+            <component :is="rowsTag" class="table__data" :style="{ color: statusColor(row.status) }">
               <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
-            </td>
+            </component>
           </template>
         </AppTable>
       </div>
-      <div class="tab-item" v-if="activeTab===2">
-        <AppTable :data="orders" :headers="orderHeaders" pagination :walletTX="true" :key="windowWidth">
+      <div class="tab-item" v-show="activeTab===2">
+        <AppTable :incomingData="orders" :headers="orderHeaders" pagination :walletTX="true">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <component :is="rowsTag" class="table__data">
-              <b v-if="mobile">{{$t('profile.dateTime')}}: </b>{{timestampToUtc(row.created_at)}}
+              <span class="text--grey" v-if="mobile">{{$t('profile.dateTime')}}: </span><b>{{timestampToUtc(row.created_at)}}</b>
             </component>
             <component :is="rowsTag" class="table__data" v-if="row.type === 1">
-              <b v-if="mobile">{{$t('profile.type')}}: </b>{{$t('profile.buyUSDT')}}
+              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><b>{{$t('profile.buyUSDT')}}</b>
             </component>
             <component :is="rowsTag" class="table__data" v-else-if="row.type === 2">
-              <b v-if="mobile">{{$t('profile.type')}}: </b>{{$t('profile.sellUSDT')}}
+              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><b>{{$t('profile.sellUSDT')}}</b>
             </component>
             <component :is="rowsTag" class="table__data">
-              <b v-if="mobile">{{$t('profile.course')}}: </b>{{commaSplitting(row.price)}} {{returnCurrency(row)}}
+              <span class="text--grey" v-if="mobile">{{$t('profile.course')}}: </span><b>{{commaSplitting(row.price)}} {{returnCurrency(row)}}</b>
             </component>
             <component :is="rowsTag" class="table__data">
-              <b v-if="mobile">{{$t('profile.limit')}}: </b>
-              <span>
+              <span class="text--grey" v-if="mobile">{{$t('profile.limit')}}: </span>
+              <b>
                 {{spaceSplitting(row.bot_limit)}} -
                 {{spaceSplitting(row.top_limit)}} USDT
-              </span>
+              </b>
             </component>
             <component :is="rowsTag" class="table__data">
-              <b v-if="mobile">{{$t('profile.residue')}}: </b>{{spaceSplitting(row.amount_usdt)}} USDT
+              <span class="text--grey" v-if="mobile">{{$t('profile.residue')}}: </span><b>{{spaceSplitting(row.amount_usdt)}} USDT</b>
             </component>
             <component :is="rowsTag" class="table__data" :style="{ color: orderStatusColor(row.status) }">
-              <b v-if="mobile" style="color: black">{{$t('profile.status')}}: </b><nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
+              <span class="text--grey" v-if="mobile">{{$t('profile.status')}}: </span><nuxt-link :to="`/order/${row._id}`"><b>{{orderStatus(row.status)}}</b></nuxt-link>
             </component>
           </template>
         </AppTable>
@@ -133,13 +133,6 @@ export default {
     return {
       activeTab: 1,
       windowWidth: window.innerWidth,
-      headers: [
-        this.$t('profile.dateTime'),
-        this.$t('profile.orderType'),
-        this.$t('profile.buyerSeller'),
-        this.$t('profile.sum'),
-        this.$t('profile.status'),
-      ]
     }
   },
   created() {
@@ -168,15 +161,42 @@ export default {
         ]
       }
     },
+    headers() {
+      if (this.windowWidth > 1100) {
+        return [
+          this.$t('profile.dateTime'),
+          this.$t('profile.orderType'),
+          this.$t('profile.buyerSeller'),
+          this.$t('profile.sum'),
+          this.$t('profile.status'),
+        ]
+      }
+    },
     user() {
       return { ...this.$store.getters.user }
     },
     invoices() {
-      console.log(this.$store.getters['invoice/invoices']);
-      return this.$store.getters['invoice/invoices']
+      return this.$store.getters['invoice/invoices'].map((item)=>{
+        let type
+        if (item.seller_username === this.user.username) {
+          type = 2
+        } else {
+          type = 1
+        }
+        return {
+          ...item,
+          type,
+          visible: false
+        }
+      })
     },
     orders() {
-      return [...this.$store.getters['order/ordersByUser']].reverse()
+      return [...this.$store.getters['order/ordersByUser']].reverse().map((item)=>{
+        return {
+          ...item,
+          visible: false
+        }
+      })
     },
     condition: {
       get: function() {
@@ -225,8 +245,9 @@ export default {
       this.$store.dispatch('changeCondition', this.user.about_me)
     }
   },
-  asyncData({ store }) {
-    return store.dispatch('invoice/fetchInvoices')
+  async asyncData({ store }) {
+    await store.dispatch('invoice/fetchInvoices')
+    await store.dispatch('order/fetchOrdersByUser')
   }
 }
 </script>
@@ -291,6 +312,13 @@ export default {
     border: 1px solid #f3f3f3;
     margin-top: -1px;
     padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+div.table__data:not(:first-child) {
+  @media (max-width: 1100px) {
+    border-top: 1px solid grey;
   }
 }
 </style>

@@ -8,16 +8,23 @@
       </thead>
       <tbody class="table__body">
         <template v-for="(item, i) in whichTable">
-          <div class="table__trheader green--bg" v-if="walletTX && windowWidth < 1100">
-            <div @click="switchTR(i)">
+          <div class="table__trheader" v-if="walletTX && windowWidth < 1100" @click="switchTR(item)">
+            <div>
               {{item.amount_usdt}} USDT
             </div>
-            <div>{{regularDate(item.date)}}</div>
+            <div class="text--grey">
+              <span v-if="item.type === 1">{{$t('profile.buyUSDT')}}</span>
+              <span v-else-if="item.type === 2">{{$t('profile.sellUSDT')}}</span>
+              {{regularDate(item.date)}}
+            </div>
+            <div class="table__indicator" :class="{
+              'table__indicator--up': item.visible,
+              'table__indicator--down': !item.visible,
+            }"></div>
           </div>
           <tr
             class="table__row"
-            :class="{'none-class': walletTX && windowWidth < 1100}"
-            :style="i % 2 === 0 ? 'background-color:#F5F5F5;' : null"
+            v-if="item.visible || (windowWidth > 1100) || !walletTX"
             :data-item="i"
             :key="i"
           >
@@ -58,7 +65,7 @@ import formatDate from "@/mixins/formatDate";
 export default {
   name:'AppTable',
   props: {
-    data: Array,
+    incomingData: Array,
     headers: Array,
     pagination: {
       type: Boolean,
@@ -84,7 +91,8 @@ export default {
     return {
       currentPage: 1,
       contentPerPage: this.propsContPage,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      data: this.incomingData
     }
   },
   computed: {
@@ -141,13 +149,9 @@ export default {
     goToPage(page) {
       this.currentPage = page;
     },
-    switchTR(i) {
-      const tr = document.querySelector(`[data-item="${i}"]`)
-      if (tr.style.display === 'table-row') {
-        tr.style.display = 'none'
-      } else  {
-        tr.style.display = 'table-row'
-      }
+    switchTR(item) {
+      const globalIndex = this.data.indexOf(item)
+      this.data[globalIndex].visible = !this.data[globalIndex].visible;
     }
   },
   created() {
@@ -180,6 +184,24 @@ export default {
     }
   }
 
+  &__indicator {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__indicator--up {
+    border-bottom: 12px solid gray;
+  }
+  &__indicator--down {
+    border-top: 12px solid gray;
+  }
+
   &__header {
     padding: 20px;
     font-weight: 500;
@@ -188,18 +210,28 @@ export default {
   &__body {
     .table__trheader {
       text-align: left !important;
-      padding: 25px;
+      padding: 15px;
       border-radius: 5px;
-      color: white;
-      margin-top: 5px;
+      margin-top: 15px;
+      border: 1px solid grey;
+      position: relative;
+      div:last-child {
+        span:last-child {
+          margin-right: 30px;
+        }
+      }
       div:first-child {
-        font-size: 35px;
+        font-size: 25px;
+        margin-bottom: 8px;
       }
     }
     .table__row {
       overflow-wrap:break-word;
-       word-wrap: break-word;
+      word-wrap: break-word;
       line-height: 70px;
+      @media (max-width: 1100px) {
+        box-shadow: 0px 4px 15px 0px rgba(34, 60, 80, 0.2);
+      }
 
       &:nth-child(2n) {
         background-color: #fdfdfd;
@@ -210,6 +242,7 @@ export default {
       }
     }
   }
+
 
   &__data {
     text-align: left;
@@ -227,10 +260,6 @@ export default {
       display: inline-block;
       margin-left: 15px;
       color: $grey-dark;
-    }
-
-    &:not(:last-child) {
-      border-right: 1px solid #808080;
     }
   }
 }

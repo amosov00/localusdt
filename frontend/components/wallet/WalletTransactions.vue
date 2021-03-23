@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="fw-500 mt-50">{{$t('wallet.transactionHistory')}}</h2>
-    <AppTable class="mb-80" :data="transactions" :headers="headers" :walletTX="true" pagination>
+    <AppTable class="mb-80" :incomingData="transactions" :headers="headers" :walletTX="true" pagination>
       <template slot-scope="{ row }">
           <component :is="rowsTag" class="table__data">
             <b v-if="mobile">{{$t('wallet.date')}}: </b>{{regularDate(row.date)}}
@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import formatDate from '~/mixins/formatDate'
 import formatCurrency from '~/mixins/formatCurrency'
 import AppTable from '~/components/app/AppTable'
@@ -58,9 +57,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      transactions: 'wallet/transactions'
-    }),
+    transactions() {
+      return this.$store.getters['wallet/transactions'].map((item)=>{
+        return {
+          ...item,
+          visible: false
+        }
+      })
+    },
     mobile() {
       return this.windowWidth < 1100
     },
@@ -134,11 +138,14 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss">
   .address {
     word-break: break-all;
-    line-height: 15px;
-    margin: 27.5px 0;
     padding-right: 30px;
+  }
+  div.table__data:not(:first-child) {
+  @media (max-width: 1100px) {
+    border-top: 1px solid grey;
+  }
   }
 </style>

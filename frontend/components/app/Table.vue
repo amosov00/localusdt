@@ -174,10 +174,6 @@ export default {
     &:not(:last-child) {
       border-right: 1px solid $grey;
     }
-
-    &:nth-child(4) {
-      font-weight: 500;
-    }
   }
 }
 

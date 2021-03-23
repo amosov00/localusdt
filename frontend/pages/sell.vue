@@ -2,14 +2,16 @@
   <section>
     <Tab :nav="false" :outsideParams="$route.query" :type="1" />
     <h1 class="table-section__title">{{$t('main.sellUSDT')}}</h1>
-    <AppTable class="mb-80" :data="orders" :headers="headers" pagination>
+    <AppTable class="mb-80" :incomingData="orders" :headers="headers" pagination>
       <template slot-scope="header"></template>
       <template slot-scope="{ row }">
         <td class="table__data">
           {{ row.username }}
           <span class="status green--bg" />
         </td>
-        <td class="table__data">
+        <td class="table__data" :class="{
+          'payment_method-response': windowWidth < 565
+        }">
           {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
         </td>
         <td class="table__data" v-if="windowWidth > 998">
@@ -20,7 +22,9 @@
           class="table__data" v-if="windowWidth > 998">{{ commaSplitting(row.amount_usdt) }} USDT</td>
         <td
           class="table__data fw-500"
-          :class="{center: windowWidth < 998}"
+          :class="[{center: windowWidth < 998}, {
+          'token_price-response': windowWidth < 565
+        }]"
         >{{ commaSplitting(row.price) }} {{returnCurrency(row)}}
         </td>
         <td class="table__data" style="text-align: center">

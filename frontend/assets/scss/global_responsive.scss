@@ -11,3 +11,8 @@
 .text--grey {
   color: grey;
 }
+@media (max-width: 1100px) {
+  .response-weight {
+    font-weight: bold;
+  }
+}

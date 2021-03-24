@@ -4,7 +4,7 @@
     <NonAuthorizedHero v-if="!$userIsLoggedIn()" />
     <Tab :top="top" @selectedTab="selectedOrders($event)" />
     <div v-if="!buyTab">
-      <section class="table-section mt-330">
+      <section class="table-section">
         <h1 class="table-section__title">{{ $t('main.buyUSDT') }}</h1>
         <AppTable :incomingData="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">
           <template slot-scope="header"></template>
@@ -72,7 +72,7 @@
       </section>
     </div>
     <div v-else>
-      <section class="table-section mt-330">
+      <section class="table-section">
         <h1 class="table-section__title">{{ $t('main.sellUSDT') }}</h1>
         <AppTable :incomingData="buyOrdersWithLimit" :headers="[$t('main.buyer'), ...headers]">
           <template slot-scope="header"></template>

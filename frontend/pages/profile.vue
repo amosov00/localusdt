@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <section class="profile">
     <div class="profile__header">
       <div class="profile__user">
@@ -50,24 +50,44 @@
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <component :is="rowsTag" class="table__data">
-              <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
-              <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{row._id}}</p>
+              <span class="text--grey" v-if="mobile">{{$t('profile.dateTime')}}: </span>
+              <span class="response-weight" :style="{
+                'line-height:40px': windowWidth > 1100,
+                'padding-left: 0': windowWidth > 1100,
+                'padding-right: 0': windowWidth > 1100,
+              }">{{timestampToUtc(row.created_at)}}</span>
+              <p style="font-size:10px; padding:0; line-height:15px;" v-if="windowWidth > 1100">ID сделки: {{row._id}}</p>
             </component>
-            <component :is="rowsTag" class="table__data" v-if="row.seller_username === user.username">{{$t('profile.sellUSDT')}}</component>
-            <component :is="rowsTag" class="table__data" v-else>{{$t('profile.buyUSDT')}}</component>
+            <component :is="rowsTag" class="table__data" v-if="row.seller_username === user.username">
+              <span class="text--grey" v-if="mobile">{{$t('profile.orderType')}}: </span>
+              <span class="response-weight">{{$t('profile.sellUSDT')}}</span>
+            </component>
+            <component :is="rowsTag" class="table__data" v-else>
+              <span class="text--grey" v-if="mobile">{{$t('profile.orderType')}}: </span>
+              <span class="response-weight">{{$t('profile.buyUSDT')}}</span>
+            </component>
             <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.buyerSeller')}}: </span>
+              <span class="response-weight">
               {{ getUsername(row.seller_username, row.buyer_username)}}
+              </span>
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
             </component>
             <component :is="rowsTag" class="table__data">
-               <span class="grey-dark fw-400">
-                 {{commaSplitting(row.amount_usdt)}} USDT {{$t('profile.for')}}
+              <span class="text--grey" v-if="mobile">{{$t('profile.sum')}}: </span>
+              <span class="response-weight">
+                 <span class="grey-dark fw-400">
+                   {{commaSplitting(row.amount_usdt)}} USDT {{$t('profile.for')}}
+                </span>
+                  {{commaSplitting(row.amount)}}{{returnCurrency(row)}}
               </span>
-                {{commaSplitting(row.amount)}}{{returnCurrency(row)}}
             </component>
             <component :is="rowsTag" class="table__data" :style="{ color: statusColor(row.status) }">
-              <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
+              <nuxt-link :to="`/invoice/${row._id}`">
+                <span class="text--grey" v-if="mobile">{{$t('profile.sum')}}: </span>
+                <span class="response-weight">{{invoiceStatusShort(row.status)}}</span>
+              </nuxt-link>
             </component>
           </template>
         </AppTable>
@@ -77,29 +97,29 @@
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <component :is="rowsTag" class="table__data">
-              <span class="text--grey" v-if="mobile">{{$t('profile.dateTime')}}: </span><b>{{timestampToUtc(row.created_at)}}</b>
+              <span class="text--grey" v-if="mobile">{{$t('profile.dateTime')}}: </span><span class="response-weight">{{timestampToUtc(row.created_at)}}</span>
             </component>
             <component :is="rowsTag" class="table__data" v-if="row.type === 1">
-              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><b>{{$t('profile.buyUSDT')}}</b>
+              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><span class="response-weight">{{$t('profile.buyUSDT')}}</span>
             </component>
             <component :is="rowsTag" class="table__data" v-else-if="row.type === 2">
-              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><b>{{$t('profile.sellUSDT')}}</b>
+              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><span class="response-weight">{{$t('profile.sellUSDT')}}</span>
             </component>
             <component :is="rowsTag" class="table__data">
-              <span class="text--grey" v-if="mobile">{{$t('profile.course')}}: </span><b>{{commaSplitting(row.price)}} {{returnCurrency(row)}}</b>
+              <span class="text--grey" v-if="mobile">{{$t('profile.course')}}: </span><span class="response-weight">{{commaSplitting(row.price)}} {{returnCurrency(row)}}</span>
             </component>
             <component :is="rowsTag" class="table__data">
               <span class="text--grey" v-if="mobile">{{$t('profile.limit')}}: </span>
-              <b>
+              <span class="response-weight">
                 {{spaceSplitting(row.bot_limit)}} -
                 {{spaceSplitting(row.top_limit)}} USDT
-              </b>
+              </span>
             </component>
             <component :is="rowsTag" class="table__data">
-              <span class="text--grey" v-if="mobile">{{$t('profile.residue')}}: </span><b>{{spaceSplitting(row.amount_usdt)}} USDT</b>
+              <span class="text--grey" v-if="mobile">{{$t('profile.residue')}}: </span><span class="response-weight">{{spaceSplitting(row.amount_usdt)}} USDT</span>
             </component>
             <component :is="rowsTag" class="table__data" :style="{ color: orderStatusColor(row.status) }">
-              <span class="text--grey" v-if="mobile">{{$t('profile.status')}}: </span><nuxt-link :to="`/order/${row._id}`"><b>{{orderStatus(row.status)}}</b></nuxt-link>
+              <span class="text--grey" v-if="mobile">{{$t('profile.status')}}: </span><nuxt-link :to="`/order/${row._id}`"><span class="response-weight">{{orderStatus(row.status)}}</span></nuxt-link>
             </component>
           </template>
         </AppTable>

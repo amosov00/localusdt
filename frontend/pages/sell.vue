@@ -1,7 +1,7 @@
 <template>
   <section>
+    <h1 class="table-section__title" style="margin-top: 70px">{{$t('main.sellUSDT')}}</h1>
     <Tab :nav="false" :outsideParams="$route.query" :type="1" />
-    <h1 class="table-section__title">{{$t('main.sellUSDT')}}</h1>
     <AppTable class="mb-80" :incomingData="orders" :headers="headers" pagination>
       <template slot-scope="header"></template>
       <template slot-scope="{ row }">

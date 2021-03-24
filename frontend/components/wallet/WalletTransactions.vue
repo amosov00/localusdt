@@ -4,14 +4,14 @@
     <AppTable class="mb-80" :incomingData="transactions" :headers="headers" :walletTX="true" pagination>
       <template slot-scope="{ row }">
           <component :is="rowsTag" class="table__data">
-            <b v-if="mobile">{{$t('wallet.date')}}: </b>{{regularDate(row.date)}}
+            <span class="text--grey" v-if="mobile">{{$t('wallet.date')}}: </span><span class="response-weight">{{regularDate(row.date)}}</span>
           </component>
           <component :is="rowsTag" class="table__data">
-            <b v-if="mobile">{{$t('wallet.action')}}: </b>{{ transactionEvent(row.event) }}
+            <span class="text--grey" v-if="mobile">{{$t('wallet.action')}}: </span><span class="response-weight">{{ transactionEvent(row.event) }}</span>
           </component>
           <component :is="rowsTag" class="table__data address">
-              <b v-if="mobile">{{$t('wallet.address')}}: </b>
-              <span>
+              <span class="text--grey" v-if="mobile">{{$t('wallet.address')}}: </span>
+              <span class="response-weight">
                 {{ row.address }}
               </span>
               <a
@@ -23,17 +23,17 @@
                 <InlineSvg :src="require('~/assets/icons/redirect.svg')" />
               </a>
           </component>
-          <component :is="rowsTag" class="table__data fw-500">
-            <b v-if="mobile">{{$t('wallet.amount')}}: </b>
-            {{ commaSplitting(row.amount_usdt) }} USDT
+          <component :is="rowsTag" class="table__data">
+            <span class="text--grey" v-if="mobile">{{$t('wallet.amount')}}: </span>
+            <span class="response-weight">{{ commaSplitting(row.amount_usdt) }} USDT</span>
           </component>
           <component
               class="table__data"
               :style="{ color: statusColor(row.status) }"
               :is="rowsTag"
           >
-              <b v-if="mobile" style="color: black">{{$t('wallet.status')}}: </b>
-              {{ transactionStatus(row.status) }}
+              <span class="text--grey" v-if="mobile">{{$t('wallet.status')}}: </span>
+              <span class="response-weight">{{ transactionStatus(row.status) }}</span>
             </component>
       </template>
     </AppTable>
@@ -59,8 +59,15 @@ export default {
   computed: {
     transactions() {
       return this.$store.getters['wallet/transactions'].map((item)=>{
+        let type
+        if (item.event === 2) {
+          type = 2
+        } else {
+          type = 1
+        }
         return {
           ...item,
+          type,
           visible: false
         }
       })

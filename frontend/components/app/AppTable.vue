@@ -13,9 +13,11 @@
               {{item.amount_usdt}} USDT
             </div>
             <div class="text--grey">
-              <span v-if="item.type === 1">{{$t('profile.buyUSDT')}}</span>
-              <span v-else-if="item.type === 2">{{$t('profile.sellUSDT')}}</span>
-              {{regularDate(item.date)}}
+              <span class="mr-15">
+                <span v-if="item.type === 1">{{$t('profile.buyUSDT')}}</span>
+                <span v-else-if="item.type === 2">{{$t('profile.sellUSDT')}}</span>
+              </span>
+              <span>{{regularDate(item.date)}}</span>
             </div>
             <div class="table__indicator" :class="{
               'table__indicator--up': item.visible,

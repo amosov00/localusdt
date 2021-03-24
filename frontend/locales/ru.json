@@ -79,6 +79,7 @@
   },
   "wallet": {
     "wallet": "Кошелек",
+    "profile": "Профиль",
     "all": "Всего:",
     "inOrders": "В сделках:",
     "withdrawUSDT": "Вывести USDT",

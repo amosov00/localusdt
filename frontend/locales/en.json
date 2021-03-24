@@ -78,6 +78,7 @@
     "writeSum": "Enter the amount"
   },
   "wallet": {
+    "profile": "Profile",
     "wallet": "Wallet",
     "all": "Total:",
     "inOrders": "In deals:",

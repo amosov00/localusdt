@@ -152,7 +152,7 @@ export default {
     padding-left: 30px;
     padding-right: 30px;
 
-    @media (max-width: 966px) {
+    @media (max-width: 1100px) {
       padding-left: 15px;
       padding-right: 15px;
     }

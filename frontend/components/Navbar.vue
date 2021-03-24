@@ -46,7 +46,7 @@
       <div class="header__lang">
         <LangSwitcher />
       </div>
-      <NotificationCenter class="mr-15" style="margin-left: auto;" v-if="$userIsLoggedIn()"></NotificationCenter>
+      <NotificationCenter class="mr-15" style="margin-left: auto;" v-if="$userIsLoggedIn() && windowWidth < 916"></NotificationCenter>
       <button
         class="navbar-toggle"
         @click="dialog = !dialog"
@@ -138,6 +138,7 @@ export default {
         { title: this.$t('navbar.buy'), url: '/buy' },
         { title: this.$t('navbar.sell'), url: '/sell' }
       ],
+      windowWidth: window.innerWidth,
       dialog: false
     }
   },
@@ -160,6 +161,11 @@ export default {
         await this.$store.dispatch('fetchBalance')
       }
     }, 10000)
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
   },
   beforeDestroy() {
     clearInterval(this.interval)

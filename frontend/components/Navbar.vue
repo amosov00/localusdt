@@ -30,7 +30,7 @@
           >{{$t('navbar.reg')}}
           </nuxt-link
           >
-          <nuxt-link class="header__action" to="/login">{{$t('navbar.signIn')}}</nuxt-link>
+          <nuxt-link class="header__action disabled" to="/login">{{$t('navbar.signIn')}}</nuxt-link>
         </div>
         <div class="header__user" v-else>
           <nuxt-link to="/wallet" class="header__balance"
@@ -101,7 +101,7 @@
           >{{$t('navbar.reg')}}
           </nuxt-link
           >
-          <nuxt-link class="header__action" to="/login" @click.native="dialog = false">{{$t('navbar.signIn')}}</nuxt-link>
+          <nuxt-link class="header__action disabled" to="/login" @click.native="dialog = false">{{$t('navbar.signIn')}}</nuxt-link>
         </div>
         <div class="header__user block" v-else>
           <nuxt-link
@@ -147,7 +147,8 @@
       </div>
         <div
           @click="logout"
-          class="underline-link margin-zero align-flex"
+          class="margin-zero align-flex"
+          v-if="$userIsLoggedIn()"
         >
           <img src="~assets/icons/exit-to-app.svg" alt="exit" class="mr-5">
           <div>{{$t('profile.logOut')}}</div>
@@ -222,6 +223,10 @@ export default {
 
 .margin-zero:last-child {
   margin-top: 0;
+}
+
+[alt="cash"], [alt="exit"], [alt="account"], [alt="earth"] {
+ width: 18px;
 }
 
 

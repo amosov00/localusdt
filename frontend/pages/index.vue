@@ -9,24 +9,28 @@
         <AppTable :incomingData="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">
+            <td class="table__data" :class="{'token_price-response': windowWidth < 565}">
               {{ row.username }}
               <span class="status green--bg" />
             </td>
-            <td class="table__data">
+            <td class="table__data" :class="{'payment_method-response': windowWidth < 565}">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
-            <td class="table__data">
+            <td class="table__data" v-if="windowWidth > 998">
               {{ spaceSplitting(row.bot_limit) }} -
               {{ spaceSplitting(row.top_limit) }} USDT
             </td>
-            <td class="table__data">
+            <td class="table__data" v-if="windowWidth > 998">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
-            <td class="table__data">
+            <td
+              class="table__data fw-500"
+              :class="[{center: windowWidth < 998}, {'token_price-response': windowWidth < 565}]"
+            >{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
+            <td class="table__data" style="text-align: center">
               <nuxt-link :to="`/order/${row._id}`">
-                <Button rounded outlined green>{{ $t('main.buy') }}</Button>
+                <Button rounded outlined green v-if="windowWidth > 998">{{ $t('main.sell') }}</Button>
+                <img :src="require('@/assets/icons/shopping-cart.png')" alt="buy" v-if="windowWidth < 998">
               </nuxt-link>
             </td>
           </template>
@@ -42,24 +46,28 @@
         <AppTable :incomingData="buyOrdersWithLimit" :headers="[$t('main.buyer'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">
+            <td class="table__data" :class="{'token_price-response': windowWidth < 565}">
               {{ row.username }}
               <span class="status green--bg" />
             </td>
-            <td class="table__data">
+            <td class="table__data" :class="{'payment_method-response': windowWidth < 565}">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
-            <td class="table__data">
+            <td class="table__data" v-if="windowWidth > 998">
               {{ spaceSplitting(row.bot_limit) }} -
               {{ spaceSplitting(row.top_limit) }} USDT
             </td>
-            <td class="table__data">
+            <td class="table__data" v-if="windowWidth > 998">
               {{ commaSplitting(row.amount_usdt) }} USDT
             </td>
-            <td class="table__data fw-500">{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
-            <td class="table__data">
+            <td
+              class="table__data fw-500"
+              :class="[{center: windowWidth < 998}, {'token_price-response': windowWidth < 565}]"
+            >{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
+            <td class="table__data" style="text-align: center">
               <nuxt-link :to="`/order/${row._id}`">
-                <Button rounded outlined green>{{ $t('main.sell') }}</Button>
+                <Button rounded outlined green v-if="windowWidth > 998">{{ $t('main.sell') }}</Button>
+                <img :src="require('@/assets/icons/shopping-cart.png')" alt="buy" v-if="windowWidth < 998">
               </nuxt-link>
             </td>
           </template>
@@ -77,11 +85,11 @@
         <AppTable :incomingData="buyOrdersWithLimit" :headers="[$t('main.buyer'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">
+            <td class="table__data" :class="{'token_price-response': windowWidth < 565}">
               {{ row.username }}
               <span class="status green--bg" />
             </td>
-            <td class="table__data">
+            <td class="table__data" :class="{'payment_method-response': windowWidth < 565}">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
             <td class="table__data" v-if="windowWidth > 998">
@@ -93,7 +101,7 @@
             </td>
             <td
               class="table__data fw-500"
-              :class="{center: windowWidth < 998}"
+              :class="[{center: windowWidth < 998}, {'token_price-response': windowWidth < 565}]"
             >{{ commaSplitting(row.price) }} {{returnCurrency(row)}}</td>
             <td class="table__data" style="text-align: center">
               <nuxt-link :to="`/order/${row._id}`">
@@ -114,11 +122,11 @@
         <AppTable :incomingData="sellOrdersWithLimit" :headers="[$t('main.seller'), ...headers]">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">
+            <td class="table__data" :class="{'token_price-response': windowWidth < 565}">
               {{ row.username }}
               <span class="status green--bg" />
             </td>
-            <td class="table__data">
+            <td class="table__data" :class="{'payment_method-response': windowWidth < 565}">
               {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
             </td>
             <td class="table__data" v-if="windowWidth > 998">
@@ -130,7 +138,7 @@
             </td>
             <td
               class="table__data fw-500"
-              :class="{center: windowWidth < 998}"
+              :class="[{center: windowWidth < 998}, {'token_price-response': windowWidth < 565}]"
             >
               {{ commaSplitting(row.price) }} {{returnCurrency(row)}}
             </td>
@@ -241,8 +249,12 @@ export default {
       this.sellTab = tabs.sell
     }
   },
-  created() {
-    this.$store.dispatch('order/fetchOrders', { limit: 1000, })
+  async asyncData({ store }) {
+    await store.dispatch('order/fetchOrders', {
+      limit: 1000,
+      sort: -1,
+      currency:1
+    })
   }
 }
 </script>

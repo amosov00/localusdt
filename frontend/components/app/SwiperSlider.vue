@@ -52,6 +52,5 @@ export default {
     }
     .imgSlider{
         width: 100%;
-        height: inherit;
     }
 </style>

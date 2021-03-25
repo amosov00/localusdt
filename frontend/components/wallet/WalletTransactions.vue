@@ -59,15 +59,8 @@ export default {
   computed: {
     transactions() {
       return this.$store.getters['wallet/transactions'].map((item)=>{
-        let type
-        if (item.event === 2) {
-          type = 2
-        } else {
-          type = 1
-        }
         return {
           ...item,
-          type,
           visible: false
         }
       })

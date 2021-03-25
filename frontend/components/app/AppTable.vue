@@ -16,6 +16,7 @@
               <span class="mr-15">
                 <span v-if="item.type === 1">{{$t('profile.buyUSDT')}}</span>
                 <span v-else-if="item.type === 2">{{$t('profile.sellUSDT')}}</span>
+                <span v-else>{{ transactionEvent(item.event) }}</span>
               </span>
               <span>{{regularDate(item.date)}}</span>
             </div>
@@ -137,6 +138,18 @@ export default {
         return
       }
       this.currentPage -= 1
+    },
+    transactionEvent(event) {
+      switch (event) {
+        case 1:
+          return this.$t('wallet.topUp2')
+          break
+        case 2:
+          return this.$t('wallet.withdrawUSDT')
+          break
+        default:
+          break
+      }
     },
     nextPage() {
       if (this.paginatedTableData.length / this.contentPerPage < 1) {

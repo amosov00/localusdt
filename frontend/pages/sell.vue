@@ -9,9 +9,7 @@
           {{ row.username }}
           <span class="status green--bg" />
         </td>
-        <td class="table__data" :class="{
-          'payment_method-response': windowWidth < 565
-        }">
+        <td class="table__data" :class="{'payment_method-response': windowWidth < 565}">
           {{ row.other_payment_method ? row.other_payment_method : paymentMethod(row.payment_method) }}
         </td>
         <td class="table__data" v-if="windowWidth > 998">

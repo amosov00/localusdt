@@ -4,7 +4,7 @@
       <p class="order-details__cell grey-dark">{{ $t('orderDetails.price') }}</p>
       <p class="order-details__cell">
         <!-- {{price}} -->
-        {{orderDetails.price.toFixed(2)}}
+        {{orderDetails.price ? orderDetails.price.toFixed(2) : orderDetails.amount}}
         {{returnCurrency(orderDetails)}}/USDT
 
       </p>
@@ -134,7 +134,7 @@ export default {
   async mounted(){
     console.log(this.orderDetails);
     await this.$store.dispatch('fetchCurrencyPrice' , this.orderDetails.currency)
-    this.price = this.currencyPrice.toFixed(2)
+    this.price = this.currencyPrice ?  this.currencyPrice.toFixed(2) : 0
   }
 }
 </script>

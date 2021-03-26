@@ -12,11 +12,20 @@
       <span class="input__icon" v-else-if="endIcon" :style="{'cursor': endIcon === 'copy' ? 'pointer' : 'default'}" @click="copy">
         <InlineSvg :src="require(`~/assets/icons/${endIcon}.svg`)" />
       </span>
+      <span
+        class="input__icon"
+        :style="{'cursor': endIcon === 'copy' ? 'pointer' : 'default'}"
+        v-if="limitInput && windowWidth < 607"
+      >
+        USDT
+      </span>
     </div>
-    <p v-if="hint" class="input__hint" v-html="$t('main.inputWarn')"></p>
-    <p v-if="hintTwo" class="input__hintTwo">
-      {{ typeCurrency == 2 ? $t('main.PriceSettingEquation2') : $t('main.PriceSettingEquation') }}
-    </p>
+    <div class="input__hints">
+      <p v-if="hint" class="input__hint" v-html="$t('main.inputWarn')"></p>
+      <p v-if="hintTwo" class="input__hintTwo">
+        {{ typeCurrency == 2 ? $t('main.PriceSettingEquation2') : $t('main.PriceSettingEquation') }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -27,6 +36,10 @@ export default {
   props: {
     value: {
       require: false
+    },
+    limitInput: {
+      default: false,
+      type: Boolean
     },
     type: {
       type: String,
@@ -69,7 +82,15 @@ export default {
   data() {
     return {
       showPassword: false,
+      windowWidth: window.innerWidth
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
   },
   computed: {
     passwordIcon() {
@@ -107,12 +128,19 @@ export default {
   font-weight: 500;
   font-size: 12px;
   position: relative;
+  @media (max-width: 768px) {
+
+  }
 
   &--disabled {
     cursor: not-allowed;
   }
 
   &__hint {
+    @media (max-width: 846px) {
+      position: static;
+      margin-top: 15px;
+    }
     position: absolute;
     top: 40%;
     left: 109%;
@@ -121,6 +149,10 @@ export default {
     opacity: .5;
   }
   &__hintTwo{
+    @media (max-width: 846px) {
+        position: static;
+        margin-top: 15px;
+    }
     position: absolute;
     top: 0%;
     right: -70%;

@@ -75,7 +75,13 @@ a {
 	opacity: 0;
 }
 
+.align-flex {
+  display: flex;
+  align-items: center;
+}
+
 @import 'components.scss';
 @import 'layout.scss';
 @import 'utils.scss';
 @import 'radio.scss';
+@import 'global_responsive';

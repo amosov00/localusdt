@@ -44,7 +44,7 @@ export default {
         border-radius: 5px;
         transition:all 0.5s;
         background-color: #ED9F43 !important;
-        opacity: 1; 
+        opacity: 1;
     }
     .swiper-pagination-bullet{
         background-color: white ;
@@ -52,6 +52,5 @@ export default {
     }
     .imgSlider{
         width: 100%;
-        height: inherit;
     }
 </style>

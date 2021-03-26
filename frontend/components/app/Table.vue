@@ -13,7 +13,7 @@
           td.table__data {{order.username}}
             span.status.green--bg
             span.orders-count (10+)
-          td.table__data 
+          td.table__data
             span {{paymentMethod(order.payment_method)}}
           td.table__data {{spaceSplitting(order.bot_limit)}} - {{spaceSplitting(order.top_limit)}} ₽
           td.table__data
@@ -150,6 +150,12 @@ export default {
   &__data {
     text-align: left;
     padding-left: 30px;
+    padding-right: 30px;
+
+    @media (max-width: 1100px) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
 
     .status {
       display: inline-block;
@@ -167,10 +173,6 @@ export default {
 
     &:not(:last-child) {
       border-right: 1px solid $grey;
-    }
-
-    &:nth-child(4) {
-      font-weight: 500;
     }
   }
 }

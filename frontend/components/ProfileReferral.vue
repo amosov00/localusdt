@@ -82,7 +82,7 @@ export default {
 
 <style lang="scss">
 .profile-referral {
-  width: 400px;
+  max-width: 400px;
 
   &__code {
     margin-top: 40px;

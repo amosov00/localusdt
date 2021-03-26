@@ -25,11 +25,14 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    @media (max-width: 607px) {
+      display: block;
+    }
   }
 
   &__form {
     margin-top: 50px;
-    width: 475px;
+    max-width: 475px;
   }
 
   &__input {
@@ -37,6 +40,9 @@
   }
 
   &__gap {
+    @media (max-width: 607px) {
+      display: block;
+    }
     display: flex;
     align-items: center;
     // justify-content: space-evenly;
@@ -44,6 +50,9 @@
     position: relative;
 
     .extra-text {
+      @media (max-width: 607px) {
+        display: none;
+      }
       position: absolute;
       top: 50%;
       left: calc(100% + 40px);

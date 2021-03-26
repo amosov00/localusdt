@@ -133,14 +133,18 @@ async mounted() {
   }
     let messages = await this.$store.dispatch('invoice/getChatroomMessages', this.invoice.chat_id);
     this.chatMessages = messages;
-    let container = this.$refs.chatScroll.$el;
-    let scrollAtEnd = container.scrollTop - container.scrollHeight
-    this.$nextTick(() => {
-        container.scrollTop = container.scrollHeight
-    })
-    if(this.connect){
-        this.chatConnect()
+    let container;
+    if(this.$refs.chatScroll){
+      container = this.$refs.chatScroll.$el;
+      let scrollAtEnd = container.scrollTop - container.scrollHeight
+      this.$nextTick(() => {
+          container.scrollTop = container.scrollHeight
+      })
+      if(this.connect){
+          this.chatConnect()
+      }
     }
+
 }
 }
 </script>

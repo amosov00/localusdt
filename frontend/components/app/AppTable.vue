@@ -7,8 +7,30 @@
         </tr>
       </thead>
       <tbody class="table__body">
-        <template v-for="(item, i) in whichTable" >
-          <tr class="table__row" :style="i % 2 === 0 ? 'background-color:#F5F5F5;' : null" :data-item="i" :key="i">
+        <template v-for="(item, i) in whichTable">
+          <div class="table__trheader" v-if="walletTX && windowWidth < 1100" @click="switchTR(item)">
+            <div>
+              {{item.amount_usdt}} USDT
+            </div>
+            <div class="text--grey">
+              <span class="mr-15">
+                <span v-if="item.type === 1">{{$t('profile.buyUSDT')}}</span>
+                <span v-else-if="item.type === 2">{{$t('profile.sellUSDT')}}</span>
+                <span v-else>{{ transactionEvent(item.event) }}</span>
+              </span>
+              <span>{{regularDate(item.date)}}</span>
+            </div>
+            <div class="table__indicator" :class="{
+              'table__indicator--up': item.visible,
+              'table__indicator--down': !item.visible,
+            }"></div>
+          </div>
+          <tr
+            class="table__row"
+            v-if="item.visible || (windowWidth > 1100) || !walletTX"
+            :data-item="i"
+            :key="i"
+          >
             <slot :row="item" />
           </tr>
         </template>
@@ -27,7 +49,7 @@
           <InlineSvg class="pagination__arrow-icon" :src="require('~/assets/icons/arrow-right.svg')" />
         </button>
       </div>
-      <div class="pagination__quantity">
+      <div class="pagination__quantity" :class="{'pagination__quantity-mobile': windowWidth < 716}">
         <button class="pagination__quantity-button" :class="{'black': contentPerPage === 15}" @click="setContentPerPage(15)"> 15 </button>
         <button class="pagination__quantity-button" :class="{'black': contentPerPage === 25}" @click="setContentPerPage(25)"> 25 </button>
         <button class="pagination__quantity-button" :class="{'black': contentPerPage === 50}" @click="setContentPerPage(50)"> 50 </button>
@@ -42,10 +64,11 @@ import InlineSvg from 'vue-inline-svg'
 import Button from '~/components/app/Button'
 import formatCurreny from '~/mixins/formatCurrency'
 import paymentMethod from '~/mixins/paymentMethod'
+import formatDate from "@/mixins/formatDate";
 export default {
   name:'AppTable',
   props: {
-    data: Array,
+    incomingData: Array,
     headers: Array,
     pagination: {
       type: Boolean,
@@ -56,9 +79,13 @@ export default {
     },
     propsContPage:{
       default:15,
+    },
+    walletTX: {
+      type: Boolean,
+      default: false
     }
   },
-  mixins: [formatCurreny, paymentMethod],
+  mixins: [formatCurreny, paymentMethod, formatDate],
   components: {
     Button,
     InlineSvg,
@@ -66,7 +93,9 @@ export default {
   data() {
     return {
       currentPage: 1,
-      contentPerPage: this.propsContPage
+      contentPerPage: this.propsContPage,
+      windowWidth: window.innerWidth,
+      data: this.incomingData
     }
   },
   computed: {
@@ -96,12 +125,31 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
+  },
   methods: {
     prevPage() {
       if (this.currentPage <= 1) {
         return
       }
       this.currentPage -= 1
+    },
+    transactionEvent(event) {
+      switch (event) {
+        case 1:
+          return this.$t('wallet.topUp2')
+          break
+        case 2:
+          return this.$t('wallet.withdrawUSDT')
+          break
+        default:
+          break
+      }
     },
     nextPage() {
       if (this.paginatedTableData.length / this.contentPerPage < 1) {
@@ -116,7 +164,10 @@ export default {
     goToPage(page) {
       this.currentPage = page;
     },
-     
+    switchTR(item) {
+      const globalIndex = this.data.indexOf(item)
+      this.data[globalIndex].visible = !this.data[globalIndex].visible;
+    }
   },
   created() {
     this.$parent.$on('clickPageOne', this.goToPage);
@@ -125,6 +176,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.none-class {
+  display: none;
+}
+.none-class .table__data:not(:last-child) {
+  border-right: 0 solid #808080;
+}
+
 .table {
   border-collapse: collapse;
   margin: 25px 0;
@@ -132,7 +190,7 @@ export default {
   overflow-wrap:break-word;
   &__head {
     .table__row {
-       word-wrap: break-word;
+      word-wrap: break-word;
       color: #000;
       opacity: 0.3;
       font-weight: 500;
@@ -141,16 +199,54 @@ export default {
     }
   }
 
+  &__indicator {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__indicator--up {
+    border-bottom: 12px solid gray;
+  }
+  &__indicator--down {
+    border-top: 12px solid gray;
+  }
+
   &__header {
     padding: 20px;
     font-weight: 500;
     font-size: 16px;
   }
   &__body {
+    .table__trheader {
+      text-align: left !important;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      border: 1px solid grey;
+      position: relative;
+      div:last-child {
+        span:last-child {
+          margin-right: 30px;
+        }
+      }
+      div:first-child {
+        font-size: 25px;
+        margin-bottom: 8px;
+      }
+    }
     .table__row {
       overflow-wrap:break-word;
-       word-wrap: break-word;
+      word-wrap: break-word;
       line-height: 70px;
+      @media (max-width: 1100px) {
+        box-shadow: 0px 4px 15px 0px rgba(34, 60, 80, 0.2);
+      }
 
       &:nth-child(2n) {
         background-color: #fdfdfd;
@@ -162,9 +258,9 @@ export default {
     }
   }
 
+
   &__data {
     text-align: left;
-    padding-left: 30px;
     font-weight: normal;
 
     .status {
@@ -179,10 +275,6 @@ export default {
       display: inline-block;
       margin-left: 15px;
       color: $grey-dark;
-    }
-
-    &:not(:last-child) {
-      border-right: 1px solid #808080;
     }
   }
 }
@@ -214,6 +306,12 @@ export default {
     &:not(:last-child) {
       margin-right: 30px;
     }
+  }
+
+  &__quantity-mobile {
+    transform: translate(-50%, -50%);
+    top: 50% !important;
+    left: 50% !important;
   }
 
   &__quantity {

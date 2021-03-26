@@ -9,18 +9,18 @@
         :options="paymentOptions"
         :selectedOptionProp="adForm.payment_method"
         v-model="adForm.payment_method"
-        :width="350"
         noCurrency
         :header="$t('bid.payType')"
+        class="select-buy"
         )
         Select(
         :options="currencyOptions"
-         :selectedOptionProp="adForm.currency"
+        :selectedOptionProp="adForm.currency"
         v-model="adForm.currency"
         @defaultProfit="resetProfit"
         profitForm
-        :width="80"
         :header="$t('bid.currency')"
+        class="select-buy"
         )
       Input.create-order__input(
       v-if="yourVersion"
@@ -88,13 +88,15 @@
       div.create-order__gap
         Input.mr-30(
         v-model="adForm.bot_limit"
-        :width="250"
+        class="input-gap"
         type="number"
+        :limitInput="true"
         :header="$t('bid.minLimit')")
         Input(
         v-model="adForm.top_limit"
-        :width="250"
+        class="input-gap"
         type="number"
+        :limitInput="true"
         :header="$t('bid.maxLimit')")
 
         span.extra-text USDT

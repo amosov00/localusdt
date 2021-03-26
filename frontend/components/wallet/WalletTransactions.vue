@@ -1,41 +1,46 @@
 <template>
   <div>
     <h2 class="fw-500 mt-50">{{$t('wallet.transactionHistory')}}</h2>
-    <AppTable class="mb-80" :data="transactions" :headers="headers" pagination>
+    <AppTable class="mb-80" :incomingData="transactions" :headers="headers" :walletTX="true" pagination>
       <template slot-scope="{ row }">
-        <td class="table__data">
-          {{regularDate(row.date)}}
-        </td>
-        <td class="table__data">{{ transactionEvent(row.event) }}</td>
-        <td class="table__data">
-            <span>
-              {{ row.address }}
-            </span>
-            <a
-              class="ml-15"
-              :href="`https://etherscan.io/address/${row.address}`"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <InlineSvg :src="require('~/assets/icons/redirect.svg')" />
-            </a>
-          </td>
-          <td class="table__data fw-500">
-            {{ commaSplitting(row.amount_usdt) }} USDT
-          </td>
-          <td
-            class="table__data"
-            :style="{ color: statusColor(row.status) }"
+          <component :is="rowsTag" class="table__data">
+            <span class="text--grey" v-if="mobile">{{$t('wallet.date')}}: </span><span class="response-weight">{{regularDate(row.date)}}</span>
+          </component>
+          <component :is="rowsTag" class="table__data">
+            <span class="text--grey" v-if="mobile">{{$t('wallet.action')}}: </span><span class="response-weight">{{ transactionEvent(row.event) }}</span>
+          </component>
+          <component :is="rowsTag" class="table__data address">
+              <span class="text--grey" v-if="mobile">{{$t('wallet.address')}}: </span>
+              <span class="response-weight">
+                {{ row.address }}
+              </span>
+              <a
+                class="ml-15"
+                :href="`https://etherscan.io/address/${row.address}`"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <InlineSvg :src="require('~/assets/icons/redirect.svg')" />
+              </a>
+          </component>
+          <component :is="rowsTag" class="table__data">
+            <span class="text--grey" v-if="mobile">{{$t('wallet.amount')}}: </span>
+            <span class="response-weight">{{ commaSplitting(row.amount_usdt) }} USDT</span>
+          </component>
+          <component
+              class="table__data"
+              :style="{ color: statusColor(row.status) }"
+              :is="rowsTag"
           >
-            {{ transactionStatus(row.status) }}
-          </td>
+              <span class="text--grey" v-if="mobile">{{$t('wallet.status')}}: </span>
+              <span class="response-weight">{{ transactionStatus(row.status) }}</span>
+            </component>
       </template>
     </AppTable>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import formatDate from '~/mixins/formatDate'
 import formatCurrency from '~/mixins/formatCurrency'
 import AppTable from '~/components/app/AppTable'
@@ -48,18 +53,45 @@ export default {
   },
   data() {
     return {
-      headers: [
-        this.$t('wallet.date'),
-        this.$t('wallet.action'),
-        this.$t('wallet.address'),
-        this.$t('wallet.amount'),
-        this.$t('wallet.status')
-      ]
+      windowWidth: window.innerWidth,
     }
   },
   computed: {
-    ...mapGetters({
-      transactions: 'wallet/transactions'
+    transactions() {
+      return this.$store.getters['wallet/transactions'].map((item)=>{
+        return {
+          ...item,
+          visible: false
+        }
+      })
+    },
+    mobile() {
+      return this.windowWidth < 1100
+    },
+    headers() {
+      if (this.windowWidth > 1100) {
+        return [
+          this.$t('wallet.date'),
+          this.$t('wallet.action'),
+          this.$t('wallet.address'),
+          this.$t('wallet.amount'),
+          this.$t('wallet.status')
+        ]
+      }
+    },
+    rowsTag() {
+      if (this.windowWidth < 1100) {
+        return 'div'
+      } else {
+        return 'td'
+      }
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
     })
   },
   methods: {
@@ -106,3 +138,14 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+  .address {
+    word-break: break-all;
+    padding-right: 30px;
+  }
+  div.table__data:not(:first-child) {
+  @media (max-width: 1100px) {
+    border-top: 1px solid grey;
+  }
+  }
+</style>

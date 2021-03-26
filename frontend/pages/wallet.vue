@@ -9,7 +9,8 @@
         <div class="wallet__avaible">
           <p>
             <span class="opacity-50">{{$t('wallet.all')}} </span>
-            {{commaSplitting(user.balance_usdt + user.usdt_in_invoices)}} USDT</p>
+            {{commaSplitting(user.balance_usdt + user.usdt_in_invoices)}} USDT
+          </p>
           <p>
             <span class="opacity-50">{{$t('wallet.inOrders')}}</span>
             {{commaSplitting(user.usdt_in_invoices)}} USDT
@@ -54,8 +55,12 @@ export default {
     align-items: flex-start;
     justify-content: space-between;
     margin-top: 50px;
-    height: 80px;
+    padding-bottom: 10px;
     border-bottom: 1px solid $grey;
+    @media (max-width: 490px) {
+      margin-top: 10px;
+      display: block;
+    }
   }
 
   &__title {
@@ -72,6 +77,9 @@ export default {
     flex-direction: column;
     // margin-right: 120px;
     margin-right: 200px;
+    @media (max-width: 883px) {
+      margin-right: 0;
+    }
   }
 
   &__amount {

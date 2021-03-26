@@ -30,7 +30,7 @@
           >{{$t('navbar.reg')}}
           </nuxt-link
           >
-          <nuxt-link class="header__action" to="/login">{{$t('navbar.signIn')}}</nuxt-link>
+          <nuxt-link class="header__action disabled" to="/login">{{$t('navbar.signIn')}}</nuxt-link>
         </div>
         <div class="header__user" v-else>
           <nuxt-link to="/wallet" class="header__balance"
@@ -46,12 +46,19 @@
       <div class="header__lang">
         <LangSwitcher />
       </div>
+      <NotificationCenter class="mr-15" style="margin-left: auto;" v-if="$userIsLoggedIn() && windowWidth < 916"></NotificationCenter>
       <button
         class="navbar-toggle"
         @click="dialog = !dialog"
-        :class="{
+        :class="[
+        {
           'navbar-toggle-active': dialog
-        }"
+        },
+        {
+          'navbar-margin': !$userIsLoggedIn()
+        }
+        ]"
+
       >
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -88,28 +95,64 @@
         </ul>
       </nav>
       <div class="actions">
-        <NotificationCenter class="mr-15" v-if="$userIsLoggedIn()"></NotificationCenter>
         <div v-if="!$userIsLoggedIn()">
+          <span></span>
           <nuxt-link class="header__action disabled" to="/signup" @click.native="dialog = false"
           >{{$t('navbar.reg')}}
           </nuxt-link
           >
-          <nuxt-link class="header__action" to="/login" @click.native="dialog = false">{{$t('navbar.signIn')}}</nuxt-link>
+          <nuxt-link class="header__action disabled" to="/login" @click.native="dialog = false">{{$t('navbar.signIn')}}</nuxt-link>
         </div>
-        <div class="header__user" v-else>
-          <nuxt-link to="/wallet" class="header__balance" @click.native="dialog = false"
-          >{{ commaSplitting(user.balance_usdt) }} USDT
-          </nuxt-link
+        <div class="header__user block" v-else>
+          <nuxt-link
+            class="align-flex"
+            to="/wallet"
+            @click.native="dialog = false"
           >
-          <nuxt-link class="header__action" to="/profile" @click.native="dialog = false">{{
-              user.username
-            }}
+            <div>
+              <img src="~assets/icons/cash-multiple.svg" alt="cash" class="mr-5">
+            </div>
+            <div>
+              <span class="mr-15">{{$t('wallet.wallet')}}: </span>
+              <span
+                class="header__balance"
+              >
+                {{ commaSplitting(user.balance_usdt) }} USDT
+              </span>
+            </div>
+          </nuxt-link>
+          <nuxt-link
+            class="align-flex"
+            @click.native="dialog = false"
+            to="/profile"
+            tag="div"
+          >
+            <div>
+              <img src="~assets/icons/account-box.svg" alt="account" class="mr-5">
+            </div>
+            <div>
+              <span class="mr-15">{{$t('wallet.profile')}}: </span>
+              <span
+                class="header__action"
+              >
+                {{user.username}}
+              </span>
+            </div>
           </nuxt-link>
         </div>
       </div>
-      <div class="lang">
+      <div class="align-flex">
+        <img src="~assets/icons/earth.svg" alt="earth" class="mr-5">
         <LangSwitcher />
       </div>
+        <div
+          @click="logout"
+          class="margin-zero align-flex"
+          v-if="$userIsLoggedIn()"
+        >
+          <img src="~assets/icons/exit-to-app.svg" alt="exit" class="mr-5">
+          <div>{{$t('profile.logOut')}}</div>
+        </div>
     </div>
     </transition>
   </header>
@@ -132,6 +175,7 @@ export default {
         { title: this.$t('navbar.buy'), url: '/buy' },
         { title: this.$t('navbar.sell'), url: '/sell' }
       ],
+      windowWidth: window.innerWidth,
       dialog: false
     }
   },
@@ -146,7 +190,10 @@ export default {
       if (this.$route.path === url) {
         window.location.reload()
       }
-    }
+    },
+    logout() {
+      this.$store.dispatch('logOut')
+    },
   },
   mounted() {
     this.interval = setInterval(async() => {
@@ -154,6 +201,11 @@ export default {
         await this.$store.dispatch('fetchBalance')
       }
     }, 10000)
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
   },
   beforeDestroy() {
     clearInterval(this.interval)
@@ -162,6 +214,22 @@ export default {
 </script>
 
 <style lang="scss">
+.navbar-margin {
+  margin-left: auto;
+}
+.block {
+  display: block;
+}
+
+.margin-zero:last-child {
+  margin-top: 0;
+}
+
+[alt="cash"], [alt="exit"], [alt="account"], [alt="earth"] {
+ width: 18px;
+}
+
+
 .header {
   height: 70px;
   width: 100%;
@@ -217,9 +285,11 @@ export default {
   }
 
   &__user {
-    height: 70px;
     display: flex;
     align-items: center;
+  }
+  .block {
+    display: block;
   }
 
   &__balance {
@@ -228,18 +298,6 @@ export default {
 
     span {
       margin-right: 5px;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: -26px;
-      right: -30px;
-      display: block;
-      height: 70px;
-      width: 1px;
-      background-color: $black;
-      opacity: 0.2;
     }
   }
 
@@ -259,19 +317,12 @@ export default {
     transform:translateY(-100%);
   }
 
+
   &__dialog {
     position: relative;
     z-index: 400;
     background-color: #f8f8f8;
     padding: 20px;
-    .actions {
-      div {
-        a {
-          display: block;
-          margin-bottom: 15px;
-        }
-      }
-    }
     .nav {
       .nav {
         margin-bottom: 30px;
@@ -288,7 +339,6 @@ export default {
     background-color: #ddd !important;
   }
   .navbar-toggle {
-    margin-left: auto;
     position: relative;
     float: right;
     padding: 9px 10px;

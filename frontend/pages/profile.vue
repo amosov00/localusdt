@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <section class="profile">
     <div class="profile__header">
       <div class="profile__user">
@@ -45,51 +45,82 @@
           {{$t('profile.orders')}}
         </div>
       </nav>
-      <div class="tab-item" v-if="activeTab===1">
-        <AppTable :data="invoices" :headers="headers" pagination>
+      <div class="tab-item" v-show="activeTab===1">
+        <AppTable :incomingData="invoices" :headers="headers" pagination :walletTX="true">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">
-              <p style="line-height:40px;">{{timestampToUtc(row.created_at)}}</p>
-              <p style="font-size:10px; padding:0; line-height:15px;">ID сделки: {{row._id}}</p>
-            </td>
-            <td class="table__data" v-if="row.seller_username === user.username">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data" v-else>{{$t('profile.buyUSDT')}}</td>
-            <td class="table__data">
+            <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.dateTime')}}: </span>
+              <span class="response-weight" :style="{
+                'line-height:40px': windowWidth > 1100,
+                'padding-left: 0': windowWidth > 1100,
+                'padding-right: 0': windowWidth > 1100,
+              }">{{timestampToUtc(row.created_at)}}</span>
+              <p style="font-size:10px; padding:0; line-height:15px;" v-if="windowWidth > 1100">ID сделки: {{row._id}}</p>
+            </component>
+            <component :is="rowsTag" class="table__data" v-if="row.seller_username === user.username">
+              <span class="text--grey" v-if="mobile">{{$t('profile.orderType')}}: </span>
+              <span class="response-weight">{{$t('profile.sellUSDT')}}</span>
+            </component>
+            <component :is="rowsTag" class="table__data" v-else>
+              <span class="text--grey" v-if="mobile">{{$t('profile.orderType')}}: </span>
+              <span class="response-weight">{{$t('profile.buyUSDT')}}</span>
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.buyerSeller')}}: </span>
+              <span class="response-weight">
               {{ getUsername(row.seller_username, row.buyer_username)}}
+              </span>
               <span class="status green--bg" />
               <span class="orders-count">(10+)</span>
-            </td>
-            <td class="table__data">
-               <span class="grey-dark fw-400">
-                 {{commaSplitting(row.amount_usdt)}} USDT {{$t('profile.for')}}
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.sum')}}: </span>
+              <span class="response-weight">
+                 <span class="grey-dark fw-400">
+                   {{commaSplitting(row.amount_usdt)}} USDT {{$t('profile.for')}}
+                </span>
+                  {{commaSplitting(row.amount)}}{{returnCurrency(row)}}
               </span>
-                {{commaSplitting(row.amount)}}{{returnCurrency(row)}}
-            </td>
-            <td class="table__data" :style="{ color: statusColor(row.status) }">
-              <nuxt-link :to="`/invoice/${row._id}`">{{invoiceStatusShort(row.status)}}</nuxt-link>
-            </td>
+            </component>
+            <component :is="rowsTag" class="table__data" :style="{ color: statusColor(row.status) }">
+              <nuxt-link :to="`/invoice/${row._id}`">
+                <span class="text--grey" v-if="mobile">{{$t('profile.sum')}}: </span>
+                <span class="response-weight">{{invoiceStatusShort(row.status)}}</span>
+              </nuxt-link>
+            </component>
           </template>
         </AppTable>
       </div>
-      <div class="tab-item" v-if="activeTab===2">
-        <AppTable :data="orders" :headers="orderHeaders" pagination>
+      <div class="tab-item" v-show="activeTab===2">
+        <AppTable :incomingData="orders" :headers="orderHeaders" pagination :walletTX="true">
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
-            <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
-            <td class="table__data" v-if="row.type === 1">{{$t('profile.buyUSDT')}}</td>
-            <td class="table__data" v-else-if="row.type === 2">{{$t('profile.sellUSDT')}}</td>
-            <td class="table__data">{{commaSplitting(row.price)}} {{returnCurrency(row)}}</td>
-            <td class="table__data">
-              <span>
+            <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.dateTime')}}: </span><span class="response-weight">{{timestampToUtc(row.created_at)}}</span>
+            </component>
+            <component :is="rowsTag" class="table__data" v-if="row.type === 1">
+              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><span class="response-weight">{{$t('profile.buyUSDT')}}</span>
+            </component>
+            <component :is="rowsTag" class="table__data" v-else-if="row.type === 2">
+              <span class="text--grey" v-if="mobile">{{$t('profile.type')}}: </span><span class="response-weight">{{$t('profile.sellUSDT')}}</span>
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.course')}}: </span><span class="response-weight">{{commaSplitting(row.price)}} {{returnCurrency(row)}}</span>
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.limit')}}: </span>
+              <span class="response-weight">
                 {{spaceSplitting(row.bot_limit)}} -
                 {{spaceSplitting(row.top_limit)}} USDT
               </span>
-            </td>
-            <td class="table__data">{{spaceSplitting(row.amount_usdt)}} USDT </td>
-            <td class="table__data" :style="{ color: orderStatusColor(row.status) }">
-              <nuxt-link :to="`/order/${row._id}`">{{orderStatus(row.status)}}</nuxt-link>
-            </td>
+            </component>
+            <component :is="rowsTag" class="table__data">
+              <span class="text--grey" v-if="mobile">{{$t('profile.residue')}}: </span><span class="response-weight">{{spaceSplitting(row.amount_usdt)}} USDT</span>
+            </component>
+            <component :is="rowsTag" class="table__data" :style="{ color: orderStatusColor(row.status) }">
+              <span class="text--grey" v-if="mobile">{{$t('profile.status')}}: </span><nuxt-link :to="`/order/${row._id}`"><span class="response-weight">{{orderStatus(row.status)}}</span></nuxt-link>
+            </component>
           </template>
         </AppTable>
       </div>
@@ -121,36 +152,71 @@ export default {
   data() {
     return {
       activeTab: 1,
-      orderHeaders: [
-        this.$t('profile.dateTime'),
-        this.$t('profile.type'),
-        this.$t('profile.course'),
-        this.$t('profile.limit'),
-        this.$t('profile.residue'),
-        this.$t('profile.status'),
-      ],
-      headers: [
-        this.$t('profile.dateTime'),
-        this.$t('profile.orderType'),
-        this.$t('profile.buyerSeller'),
-        this.$t('profile.sum'),
-        this.$t('profile.status'),
-      ]
+      windowWidth: window.innerWidth,
     }
   },
   created() {
     this.$store.dispatch('order/fetchOrdersByUser')
   },
   computed: {
+    rowsTag() {
+      if (this.windowWidth < 1100) {
+        return 'div'
+      } else {
+        return 'td'
+      }
+    },
+    mobile() {
+      return this.windowWidth < 1100
+    },
+    orderHeaders() {
+      if (this.windowWidth > 1100) {
+        return [
+          this.$t('profile.dateTime'),
+          this.$t('profile.type'),
+          this.$t('profile.course'),
+          this.$t('profile.limit'),
+          this.$t('profile.residue'),
+          this.$t('profile.status')
+        ]
+      }
+    },
+    headers() {
+      if (this.windowWidth > 1100) {
+        return [
+          this.$t('profile.dateTime'),
+          this.$t('profile.orderType'),
+          this.$t('profile.buyerSeller'),
+          this.$t('profile.sum'),
+          this.$t('profile.status'),
+        ]
+      }
+    },
     user() {
       return { ...this.$store.getters.user }
     },
     invoices() {
-      console.log(this.$store.getters['invoice/invoices']);
-      return this.$store.getters['invoice/invoices']
+      return this.$store.getters['invoice/invoices'].map((item)=>{
+        let type
+        if (item.seller_username === this.user.username) {
+          type = 2
+        } else {
+          type = 1
+        }
+        return {
+          ...item,
+          type,
+          visible: false
+        }
+      })
     },
     orders() {
-      return [...this.$store.getters['order/ordersByUser']].reverse()
+      return [...this.$store.getters['order/ordersByUser']].reverse().map((item)=>{
+        return {
+          ...item,
+          visible: false
+        }
+      })
     },
     condition: {
       get: function() {
@@ -160,6 +226,13 @@ export default {
         this.user.about_me = value
       }
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    })
   },
   methods: {
      returnCurrency(row){
@@ -192,8 +265,9 @@ export default {
       this.$store.dispatch('changeCondition', this.user.about_me)
     }
   },
-  asyncData({ store }) {
-    return store.dispatch('invoice/fetchInvoices')
+  async asyncData({ store }) {
+    await store.dispatch('invoice/fetchInvoices')
+    await store.dispatch('order/fetchOrdersByUser')
   }
 }
 </script>
@@ -233,6 +307,12 @@ export default {
     margin-top: 50px;
     display: flex;
     justify-content: space-between;
+    @media (max-width: 966px) {
+      display: block;
+      &__container {
+        margin-bottom: 40px;
+      }
+    }
 
     &__title {
       margin-bottom: 35px;
@@ -252,6 +332,13 @@ export default {
     border: 1px solid #f3f3f3;
     margin-top: -1px;
     padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+div.table__data:not(:first-child) {
+  @media (max-width: 1100px) {
+    border-top: 1px solid grey;
   }
 }
 </style>

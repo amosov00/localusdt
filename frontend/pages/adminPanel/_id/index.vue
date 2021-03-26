@@ -3,7 +3,7 @@
     <button class="backButton" @click="()=> this.$router.go(-1)">назад</button>
     <Tabs>
       <tab name="История сделок" :selected="true">
-        <AppTable :data="invoices" :headers="headers" pagination>
+        <AppTable :incomingData="invoices" :headers="headers" pagination>
           <template slot-scope="header"></template>
             <template slot-scope="{ row }">
               <td class="table__data">
@@ -29,7 +29,7 @@
         </AppTable>
       </tab>
       <tab name="Ваши обьявления">
-        <AppTable :data="orders" :headers="orderHeaders" pagination>
+        <AppTable :incomingData="orders" :headers="orderHeaders" pagination>
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
             <td class="table__data">{{timestampToUtc(row.created_at)}}</td>
@@ -50,7 +50,7 @@
         </AppTable>
       </tab>
       <tab name="Вывод ввод">
-        <AppTable :data="transactions" :headers="headersTransactions" pagination>
+        <AppTable :incomingData="transactions" :headers="headersTransactions" pagination>
           <template slot-scope="header"></template>
           <template slot-scope="{ row }">
           <td class="table__data">{{timestampToUtc(row.date)}}</td>

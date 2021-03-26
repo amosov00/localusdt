@@ -20,9 +20,10 @@ export const mutations = {
 
 export const actions = {
   async getChatroomMessages({}, chat_id) {
-    return this.$axios.get(`/invoice/chatroom/${chat_id}/`)
+    return this.$axios
+      .get(`/invoice/chatroom/${chat_id}/`)
       .then(res => res.data.messages)
-      .catch((e) => {
+      .catch(e => {
         console.log(e)
         this.$toast.showMessage({
           content: $nuxt.$t('store.chatError'),
@@ -33,36 +34,39 @@ export const actions = {
 
   async createInvoice({ dispatch }, invoiceForm) {
     // delete invoiceForm.chatText
-    return await this.$axios.post('/invoice/create/', invoiceForm)
+    return await this.$axios
+      .post('/invoice/create/', invoiceForm)
       .then(res => {
-        const ws = new WebSocket(`${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`)
-          ws.onopen = () => {
-            if(invoiceForm.chatText){
-              ws.send(invoiceForm.chatText)
-            }
-            setTimeout(() => {
-              socketPing = setInterval(() => {
-                ws.send('');
-              }, 50000);
-            }, 2000);
+        const ws = new WebSocket(
+          `${process.env.API_WS_URL}invoice/ws/${res.data.chat_id}/`
+        )
+        ws.onopen = () => {
+          if (invoiceForm.chatText) {
+            ws.send(invoiceForm.chatText)
           }
+          setTimeout(() => {
+            socketPing = setInterval(() => {
+              ws.send('')
+            }, 50000)
+          }, 2000)
+        }
 
-          ws.onclose = async (event) => {
-            clearInterval(socketPing);
-          };
-          
+        ws.onclose = async event => {
+          clearInterval(socketPing)
+        }
+
         this.$toast.showMessage({
           content: $nuxt.$t('store.invoiceCreate'),
           green: true
         })
         dispatch('fetchInvoices')
-        console.log('push router');
+        console.log('push router')
         this.$router.push(`/invoice/${res.data._id}`)
         return true
       })
       .catch(error => {
         // TEMPORARY BAD ASS SOLUTION, WILL BE FIXED
-        if(error.response.status == 403){
+        if (error.response.status == 403) {
           this.$toast.showMessage({
             content: $nuxt.$t('store.freeze'),
             red: true
@@ -104,10 +108,13 @@ export const actions = {
   },
   async fetchInvoices({ commit }) {
     const { data } = await this.$axios.get('/invoice/')
+    console.log(data, 'datafetchInvoices')
     commit('setInvoices', data)
   },
   async fetchInvoiceById({ commit }, id) {
-    const { data } = await this.$axios.get(`/invoice/${id}/`, { progress: false })
+    const { data } = await this.$axios.get(`/invoice/${id}/`, {
+      progress: false
+    })
     commit('setInvoiceById', data)
   },
   async cancelInvoice({}, id) {
